@@ -35,7 +35,7 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <PageHeader eyebrow="Students" title="Student Records" description="Search, filter, and manage learner profiles with school-scoped access controls." />
         {canManage ? (
-          <Link href="/dashboard/students/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
+          <Link href="/dashboard/students/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add Student
           </Link>
@@ -52,7 +52,7 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
           <FilterSelect name="classId" defaultValue={filters.classId} options={["ALL", ...classes.map((item) => item.id)]} labels={{ ALL: "All classes", ...Object.fromEntries(classes.map((item) => [item.id, item.name])) }} />
           <FilterSelect name="gender" defaultValue={filters.gender} options={["ALL", ...genders]} labels={{ ALL: "All genders" }} />
           <FilterSelect name="status" defaultValue={filters.status} options={["ALL", ...studentStatuses]} labels={{ ALL: "All statuses" }} />
-          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-on-dark hover:bg-slate">Filter</button>
+          <button className="h-11 rounded-md bg-primary px-4 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">Filter</button>
         </form>
       </section>
 

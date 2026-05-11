@@ -22,7 +22,7 @@ export default async function ClassesPage({ searchParams }: ClassesPageProps) {
   return <div className="space-y-6 pb-10">
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <PageHeader eyebrow="Classes" title="Class Management" description="Organize classes by school, teacher, room, academic year, and grade level." />
-      {canManage ? <Link href="/dashboard/classes/new" className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate"><Plus className="h-4 w-4" />Create Class</Link> : null}
+      {canManage ? <Link href="/dashboard/classes/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep"><Plus className="h-4 w-4" />Create Class</Link> : null}
     </div>
     {params?.saved ? <div className="rounded-lg border border-success/30 bg-tint-mint p-4 text-sm font-semibold text-success">Class changes saved.</div> : null}
     {params?.error ? <div className="rounded-lg border border-error/30 bg-tint-rose p-4 text-sm font-semibold text-error">{params.error}</div> : null}

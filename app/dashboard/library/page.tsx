@@ -45,7 +45,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <PageHeader eyebrow="E-Library" title="School Library" description="Search, filter, view, and download books assigned to your school." />
         {canUpload ? (
-          <Link href="/dashboard/library/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
+          <Link href="/dashboard/library/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
             <Plus className="h-4 w-4" aria-hidden="true" />
             Upload Book
           </Link>
@@ -69,7 +69,7 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
           <FilterSelect name="language" defaultValue={params?.language || "ALL"} label="All languages" values={options.languages} />
           <FilterSelect name="readingLevel" defaultValue={params?.readingLevel || "ALL"} label="All levels" values={options.readingLevels} />
           <FilterSelect name="category" defaultValue={params?.category || "ALL"} label="All categories" values={options.categories} />
-          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-on-dark hover:bg-slate">Filter</button>
+          <button className="h-11 rounded-md bg-primary px-4 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">Filter</button>
         </form>
       </section>
 
@@ -93,10 +93,10 @@ export default async function LibraryPage({ searchParams }: LibraryPageProps) {
             </div>
             <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate">{book.description}</p>
             <div className="mt-5 flex gap-3">
-              <Link href={`/dashboard/library/${book.id}`} className="inline-flex flex-1 justify-center rounded-md bg-ink px-4 py-2 text-sm font-bold text-on-dark hover:bg-slate">
+              <Link href={`/dashboard/library/${book.id}`} className="inline-flex flex-1 justify-center rounded-md bg-primary px-4 py-2 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
                 View
               </Link>
-              <a href={`/dashboard/library/${book.id}/download`} className="inline-flex flex-1 justify-center rounded-md border border-ink px-4 py-2 text-sm font-bold text-ink hover:bg-surface">
+              <a href={`/dashboard/library/${book.id}/download`} className="inline-flex flex-1 justify-center rounded-md border border-hairline-strong bg-canvas px-4 py-2 text-sm font-bold text-ink hover:bg-surface">
                 Download
               </a>
             </div>

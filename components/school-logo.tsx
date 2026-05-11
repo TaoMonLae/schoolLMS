@@ -1,4 +1,5 @@
 import { School } from "lucide-react";
+import { getReadableTextColor } from "@/lib/color-contrast";
 import type { SchoolSummary } from "@/lib/types";
 
 type SchoolLogoProps = {
@@ -20,7 +21,7 @@ export function SchoolLogo({ school, className = "h-10 w-10", imageClassName = "
   }
 
   return (
-    <span className={`flex shrink-0 items-center justify-center rounded-md text-on-dark ${className}`} style={{ backgroundColor: school.primaryColor }}>
+    <span className={`flex shrink-0 items-center justify-center rounded-md text-on-dark ${className}`} style={{ backgroundColor: school.primaryColor, color: getReadableTextColor(school.primaryColor) }}>
       <School className={iconClassName} aria-hidden="true" />
     </span>
   );

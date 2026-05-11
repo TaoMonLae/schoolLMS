@@ -31,7 +31,7 @@ export function UserForm({ action, user, options, error }: { action: (formData: 
           <select name="studentId" defaultValue={user?.studentId || ""} className="mt-4 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink"><option value="">No linked student</option>{options.students.map((student) => <option key={student.id} value={student.id}>{student.studentNumber} — {student.preferredName || student.legalName || student.id}{student.userId && student.id !== user?.studentId ? " (linked)" : ""}</option>)}</select>
         </div>
       </section>
-      <div className="flex justify-end"><button className="rounded-md bg-ink px-5 py-3 text-sm font-bold text-on-dark hover:bg-slate">Save User</button></div>
+      <div className="flex justify-end"><button className="rounded-md bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">Save User</button></div>
     </form>
   );
 }

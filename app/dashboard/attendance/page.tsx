@@ -1,9 +1,9 @@
 import { Download, Save } from "lucide-react";
+import { AttendanceStatusPicker } from "@/components/attendance-status-picker";
 import { PageHeader } from "@/components/page-header";
 import { StudentPhoto } from "@/components/student-photo";
 import { saveAttendanceBulk } from "@/app/dashboard/attendance/actions";
 import {
-  attendanceStatusStyles,
   getAttendanceClassesForUser,
   getAttendanceExportRows,
   getExistingAttendanceMap,
@@ -13,7 +13,6 @@ import {
 import { canEditAttendance, canTakeAttendance } from "@/lib/rbac";
 import { formatEnumLabel } from "@/lib/students";
 import { getRequiredCurrentUser } from "@/lib/session";
-import { attendanceStatuses } from "@/lib/types";
 
 type AttendancePageProps = {
   searchParams?: Promise<{
@@ -51,7 +50,7 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
         <form className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
           <Select name="classId" label="Class" defaultValue={selectedClassId} options={classes.map((item) => [item.id, item.name])} />
           <DateInput name="date" label="Date" defaultValue={selectedDate} />
-          <button className="self-end rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">Load Register</button>
+          <button className="self-end rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">Load Register</button>
         </form>
       </section>
 
@@ -102,15 +101,12 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
                   </div>
                 </div>
 
-                <fieldset className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  <legend className="sr-only">Status for {student.preferredName || student.legalName}</legend>
-                  {attendanceStatuses.map((status) => (
-                    <label key={status} className={`flex cursor-pointer items-center justify-center rounded-md border px-3 py-2 text-xs font-bold ${attendanceStatusStyles[status]}`}>
-                      <input className="sr-only peer" type="radio" name={`status-${student.id}`} value={status} defaultChecked={defaultStatus === status} disabled={!canSave} />
-                      <span>{formatEnumLabel(status)}</span>
-                    </label>
-                  ))}
-                </fieldset>
+                <AttendanceStatusPicker
+                  studentId={student.id}
+                  studentName={student.preferredName || student.legalName}
+                  defaultStatus={defaultStatus}
+                  disabled={!canSave}
+                />
 
                 <label>
                   <span className="sr-only">Note for {student.preferredName || student.legalName}</span>
@@ -147,14 +143,14 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
         <div className="mt-5 flex flex-wrap gap-3">
           <a
             href={`/dashboard/attendance/export/pdf?classId=${selectedClassId}&month=${selectedMonth}`}
-            className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             Export PDF
           </a>
           <a
             href={`/dashboard/attendance/export/excel?classId=${selectedClassId}&month=${selectedMonth}`}
-            className="inline-flex items-center gap-2 rounded-md border border-ink px-4 py-3 text-sm font-bold text-ink hover:bg-surface"
+            className="inline-flex items-center gap-2 rounded-md border border-hairline-strong bg-canvas px-4 py-3 text-sm font-bold text-ink hover:bg-surface"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             Export Excel

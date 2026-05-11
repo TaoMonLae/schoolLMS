@@ -16,10 +16,10 @@ export type AttendanceRecord = {
 };
 
 export const attendanceStatusStyles: Record<AttendanceStatus, string> = {
-  PRESENT: "border-[#b9dfac] bg-[#e8f3dc] text-[#315933]",
-  LATE: "border-[#f0d38a] bg-[#fff2d4] text-[#7a5211]",
-  ABSENT: "border-[#f2b9af] bg-[#ffe4df] text-[#8b2b20]",
-  EXCUSED: "border-[#bfd5f7] bg-[#e7f0ff] text-[#24508f]"
+  PRESENT: "border-success/35 bg-tint-mint text-success",
+  LATE: "border-warning/35 bg-tint-yellow text-warning",
+  ABSENT: "border-error/35 bg-tint-rose text-error",
+  EXCUSED: "border-link/35 bg-tint-sky text-link"
 };
 
 function day(date: string) { return new Date(`${date}T00:00:00.000Z`); }

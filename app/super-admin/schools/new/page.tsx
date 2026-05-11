@@ -249,7 +249,7 @@ export default function NewSchoolPage({
           </Link>
           <button
             type="submit"
-            className="inline-flex items-center justify-center rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-pressed active:bg-primary-deep"
           >
             Create School Tenant
           </button>

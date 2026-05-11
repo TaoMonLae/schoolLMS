@@ -41,7 +41,7 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
             </div>
           </div>
           {canManage ? (
-            <Link href={`/dashboard/students/${student.id}/edit`} className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
+            <Link href={`/dashboard/students/${student.id}/edit`} className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
               <Edit className="h-4 w-4" aria-hidden="true" />
               Edit Student
             </Link>

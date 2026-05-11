@@ -21,7 +21,7 @@ export default async function GradesPage({ searchParams }: GradesPageProps) {
         <select name="studentId" defaultValue={studentId} className="h-11 rounded-md border border-hairline bg-surface px-3 text-sm text-ink">
           {activeStudents.map((student) => <option key={student.id} value={student.id}>{student.preferredName || student.legalName}</option>)}
         </select>
-        <button className="rounded-md bg-ink px-4 text-sm font-bold text-on-dark">Load Report</button>
+        <button className="rounded-md bg-primary px-4 text-sm font-bold text-on-primary">Load Report</button>
       </form>
       {report ? (
         <>
@@ -44,7 +44,7 @@ export default async function GradesPage({ searchParams }: GradesPageProps) {
           <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-lg font-semibold text-ink">Report Card</h2>
-              <Link href={`/dashboard/grades/report/${report.student.id}/pdf`} className="rounded-md bg-ink px-4 py-2 text-sm font-bold text-on-dark">Export PDF</Link>
+              <Link href={`/dashboard/grades/report/${report.student.id}/pdf`} className="rounded-md bg-primary px-4 py-2 text-sm font-bold text-on-primary">Export PDF</Link>
             </div>
             <div className="mt-4 overflow-x-auto">
               <table className="min-w-full divide-y divide-line text-sm">

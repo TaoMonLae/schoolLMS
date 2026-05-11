@@ -205,7 +205,7 @@ export function getYouTubeVideoId(url: string): string | null {
     const parsed = new URL(url.trim());
     const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
     if (host === "youtu.be") return cleanYouTubeId(parsed.pathname.split("/").filter(Boolean)[0]);
-    if (!host.endsWith("youtube.com")) return null;
+    if (!host.endsWith("youtube.com") && !host.endsWith("youtube-nocookie.com")) return null;
     if (parsed.pathname === "/watch") return cleanYouTubeId(parsed.searchParams.get("v"));
     const [kind, id] = parsed.pathname.split("/").filter(Boolean);
     if (["embed", "shorts", "live", "v"].includes(kind)) return cleanYouTubeId(id);
@@ -221,6 +221,18 @@ export function toYouTubeEmbedUrl(url: string): string | null {
   if (!id) return null;
   const start = getYouTubeStartSeconds(url);
   return `https://www.youtube.com/embed/${id}${start ? `?start=${start}` : ""}`;
+}
+
+export function getExternalVideoUrl(lesson: VideoLesson) {
+  if (lesson.videoProvider === "YOUTUBE") {
+    const id = getYouTubeVideoId(lesson.videoUrl);
+    return id ? `https://www.youtube.com/watch?v=${id}` : null;
+  }
+  try {
+    return new URL(lesson.videoUrl).toString();
+  } catch {
+    return null;
+  }
 }
 
 export function getEmbeddableVideoUrl(lesson: VideoLesson) {

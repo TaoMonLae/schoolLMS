@@ -44,7 +44,7 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <PageHeader eyebrow="Video Lessons" title="Class Video Lessons" description="Search class-based lessons, filter by subject, and track student progress." />
         {canUpload ? (
-          <Link href="/dashboard/videos/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
+          <Link href="/dashboard/videos/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add Video
           </Link>
@@ -67,7 +67,7 @@ Video lesson created and saved.
           <Select name="classId" defaultValue={params?.classId || "ALL"} label="All classes" options={classes.map((item) => [item.id, item.name])} />
           <Select name="subjectId" defaultValue={params?.subjectId || "ALL"} label="All subjects" options={subjects.map((item) => [item.id, item.name])} />
           <Select name="provider" defaultValue={params?.provider || "ALL"} label="All providers" options={videoProviders.map((item) => [item, formatEnumLabel(item)])} />
-          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-on-dark hover:bg-slate">Filter</button>
+          <button className="h-11 rounded-md bg-primary px-4 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">Filter</button>
         </form>
       </section>
 
@@ -84,7 +84,7 @@ Video lesson created and saved.
                 <span className="rounded-md bg-surface px-2 py-1 text-xs font-semibold text-slate">{lesson.durationMinutes || 0} min</span>
                 <span className="rounded-md bg-surface px-2 py-1 text-xs font-semibold text-slate">{formatEnumLabel(lesson.visibility)}</span>
               </div>
-              <Link href={`/dashboard/videos/${lesson.id}`} className="mt-5 inline-flex w-full justify-center rounded-md bg-ink px-4 py-2 text-sm font-bold text-on-dark hover:bg-slate">
+              <Link href={`/dashboard/videos/${lesson.id}`} className="mt-5 inline-flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
                 Watch Lesson
               </Link>
             </div>

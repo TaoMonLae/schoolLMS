@@ -69,7 +69,7 @@ export default async function NewLibraryBookPage({ searchParams }: NewLibraryBoo
             <Link href="/dashboard/library" className="inline-flex justify-center rounded-md border border-hairline bg-canvas px-4 py-3 text-sm font-semibold text-ink hover:bg-surface">
               Cancel
             </Link>
-            <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
+            <button className="inline-flex justify-center rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
               Upload Book
             </button>
           </div>
@@ -108,7 +108,7 @@ function FileField({ label, name, accept, help, required }: { label: string; nam
         type="file"
         required={required}
         accept={accept}
-        className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-slate file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-on-dark"
+        className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-slate file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-on-primary"
       />
       <p className="mt-2 text-xs leading-5 text-slate">{help}</p>
     </div>

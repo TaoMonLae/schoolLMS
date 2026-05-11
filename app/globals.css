@@ -152,6 +152,14 @@
   --color-card-tint-rose-rgb: 66 27 42;
   --color-card-tint-sky: #132f52;
   --color-card-tint-sky-rgb: 19 47 82;
+  --color-card-tint-peach: #432716;
+  --color-card-tint-peach-rgb: 67 39 22;
+  --color-card-tint-yellow-bold: #4b3d12;
+  --color-card-tint-yellow-bold-rgb: 75 61 18;
+  --color-card-tint-cream: #222a43;
+  --color-card-tint-cream-rgb: 34 42 67;
+  --color-card-tint-gray: #1b2743;
+  --color-card-tint-gray-rgb: 27 39 67;
   --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.32);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
@@ -223,7 +231,7 @@ a {
   }
 
   .ds-button {
-    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium leading-[1.3] transition disabled:bg-hairline disabled:text-muted;
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium leading-[1.3] transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/25 disabled:bg-hairline disabled:text-muted;
   }
 
   .ds-button-primary {
@@ -231,7 +239,7 @@ a {
   }
 
   .ds-button-dark {
-    @apply ds-button bg-ink-deep text-on-dark hover:bg-charcoal active:bg-ink;
+    @apply ds-button bg-brand-navy text-on-dark hover:bg-brand-navy-mid active:bg-brand-navy-deep;
   }
 
   .ds-button-secondary {

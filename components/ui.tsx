@@ -11,7 +11,7 @@ const buttonVariants = {
   primary: "bg-primary text-on-primary hover:bg-primary-pressed active:bg-primary-deep",
   secondary: "border border-hairline-strong bg-transparent text-ink hover:bg-surface",
   ghost: "min-h-9 rounded-sm px-sm py-xs text-ink hover:bg-surface",
-  dark: "bg-ink-deep text-on-dark hover:bg-charcoal active:bg-ink",
+  dark: "bg-brand-navy text-on-dark hover:bg-brand-navy-mid active:bg-brand-navy-deep",
   "on-dark": "bg-on-dark text-ink hover:bg-surface",
   "secondary-on-dark": "border border-on-dark-muted bg-transparent text-on-dark hover:bg-on-dark/10",
   destructive: "border border-error/45 bg-tint-rose text-error hover:bg-tint-rose/70",
@@ -27,7 +27,7 @@ export function Button<T extends ElementType = "button">({ as, variant = "primar
   return (
     <Component
       className={clsx(
-        "inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium leading-[1.3] transition focus-visible:outline-primary disabled:cursor-not-allowed disabled:bg-hairline disabled:text-muted disabled:opacity-100",
+        "inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium leading-[1.3] transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/25 disabled:cursor-not-allowed disabled:bg-hairline disabled:text-muted disabled:opacity-100",
         buttonVariants[variant],
         className
       )}

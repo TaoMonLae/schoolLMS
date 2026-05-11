@@ -38,7 +38,7 @@ export default async function AssignmentPage({ params }: AssignmentPageProps) {
                 </tr>
               ))}
             </tbody>
-          </table>{canGrade ? <button className="mt-4 rounded-md bg-ink px-4 py-2 text-sm font-bold text-on-dark">Save grades</button> : null}
+          </table>{canGrade ? <button className="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-bold text-on-primary">Save grades</button> : null}
         </form>
       </section>
     </div>
