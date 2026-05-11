@@ -1,26 +1,27 @@
 # Integration Audit
 
-Audit date: 2026-05-11
+## Completed in this pass
 
-## Scope
-Post-integration pass covering authentication/session usage, Prisma-backed tenant data, demo import removal from production pages, persistence gaps, empty states, duplicate React keys, and new user-management operations.
+- Super-admin logout is visible and uses the shared session-cookie deletion action.
+- Dashboard and super-admin authenticated shells are dynamic and protected by current-user/session checks.
+- Video lesson pages/actions use Prisma-backed classes, subjects, lessons, and progress records.
+- Support reads use Prisma-backed students, case notes, sponsor supports, referrals, reminders, and audit previews with sensitive redaction.
+- Branding settings persist school fields for authorized school admins.
+- Users & Access is the operational user-management area for create/edit/status/password/class/student/case-manager workflows.
+- Class management now includes create, detail, edit, teacher assignment, roster navigation, action column, and safe delete.
+- LMS management now includes subject create/edit/delete-if-unused and lesson create/edit/delete.
+- Assignment management now includes create/edit/delete, draft/published/closed status, detail grading, and submission upsert persistence.
+- Exam management now includes create/edit/delete, draft/scheduled/completed status, and mark/feedback upsert persistence.
+- Library duplicate-key risk was fixed with field-scoped keys.
+- Production import tests assert audited pages do not import legacy demo helpers.
 
-## Findings and remediation
-- Super-admin layout now checks a live active session and role before rendering, includes shared logout action, and redirects unauthenticated users to `/login`.
-- Video module was fully reconnected to Prisma for lessons, class filters, subjects, progress, playlist/detail reads, and create persistence.
-- Support/case-management reads were reconnected to Prisma for visible students, case notes, sponsor supports, referrals, document reminders, and sensitive audit preview.
-- Branding page/action now reads and writes the authenticated user's real school record and records school update audit metadata.
-- Users & Access now implements a real admin-facing management module with tenant-scoped listing, create/edit, class assignment, student linking, active status, bcrypt password reset, and audit logs.
-- Library duplicate keys were replaced with stable book-id/field keys.
-- Production pages named in the audit are covered by a source test that rejects legacy demo helper references.
+## Legacy/demo audit
 
-## Tenant isolation checks
-- Non-super-admin school context is always resolved from the active database-backed session user.
-- Teacher video/support visibility is constrained to assigned classes.
-- School-admin user management is restricted to own-school users and cannot create/modify `SUPER_ADMIN` accounts.
-- Super-admin school-scoped creation requires explicit school context for non-platform users.
+The audited production pages no longer import `demoCurrentUser`, `demoSchoolBranding`, `demoStudents`, `demoClasses`, `demoVideoSubjects`, `demoVideoLessons`, `demoVideoProgress`, `demoCaseNotes`, `demoSponsorSupports`, `demoReferrals`, or `demoDocumentReminders`. Compatibility constants remain only in helper modules for older tests/fixtures and are guarded by source tests from production-page use.
 
-## Remaining risks
-- Manual browser testing against a representative PostgreSQL seed is still required.
-- `next/font/google` can fail production builds in network-restricted environments; the current environment could not fetch Inter during `next build`.
-- Some non-requested advanced CRUD flows remain intentionally outside this pass.
+## Intentional limitations
+
+- No archive fields exist for classes, lessons, subjects, assignments, or exams; destructive operations are delete or safe-delete-if-unused depending on dependencies.
+- Binary object storage for library uploads, lesson files, and assignment submission files remains pending; database CRUD is completed where schema supports it.
+- Exam marks are managed inline on the exams page instead of a dedicated `/dashboard/exams/[examId]` detail route.
+- Support create/update mutation forms were not expanded beyond the existing Prisma-backed read/redaction surface.

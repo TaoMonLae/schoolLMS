@@ -1,6 +1,8 @@
 import { BookOpen, LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import { login } from "@/app/login/actions";
+export const dynamic = "force-dynamic";
+
 import { getDisplaySchoolName, getFirstActiveSchoolBranding } from "@/lib/branding";
 
 export default async function LoginPage() {

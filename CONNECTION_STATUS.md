@@ -1,16 +1,19 @@
 # Connection Status
 
-Audit date: 2026-05-11
-
-| Module | Status | Real DB-backed? | Real auth-backed? | Remaining issue |
-|---|---|---:|---:|---|
-| Authentication/session | Connected | Yes | Yes | Cookie session remains a lightweight custom implementation; production should migrate to a signed/JWT session strategy. |
-| Super Admin shell | Connected | Yes | Yes | Build currently depends on Google Font fetch availability. |
-| School branding | Connected | Yes | Yes | File/logo upload storage remains a future enhancement; text/color/contact fields persist. |
-| Video lessons | Connected | Yes | Yes | Requires subjects/classes to exist before uploads; private video storage itself is external URL-based. |
-| Case support | Connected | Yes | Yes | Add-record UI is presentational; read paths, dropdowns, redaction, and audit preview are DB-backed. |
-| Library | Connected | Yes | Yes | No duplicate badge key risk remains in book badges. |
-| Students/classes/enrollments/attendance | Connected | Yes | Yes | No known tenant-isolation issue found in this pass. |
-| LMS/assignments/exams/grades reads | Connected | Yes | Yes | Some advanced CRUD/reporting flows remain outside this bug-fix scope. |
-| Users & Access | Connected | Yes | Yes | School-scoped CRUD, password reset, class assignment, student linking, active status, and audit records added. |
-| Legacy demo fixtures | Demo only | No | No | Intentionally retained only as compatibility/test fixtures in `lib/students.ts`, `lib/branding.ts`, and empty support demo exports; production pages audited not to import them. |
+| Module | Status | Real DB-backed? | Real auth-backed? | CRUD complete? | Remaining issue |
+|---|---|---:|---:|---:|---|
+| Authentication / Logout | Connected | Yes | Yes | N/A | Session cookie is still the existing lightweight cookie implementation. |
+| Super Admin | Connected | Yes | Yes | School/admin flows connected | None known for logout; protected route remains server-guarded. |
+| Users & Access | Connected | Yes | Yes | Yes | Password resets set temporary passwords; no email delivery integration. |
+| Branding | Connected | Yes | Yes | Yes | Logo upload/object storage is separate from the branding fields completed here. |
+| Classes | Connected | Yes | Yes | Yes | No archive column exists in schema; safe delete blocks deletion when dependent records exist. |
+| LMS Subjects | Connected | Yes | Yes | Yes | Subject delete is safe-delete-only when unused. |
+| LMS Lessons | Connected | Yes | Yes | Yes | Binary lesson-file upload storage is intentionally pending; lesson/file metadata reads remain DB-backed. |
+| Assignments | Connected | Yes | Yes | Yes | Student file submission upload storage is not implemented. |
+| Exams | Connected | Yes | Yes | Yes | Marks save inline on the exams list rather than a separate detail page. |
+| Video Lessons | Connected | Yes | Yes | Create/read/progress complete | External video hosting/storage is URL-based. |
+| Refugee Support | Connected | Yes | Yes | Read/sensitive visibility complete | Support create/update forms are not expanded in this pass. |
+| Library | Connected | Yes | Yes | Upload/read/download partial | Upload currently validates file inputs; object storage persistence remains pending. |
+| Attendance | Connected | Yes | Yes | Yes | Export routes depend on runtime DB access. |
+| Enrollments | Connected | Yes | Yes | Partial | Enrollment list/action coverage exists, but roster UX can be expanded further. |
+| Grades / Reports | Connected | Yes | Yes | Read/report complete | Depends on assignment and exam marks. |
