@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { AppUser } from "@/lib/types";
-import { canViewSensitiveSupport, getSensitiveAuditEvent, type CaseNote } from "@/lib/support";
+import { canAddBasicSupport, canAddSensitiveSupport, canViewSensitiveSupport, getSensitiveAuditEvent, type CaseNote } from "@/lib/support";
 
 const teacher: AppUser = { id: "teacher-test", schoolId: "school-a", role: "TEACHER", assignedClassIds: ["class-a"] };
 const unapprovedCaseManager: AppUser = { id: "case-manager-test", schoolId: "school-a", role: "CASE_MANAGER", assignedClassIds: [], approvedForSensitiveCaseNotes: false };
@@ -21,6 +21,17 @@ describe("refugee support sensitive note access", () => {
     assert.equal(canViewSensitiveSupport(superAdmin), true);
     assert.equal(canViewSensitiveSupport(schoolAdmin), true);
     assert.equal(canViewSensitiveSupport(approvedCaseManager), true);
+  });
+
+  it("allows teachers to add only basic notes for assigned students", () => {
+    assert.equal(canAddBasicSupport(teacher, { id: "student-a", schoolId: "school-a", studentNumber: "MON-001", legalName: "Aye", preferredName: "Aye", gender: "NOT_SPECIFIED", status: "ACTIVE", classId: "class-a", className: "Bridge English" }), true);
+    assert.equal(canAddSensitiveSupport(teacher), false);
+  });
+
+  it("allows only school admins and approved case managers to create sensitive notes", () => {
+    assert.equal(canAddSensitiveSupport(schoolAdmin), true);
+    assert.equal(canAddSensitiveSupport(approvedCaseManager), true);
+    assert.equal(canAddSensitiveSupport(unapprovedCaseManager), false);
   });
 
   it("audit events never include sensitive note content", () => {

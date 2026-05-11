@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { classMutationErrorMessage, normalizeClassName } from "@/lib/classes";
 import { canManageClasses } from "@/lib/rbac";
 import { getRequiredCurrentUser } from "@/lib/session";
 import { tenantFilter } from "@/lib/tenant";
@@ -28,16 +29,20 @@ async function validateTeacher(schoolId: string, teacherId: string | null) {
 export async function createClass(formData: FormData) {
   const { schoolId } = await requireClassManager();
   const teacherId = await validateTeacher(schoolId, value(formData, "teacherId") || null);
-  await db.class.create({
-    data: {
-      schoolId,
-      name: value(formData, "name"),
-      academicYear: value(formData, "academicYear") || String(new Date().getFullYear()),
-      gradeLevel: value(formData, "gradeLevel") || null,
-      room: value(formData, "room") || null,
-      teacherId
-    }
-  });
+  try {
+    await db.class.create({
+      data: {
+        schoolId,
+        name: normalizeClassName(value(formData, "name")),
+        academicYear: value(formData, "academicYear") || String(new Date().getFullYear()),
+        gradeLevel: value(formData, "gradeLevel") || null,
+        room: value(formData, "room") || null,
+        teacherId
+      }
+    });
+  } catch (error) {
+    redirect(`/dashboard/classes?error=${encodeURIComponent(classMutationErrorMessage(error))}`);
+  }
   revalidatePath("/dashboard/classes");
   redirect("/dashboard/classes?saved=created");
 }
@@ -48,16 +53,20 @@ export async function updateClass(formData: FormData) {
   const existing = await db.class.findFirst({ where: { id, schoolId } });
   if (!existing) throw new Error("Class not found");
   const teacherId = await validateTeacher(schoolId, value(formData, "teacherId") || null);
-  await db.class.update({
-    where: { id },
-    data: {
-      name: value(formData, "name"),
-      academicYear: value(formData, "academicYear") || existing.academicYear,
-      gradeLevel: value(formData, "gradeLevel") || null,
-      room: value(formData, "room") || null,
-      teacherId
-    }
-  });
+  try {
+    await db.class.update({
+      where: { id },
+      data: {
+        name: normalizeClassName(value(formData, "name")),
+        academicYear: value(formData, "academicYear") || existing.academicYear,
+        gradeLevel: value(formData, "gradeLevel") || null,
+        room: value(formData, "room") || null,
+        teacherId
+      }
+    });
+  } catch (error) {
+    redirect(`/dashboard/classes/${id}/edit?error=${encodeURIComponent(classMutationErrorMessage(error))}`);
+  }
   revalidatePath("/dashboard/classes");
   revalidatePath(`/dashboard/classes/${id}`);
   redirect(`/dashboard/classes/${id}?saved=updated`);

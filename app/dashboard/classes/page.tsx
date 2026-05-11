@@ -6,7 +6,7 @@ import { canManageClasses } from "@/lib/rbac";
 import { getRequiredCurrentUser } from "@/lib/session";
 import { tenantFilter } from "@/lib/tenant";
 
-type ClassesPageProps = { searchParams?: Promise<{ saved?: string }> };
+type ClassesPageProps = { searchParams?: Promise<{ saved?: string; error?: string }> };
 
 export default async function ClassesPage({ searchParams }: ClassesPageProps) {
   const params = await searchParams;
@@ -25,6 +25,7 @@ export default async function ClassesPage({ searchParams }: ClassesPageProps) {
       {canManage ? <Link href="/dashboard/classes/new" className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss"><Plus className="h-4 w-4" />Create Class</Link> : null}
     </div>
     {params?.saved ? <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">Class changes saved.</div> : null}
+    {params?.error ? <div className="rounded-lg border border-[#efb4a9] bg-[#fff1ee] p-4 text-sm font-semibold text-[#8a3b2d]">{params.error}</div> : null}
     <section className="overflow-hidden rounded-lg border border-line bg-white shadow-soft">
       <table className="min-w-full divide-y divide-line text-sm">
         <thead className="bg-rice"><tr>{["Class","Teacher","Year","Room","Active enrollments","Actions"].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase text-moss">{h}</th>)}</tr></thead>
