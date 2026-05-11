@@ -25,3 +25,15 @@ The audited production pages no longer import `demoCurrentUser`, `demoSchoolBran
 - Binary object storage for library uploads, lesson files, and assignment submission files remains pending; database CRUD is completed where schema supports it.
 - Exam marks are managed inline on the exams page instead of a dedicated `/dashboard/exams/[examId]` detail route.
 - Support create/update mutation forms were not expanded beyond the existing Prisma-backed read/redaction surface.
+
+## School Branding Production Integration — May 11, 2026
+
+Status: implemented end-to-end for tenant runtime pages.
+
+- Branding settings now load the authenticated user with `getRequiredCurrentUser()` and DB-backed school branding with `getSchoolBrandingForUser()`.
+- SCHOOL_ADMIN users can edit only their assigned school; TEACHER, STUDENT, and CASE_MANAGER users see a disabled/read-only permission state and server-side updates are denied.
+- SUPER_ADMIN updates require an explicit `schoolId` context to prevent accidental tenant updates.
+- Branding form persists identity, domains, theme colors, contact details, location, and timezone to Prisma.
+- Logo upload is real: PNG, JPG/JPEG, WebP, and safe SVG files are content-validated, size-limited, stored locally for development, and saved to `School.logoUrl`.
+- Logo upload, replacement, removal, and branding updates write audit entries without logging raw file data.
+- Sidebar and login branding now render saved school logos and names instead of generic-only identity.

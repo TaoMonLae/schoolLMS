@@ -5,6 +5,7 @@ import { BarChart3, BookMarked, BookOpenCheck, CalendarCheck, ClipboardList, Fil
 import Link from "next/link";
 import { useState } from "react";
 import { logout } from "@/app/logout/actions";
+import { SchoolLogo } from "@/components/school-logo";
 import { getDisplaySchoolName } from "@/lib/branding";
 import { getNavItemsForRole } from "@/lib/navigation";
 import { Role, SchoolSummary } from "@/lib/types";
@@ -56,9 +57,7 @@ export function Sidebar({ school, role }: { school: SchoolSummary; role: Role })
       >
         <div className="flex h-full flex-col">
           <Link href="/dashboard" className="flex items-center gap-3 px-2" onClick={() => setOpen(false)}>
-            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-ink text-white">
-              <School className="h-5 w-5" aria-hidden="true" />
-            </div>
+            <SchoolLogo school={school} />
             <div>
               <p className="text-sm font-semibold text-ink">{schoolName}</p>
               <p className="text-xs text-moss">Multi-tenant LMS</p>

@@ -12,6 +12,7 @@ const defaultBranding: SchoolSummary = {
   secondaryColor: "#b46a45",
   city: "",
   country: "",
+  timezone: "Asia/Kuala_Lumpur",
   activeStudents: 0,
   activeClasses: 0
 };
@@ -48,6 +49,7 @@ export async function getSchoolBrandingForUser(user: AppUser, requestedSchoolId?
     subdomain: school.subdomain || undefined,
     city: school.city || "",
     country: school.country || "",
+    timezone: school.timezone,
     activeStudents: school._count.students,
     activeClasses: school._count.classes
   };
@@ -72,7 +74,8 @@ export async function getFirstActiveSchoolBranding(): Promise<SchoolSummary> {
     customDomain: school.customDomain || undefined,
     subdomain: school.subdomain || undefined,
     city: school.city || "",
-    country: school.country || ""
+    country: school.country || "",
+    timezone: school.timezone
   };
 }
 

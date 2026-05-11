@@ -1,6 +1,7 @@
-import { BookOpen, LockKeyhole } from "lucide-react";
+import { LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import { login } from "@/app/login/actions";
+import { SchoolLogo } from "@/components/school-logo";
 export const dynamic = "force-dynamic";
 
 import { getDisplaySchoolName, getFirstActiveSchoolBranding } from "@/lib/branding";
@@ -13,9 +14,7 @@ export default async function LoginPage() {
     <main className="flex min-h-screen bg-rice">
       <section className="hidden w-1/2 p-10 text-white lg:flex lg:flex-col lg:justify-between" style={{ backgroundColor: school.primaryColor }}>
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-md bg-white text-ink">
-            <BookOpen className="h-5 w-5" aria-hidden="true" />
-          </span>
+          <SchoolLogo school={school} />
           <span className="text-base font-semibold">{schoolName}</span>
         </Link>
         <div className="max-w-lg">
@@ -31,9 +30,7 @@ export default async function LoginPage() {
       <section className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md rounded-lg border border-line bg-white p-6 shadow-soft sm:p-8">
           <Link href="/" className="mb-8 flex items-center gap-3 lg:hidden">
-            <span className="flex h-10 w-10 items-center justify-center rounded-md bg-ink text-white">
-              <BookOpen className="h-5 w-5" aria-hidden="true" />
-            </span>
+            <SchoolLogo school={school} />
             <span className="text-base font-semibold text-ink">{schoolName}</span>
           </Link>
           <div className="flex h-12 w-12 items-center justify-center rounded-md bg-rice text-clay">

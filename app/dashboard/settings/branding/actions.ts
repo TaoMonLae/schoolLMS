@@ -2,49 +2,77 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
-import { canEditSchoolBranding } from "@/lib/branding";
 import { getRequiredCurrentUser } from "@/lib/session";
+import { brandingDataForPrisma, canUpdateRequestedSchoolBranding, flattenBrandingErrors, validateSchoolBrandingForm } from "@/lib/school-branding";
+import { storeSchoolLogo, validateSchoolLogo } from "@/lib/school-logo-storage";
 
 export async function updateSchoolBranding(formData: FormData) {
   const user = await getRequiredCurrentUser();
-  const schoolId = String(formData.get("schoolId") || "");
+  const parsed = validateSchoolBrandingForm(formData);
+  const rawSchoolId = String(formData.get("schoolId") || "");
+  const returnUrl = brandingReturnUrl(rawSchoolId, user.role === "SUPER_ADMIN");
 
-  if (!canEditSchoolBranding(user, schoolId)) redirect("/dashboard/settings/branding?error=permission");
+  if (!parsed.success) {
+    const { firstError } = flattenBrandingErrors(parsed.error);
+    redirect(`${returnUrl}&error=${encodeURIComponent(firstError)}`);
+  }
 
-  const primaryColor = String(formData.get("primaryColor") || "");
-  const secondaryColor = String(formData.get("secondaryColor") || "");
-  if (!isHexColor(primaryColor) || !isHexColor(secondaryColor)) redirect("/dashboard/settings/branding?error=colors");
+  const input = parsed.data;
+  if (!canUpdateRequestedSchoolBranding(user, input.schoolId)) {
+    await audit.permissionDenied(user, "school_branding", input.schoolId || "unknown", (user.schoolId ?? input.schoolId) || "unknown", "branding-update-not-authorized");
+    redirect(`${returnUrl}&error=permission`);
+  }
 
-  const data = {
-    name: String(formData.get("name") || "").trim(),
-    shortName: optionalString(formData.get("shortName")),
-    subdomain: optionalString(formData.get("subdomain")),
-    customDomain: optionalString(formData.get("customDomain")),
-    primaryColor,
-    secondaryColor,
-    phone: optionalString(formData.get("phone")),
-    email: optionalString(formData.get("email")),
-    website: optionalString(formData.get("website")),
-    address: optionalString(formData.get("address"))
-  };
+  const school = await db.school.findUnique({ select: { id: true, logoUrl: true, isActive: true }, where: { id: input.schoolId } });
+  if (!school?.isActive) redirect(`${returnUrl}&error=school`);
 
-  if (!data.name) redirect("/dashboard/settings/branding?error=name");
+  const logo = formData.get("logo");
+  const data: ReturnType<typeof brandingDataForPrisma> & { logoUrl?: string | null } = brandingDataForPrisma(input);
+  let logoEvent: "uploaded" | "replaced" | "removed" | null = null;
 
-  await db.school.update({ where: { id: schoolId }, data });
-  await audit.schoolUpdated(user, schoolId, Object.keys(data));
+  if (input.removeLogo) {
+    data.logoUrl = null;
+    logoEvent = school.logoUrl ? "removed" : null;
+  } else if (logo instanceof File && logo.size > 0) {
+    const buffer = Buffer.from(await logo.arrayBuffer());
+    const validation = validateSchoolLogo(buffer, logo.name, logo.size, logo.type);
+    if (!validation.valid) redirect(`${returnUrl}&error=${encodeURIComponent(validation.error)}`);
+
+    const stored = await storeSchoolLogo({
+      schoolId: input.schoolId,
+      fileName: logo.name,
+      contentType: validation.contentType,
+      buffer
+    });
+    data.logoUrl = stored.url;
+    logoEvent = school.logoUrl ? "replaced" : "uploaded";
+  }
+
+  try {
+    await db.school.update({ where: { id: input.schoolId }, data });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      redirect(`${returnUrl}&error=${encodeURIComponent("Subdomain or custom domain is already used by another school.")}`);
+    }
+    throw error;
+  }
+
+  await audit.schoolUpdated(user, input.schoolId, Object.keys(data));
+  if (logoEvent) await audit.schoolLogoUpdated(user, input.schoolId, logoEvent);
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/settings/branding");
-  redirect("/dashboard/settings/branding?saved=1");
+  revalidatePath("/login");
+  revalidatePath("/");
+
+  redirect(`${returnUrl}&saved=1`);
 }
 
-function optionalString(value: FormDataEntryValue | null) {
-  const stringValue = String(value || "").trim();
-  return stringValue || null;
-}
-
-function isHexColor(value: string) {
-  return /^#[0-9a-fA-F]{6}$/.test(value);
+function brandingReturnUrl(schoolId: string, includeSchoolId: boolean) {
+  const params = new URLSearchParams();
+  if (includeSchoolId && schoolId) params.set("schoolId", schoolId);
+  return `/dashboard/settings/branding?${params.toString()}`;
 }

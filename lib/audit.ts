@@ -232,13 +232,14 @@ export const audit = {
     });
   },
 
-  async schoolLogoUpdated(user: AppUser, schoolId: string): Promise<void> {
+  async schoolLogoUpdated(user: AppUser, schoolId: string, event: "uploaded" | "replaced" | "removed" = "replaced"): Promise<void> {
     await writeAuditEntry({
       schoolId,
       actorId: user.id,
       action: SensitiveAuditAction.LOGO_UPDATED,
       resourceType: "school_logo",
       resourceId: schoolId,
+      metadata: { event },
     });
   },
 

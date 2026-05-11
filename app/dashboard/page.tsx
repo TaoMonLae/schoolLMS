@@ -1,7 +1,8 @@
-import { BookOpenCheck, CalendarCheck, GraduationCap, School, ShieldCheck } from "lucide-react";
+import { BookOpenCheck, CalendarCheck, GraduationCap, ShieldCheck } from "lucide-react";
 import { DashboardCard } from "@/components/dashboard-card";
 import { PageHeader } from "@/components/page-header";
 import { RoleBadge } from "@/components/role-badge";
+import { SchoolLogo } from "@/components/school-logo";
 import { getTodayAttendanceSummary } from "@/lib/attendance";
 import { getSchoolBrandingForUser } from "@/lib/branding";
 import { getRequiredCurrentUser } from "@/lib/session";
@@ -34,9 +35,7 @@ export default async function DashboardPage() {
       <section className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
         <div className="rounded-lg border border-line bg-white p-5 shadow-soft">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-leaf text-white">
-              <School className="h-5 w-5" aria-hidden="true" />
-            </div>
+            <SchoolLogo school={school} className="h-11 w-11" />
             <div>
               <h2 className="text-lg font-semibold text-ink">Operating Snapshot</h2>
               <p className="text-sm text-moss">Initial seed data is ready for tenant-scoped LMS workflows.</p>
