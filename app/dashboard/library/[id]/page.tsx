@@ -23,30 +23,30 @@ export default async function LibraryBookPage({ params }: LibraryBookPageProps) 
 
   return (
     <div className="space-y-6 pb-10">
-      <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
         <div className="grid gap-6 md:grid-cols-[180px_1fr]">
           <LibraryCover book={book} size="lg" />
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-clay">{book.category}</p>
+            <p className="text-sm font-semibold uppercase tracking-wide text-brand-orange">{book.category}</p>
             <h1 className="mt-2 text-3xl font-semibold text-ink">{book.title}</h1>
-            <p className="mt-2 text-sm text-moss">{book.author || "Unknown author"}</p>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-moss">{book.description}</p>
+            <p className="mt-2 text-sm text-slate">{book.author || "Unknown author"}</p>
+            <p className="mt-5 max-w-3xl text-base leading-7 text-slate">{book.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
               {[[`${book.id}-subject`, book.subject], [`${book.id}-language`, book.language], [`${book.id}-readingLevel`, book.readingLevel]].map(([key, label]) => (
-                <span key={key} className="rounded-md bg-rice px-3 py-2 text-xs font-semibold text-moss">
+                <span key={key} className="rounded-md bg-surface px-3 py-2 text-xs font-semibold text-slate">
                   {label}
                 </span>
               ))}
             </div>
             <div className="mt-6">
               {canAccessFile ? (
-                <a href={`/dashboard/library/${book.id}/download`} className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+                <a href={`/dashboard/library/${book.id}/download`} className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
                   <Download className="h-4 w-4" aria-hidden="true" />
                   View / Download Book
                 </a>
               ) : (
-                <div className="inline-flex items-center gap-2 rounded-md border border-line bg-rice px-4 py-3 text-sm font-semibold text-moss">
-                  <LockKeyhole className="h-4 w-4 text-clay" aria-hidden="true" />
+                <div className="inline-flex items-center gap-2 rounded-md border border-hairline bg-surface px-4 py-3 text-sm font-semibold text-slate">
+                  <LockKeyhole className="h-4 w-4 text-brand-orange" aria-hidden="true" />
                   File access blocked for this school.
                 </div>
               )}
@@ -67,8 +67,8 @@ export default async function LibraryBookPage({ params }: LibraryBookPageProps) 
 
 function MetaCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-line bg-white p-4 shadow-soft">
-      <p className="text-xs font-semibold uppercase tracking-wide text-moss">{label}</p>
+    <div className="rounded-lg border border-hairline bg-canvas p-4 shadow-soft">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate">{label}</p>
       <p className="mt-2 text-sm font-semibold text-ink">{value}</p>
     </div>
   );

@@ -2,6 +2,7 @@ import { BookOpenCheck, CalendarCheck, GraduationCap, ShieldCheck } from "lucide
 import { DashboardCard } from "@/components/dashboard-card";
 import { PageHeader } from "@/components/page-header";
 import { RoleBadge } from "@/components/role-badge";
+import { SectionCard } from "@/components/ui";
 import { SchoolLogo } from "@/components/school-logo";
 import { getTodayAttendanceSummary } from "@/lib/attendance";
 import { getSchoolBrandingForUser } from "@/lib/branding";
@@ -19,7 +20,7 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-6 pb-10">
+    <div className="ds-page-shell">
       <PageHeader
         eyebrow="School dashboard"
         title={school.name}
@@ -33,25 +34,25 @@ export default async function DashboardPage() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
-        <div className="rounded-lg border border-line bg-white p-5 shadow-soft">
+        <SectionCard>
           <div className="flex items-center gap-3">
             <SchoolLogo school={school} className="h-11 w-11" />
             <div>
               <h2 className="text-lg font-semibold text-ink">Operating Snapshot</h2>
-              <p className="text-sm text-moss">Initial seed data is ready for tenant-scoped LMS workflows.</p>
+              <p className="text-sm text-slate">Initial seed data is ready for tenant-scoped LMS workflows.</p>
             </div>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
             {["Enrollment", "Attendance", "Case support"].map((item) => (
-              <div key={item} className="rounded-md border border-line bg-rice p-4">
+              <div key={item} className="rounded-md border border-hairline bg-surface p-md">
                 <p className="text-sm font-medium text-ink">{item}</p>
-                <p className="mt-2 text-xs leading-5 text-moss">Scoped by school_id for safe multi-tenant access.</p>
+                <p className="mt-2 text-xs leading-5 text-slate">Scoped by school_id for safe multi-tenant access.</p>
               </div>
             ))}
           </div>
-        </div>
+        </SectionCard>
 
-        <div className="rounded-lg border border-line bg-white p-5 shadow-soft">
+        <SectionCard>
           <h2 className="text-lg font-semibold text-ink">Default Roles</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             <RoleBadge role="SUPER_ADMIN" />
@@ -60,7 +61,7 @@ export default async function DashboardPage() {
             <RoleBadge role="STUDENT" />
             <RoleBadge role="CASE_MANAGER" />
           </div>
-        </div>
+        </SectionCard>
       </section>
     </div>
   );

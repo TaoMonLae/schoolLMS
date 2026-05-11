@@ -21,16 +21,16 @@ export default async function NewLibraryBookPage({ searchParams }: NewLibraryBoo
       <PageHeader eyebrow="E-Library" title="Upload Book" description="Add a PDF and optional cover image to your school library." />
 
       {!canUpload ? (
-        <div className="rounded-lg border border-line bg-white p-5 text-sm text-moss shadow-soft">Only teachers and school administrators can upload library books.</div>
+        <div className="rounded-lg border border-hairline bg-canvas p-5 text-sm text-slate shadow-soft">Only teachers and school administrators can upload library books.</div>
       ) : (
         <form action={uploadLibraryBook} className="space-y-5">
           {params?.error ? (
-            <div className="rounded-lg border border-[#f2b9af] bg-[#ffe4df] p-4 text-sm font-semibold text-[#8b2b20]">
+            <div className="rounded-lg border border-error/30 bg-tint-rose p-4 text-sm font-semibold text-error">
               {decodeURIComponent(params.error)}
             </div>
           ) : null}
 
-          <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+          <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
             <h2 className="text-lg font-semibold text-ink">Book Details</h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <TextField label="Title" name="title" required />
@@ -43,10 +43,10 @@ export default async function NewLibraryBookPage({ searchParams }: NewLibraryBoo
             <label htmlFor="description" className="mt-4 block text-sm font-semibold text-ink">
               Description
             </label>
-            <textarea id="description" name="description" rows={4} className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4" />
+            <textarea id="description" name="description" rows={4} className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink outline-none ring-primary/20 focus:ring-4" />
           </section>
 
-          <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+          <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
             <h2 className="text-lg font-semibold text-ink">Files</h2>
             <div className="mt-5 grid gap-5 lg:grid-cols-2">
               <FileField
@@ -66,10 +66,10 @@ export default async function NewLibraryBookPage({ searchParams }: NewLibraryBoo
           </section>
 
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-            <Link href="/dashboard/library" className="inline-flex justify-center rounded-md border border-line bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-rice">
+            <Link href="/dashboard/library" className="inline-flex justify-center rounded-md border border-hairline bg-canvas px-4 py-3 text-sm font-semibold text-ink hover:bg-surface">
               Cancel
             </Link>
-            <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+            <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
               Upload Book
             </button>
           </div>
@@ -90,7 +90,7 @@ function TextField({ label, name, placeholder, required }: { label: string; name
         name={name}
         required={required}
         placeholder={placeholder}
-        className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/55 focus:ring-4"
+        className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/55 focus:ring-4"
       />
     </div>
   );
@@ -108,9 +108,9 @@ function FileField({ label, name, accept, help, required }: { label: string; nam
         type="file"
         required={required}
         accept={accept}
-        className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-moss file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+        className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-slate file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-on-dark"
       />
-      <p className="mt-2 text-xs leading-5 text-moss">{help}</p>
+      <p className="mt-2 text-xs leading-5 text-slate">{help}</p>
     </div>
   );
 }

@@ -22,7 +22,7 @@ export function StudentPhoto({ student, size = "md" }: { student: Pick<StudentRe
   }
 
   return (
-    <div className={`${sizeClass} flex shrink-0 items-center justify-center rounded-md bg-ink font-semibold text-white`}>
+    <div className={`${sizeClass} flex shrink-0 items-center justify-center rounded-md bg-ink font-semibold text-on-dark`}>
       {getStudentInitials(student)}
     </div>
   );

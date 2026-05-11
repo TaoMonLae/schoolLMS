@@ -18,20 +18,20 @@ export default async function LessonPage({ params }: LessonPageProps) {
   return (
     <div className="space-y-6 pb-10">
       <PageHeader eyebrow="Lesson" title={lesson.title} description={`${lesson.class.name} | ${lesson.subject.name} | Created by ${lesson.createdBy?.name || "Unknown"}`} />
-      <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
         <h2 className="text-lg font-semibold text-ink">Lesson Notes</h2>
-        <p className="mt-3 text-sm leading-7 text-moss">{lesson.content}</p>
+        <p className="mt-3 text-sm leading-7 text-slate">{lesson.content}</p>
       </section>
-      <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
         <h2 className="text-lg font-semibold text-ink">Lesson Files</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {lesson.files.map((file) => (
-            <a key={file.id} href={file.fileUrl} className="flex items-center justify-between gap-3 rounded-md border border-line bg-rice p-4 hover:bg-white">
+            <a key={file.id} href={file.fileUrl} className="flex items-center justify-between gap-3 rounded-md border border-hairline bg-surface p-4 hover:bg-canvas">
               <div>
                 <p className="text-sm font-semibold text-ink">{file.fileName}</p>
-                <p className="mt-1 text-xs text-moss">{file.fileType} | {file.fileSizeBytes ? `${Math.round(file.fileSizeBytes / 1024)} KB` : "Size unavailable"}</p>
+                <p className="mt-1 text-xs text-slate">{file.fileType} | {file.fileSizeBytes ? `${Math.round(file.fileSizeBytes / 1024)} KB` : "Size unavailable"}</p>
               </div>
-              <Download className="h-4 w-4 text-clay" />
+              <Download className="h-4 w-4 text-brand-orange" />
             </a>
           ))}
         </div>

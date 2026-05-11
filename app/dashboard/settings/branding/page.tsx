@@ -22,7 +22,7 @@ export default async function BrandingPage({ searchParams }: BrandingPageProps) 
           title="Custom School Branding"
           description="Super admins must open branding with an explicit school context so the wrong tenant is never updated."
         />
-        <div className="rounded-lg border border-[#f2d2a8] bg-[#fff7e8] p-4 text-sm font-semibold text-[#7b4a12]">
+        <div className="rounded-lg border border-warning/30 bg-tint-yellow p-4 text-sm font-semibold text-brand-orange-deep">
           Add ?schoolId=&lt;school-id&gt; to the URL or open this page from a specific school record.
         </div>
       </div>
@@ -37,7 +37,7 @@ export default async function BrandingPage({ searchParams }: BrandingPageProps) 
       return (
         <div className="space-y-6 pb-10">
           <PageHeader eyebrow="Settings" title="Custom School Branding" description="Branding requires a valid school context." />
-          <div className="rounded-lg border border-[#f2b9af] bg-[#ffe4df] p-4 text-sm font-semibold text-[#8b2b20]">
+          <div className="rounded-lg border border-error/30 bg-tint-rose p-4 text-sm font-semibold text-error">
             {error.message}
           </div>
         </div>
@@ -57,7 +57,7 @@ export default async function BrandingPage({ searchParams }: BrandingPageProps) 
       />
 
       {params?.saved ? (
-        <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">
+        <div className="rounded-lg border border-success/30 bg-tint-mint p-4 text-sm font-semibold text-success">
           Branding saved successfully. Refreshing this page will show these values from the database.
         </div>
       ) : null}

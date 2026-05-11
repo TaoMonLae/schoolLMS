@@ -27,21 +27,21 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 
   return (
     <div className="space-y-6 pb-10">
-      <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <StudentPhoto student={student} size="lg" />
             <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-clay">{student.studentNumber}</p>
+              <p className="text-sm font-semibold uppercase tracking-wide text-brand-orange">{student.studentNumber}</p>
               <h1 className="mt-1 text-2xl font-semibold text-ink sm:text-3xl">{student.preferredName || student.legalName}</h1>
-              <p className="mt-2 text-sm text-moss">{student.legalName} | {student.className}</p>
+              <p className="mt-2 text-sm text-slate">{student.legalName} | {student.className}</p>
               <div className="mt-3">
                 <StudentStatusBadge status={student.status} />
               </div>
             </div>
           </div>
           {canManage ? (
-            <Link href={`/dashboard/students/${student.id}/edit`} className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+            <Link href={`/dashboard/students/${student.id}/edit`} className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
               <Edit className="h-4 w-4" aria-hidden="true" />
               Edit Student
             </Link>
@@ -80,8 +80,8 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
               <ProfileItem label="Expiry date" value={student.documentExpiryDate} />
             </>
           ) : (
-            <div className="flex gap-3 rounded-md border border-line bg-rice p-4 text-sm leading-6 text-moss">
-              <LockKeyhole className="mt-1 h-4 w-4 shrink-0 text-clay" aria-hidden="true" />
+            <div className="flex gap-3 rounded-md border border-hairline bg-surface p-4 text-sm leading-6 text-slate">
+              <LockKeyhole className="mt-1 h-4 w-4 shrink-0 text-brand-orange" aria-hidden="true" />
               Sensitive document fields are hidden for your role.
             </div>
           )}
@@ -93,7 +93,7 @@ export default async function StudentProfilePage({ params }: StudentProfilePageP
 
 function ProfileCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+    <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
       <h2 className="text-lg font-semibold text-ink">{title}</h2>
       <dl className="mt-4 divide-y divide-line">{children}</dl>
     </section>
@@ -103,7 +103,7 @@ function ProfileCard({ title, children }: { title: string; children: React.React
 function ProfileItem({ label, value }: { label: string; value?: string }) {
   return (
     <div className="grid gap-1 py-3 sm:grid-cols-[160px_1fr]">
-      <dt className="text-xs font-semibold uppercase tracking-wide text-moss">{label}</dt>
+      <dt className="text-xs font-semibold uppercase tracking-wide text-slate">{label}</dt>
       <dd className="text-sm font-medium text-ink">{value || "Not recorded"}</dd>
     </div>
   );

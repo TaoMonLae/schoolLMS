@@ -15,7 +15,7 @@ export default async function NewStudentPage() {
       {canManage ? (
         <StudentForm mode="create" currentRole={currentUser.role} classOptions={classOptions} />
       ) : (
-        <div className="rounded-lg border border-line bg-white p-5 text-sm text-moss shadow-soft">You do not have permission to create student records.</div>
+        <div className="rounded-lg border border-hairline bg-canvas p-5 text-sm text-slate shadow-soft">You do not have permission to create student records.</div>
       )}
     </div>
   );

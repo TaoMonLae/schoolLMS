@@ -60,13 +60,13 @@ export default async function SchoolDetailPage({
       <div>
         <Link
           href="/super-admin/schools"
-          className="inline-flex items-center gap-1.5 text-sm text-moss hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-sm text-slate hover:text-ink"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
           All Schools
         </Link>
         <h1 className="mt-3 text-2xl font-semibold text-ink">{school.name}</h1>
-        <p className="mt-1 text-sm text-moss">
+        <p className="mt-1 text-sm text-slate">
           {school.code}
           {school.city ? ` · ${school.city}, ${school.country}` : ""}
         </p>
@@ -74,19 +74,19 @@ export default async function SchoolDetailPage({
 
       {/* Success / error banners */}
       {sp.created === "1" && (
-        <div className="flex items-center gap-2 rounded-lg border border-[#b9dfac] bg-[#e8f3dc] px-4 py-3 text-sm font-semibold text-[#315933]">
+        <div className="flex items-center gap-2 rounded-lg border border-success/30 bg-tint-mint px-4 py-3 text-sm font-semibold text-success">
           <Check className="h-4 w-4" />
           School tenant created successfully.
         </div>
       )}
       {sp.saved === "1" && (
-        <div className="flex items-center gap-2 rounded-lg border border-[#b9dfac] bg-[#e8f3dc] px-4 py-3 text-sm font-semibold text-[#315933]">
+        <div className="flex items-center gap-2 rounded-lg border border-success/30 bg-tint-mint px-4 py-3 text-sm font-semibold text-success">
           <Check className="h-4 w-4" />
           Settings saved.
         </div>
       )}
       {sp.error && (
-        <div className="rounded-lg border border-[#f2b9af] bg-[#ffe4df] px-4 py-3 text-sm font-semibold text-[#8b2b20]">
+        <div className="rounded-lg border border-error/30 bg-tint-rose px-4 py-3 text-sm font-semibold text-error">
           Error: {sp.error === "permission" ? "You do not have permission to edit this school." : sp.error}
         </div>
       )}
@@ -98,9 +98,9 @@ export default async function SchoolDetailPage({
           { label: "Classes", value: school._count.classes },
           { label: "Active Users", value: school._count.users },
         ].map((s) => (
-          <div key={s.label} className="rounded-lg border border-line bg-white p-4 text-center shadow-soft">
+          <div key={s.label} className="rounded-lg border border-hairline bg-canvas p-4 text-center shadow-soft">
             <p className="text-2xl font-semibold text-ink">{s.value}</p>
-            <p className="mt-1 text-xs text-moss">{s.label}</p>
+            <p className="mt-1 text-xs text-slate">{s.label}</p>
           </div>
         ))}
       </div>
@@ -108,9 +108,9 @@ export default async function SchoolDetailPage({
       <div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
         {/* Settings form */}
         <div className="space-y-6">
-          <div className="rounded-lg border border-line bg-white shadow-soft">
-            <div className="flex items-center gap-2 border-b border-line px-5 py-4">
-              <Settings className="h-4 w-4 text-clay" aria-hidden="true" />
+          <div className="rounded-lg border border-hairline bg-canvas shadow-soft">
+            <div className="flex items-center gap-2 border-b border-hairline px-5 py-4">
+              <Settings className="h-4 w-4 text-brand-orange" aria-hidden="true" />
               <h2 className="text-base font-semibold text-ink">School Settings</h2>
             </div>
             <form action={updateSchoolAction} className="space-y-5 p-5">
@@ -119,7 +119,7 @@ export default async function SchoolDetailPage({
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="name" className="block text-sm font-semibold text-ink">
-                    School Name <span className="text-clay">*</span>
+                    School Name <span className="text-brand-orange">*</span>
                   </label>
                   <input
                     id="name"
@@ -127,7 +127,7 @@ export default async function SchoolDetailPage({
                     type="text"
                     required
                     defaultValue={school.name}
-                    className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4"
+                    className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4"
                   />
                 </div>
                 <div>
@@ -139,7 +139,7 @@ export default async function SchoolDetailPage({
                     name="shortName"
                     type="text"
                     defaultValue={school.shortName ?? ""}
-                    className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4"
+                    className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4"
                   />
                 </div>
               </div>
@@ -148,78 +148,78 @@ export default async function SchoolDetailPage({
                 <div>
                   <label htmlFor="city" className="block text-sm font-semibold text-ink">City</label>
                   <input id="city" name="city" type="text" defaultValue={school.city ?? ""}
-                    className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                    className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
                 </div>
                 <div>
                   <label htmlFor="country" className="block text-sm font-semibold text-ink">Country</label>
                   <input id="country" name="country" type="text" defaultValue={school.country ?? ""}
-                    className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                    className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
                 </div>
               </div>
 
               <div>
                 <label htmlFor="address" className="block text-sm font-semibold text-ink">Address</label>
                 <input id="address" name="address" type="text" defaultValue={school.address ?? ""}
-                  className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                  className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="phone" className="block text-sm font-semibold text-ink">Phone</label>
                   <input id="phone" name="phone" type="tel" defaultValue={school.phone ?? ""}
-                    className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                    className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
                 </div>
                 <div>
                   <label htmlFor="schoolEmail" className="block text-sm font-semibold text-ink">Email</label>
                   <input id="schoolEmail" name="email" type="email" defaultValue={school.email ?? ""}
-                    className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                    className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
                 </div>
               </div>
 
               <div>
                 <label htmlFor="website" className="block text-sm font-semibold text-ink">Website</label>
                 <input id="website" name="website" type="url" defaultValue={school.website ?? ""}
-                  className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                  className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
               </div>
 
               {/* Domain */}
-              <div className="border-t border-line pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-clay">Routing</p>
+              <div className="border-t border-hairline pt-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-orange">Routing</p>
                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="subdomain" className="block text-sm font-semibold text-ink">Subdomain</label>
-                    <div className="mt-2 flex rounded-md border border-line bg-white focus-within:border-clay focus-within:ring-4 focus-within:ring-clay/20">
+                    <div className="mt-2 flex rounded-md border border-hairline bg-canvas focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/20">
                       <input id="subdomain" name="subdomain" type="text" defaultValue={school.subdomain ?? ""}
                         className="flex-1 rounded-l-md bg-transparent px-3 py-2.5 text-sm text-ink outline-none" />
-                      <span className="flex items-center rounded-r-md bg-rice px-2 text-xs text-moss">.refugeeschoolos.com</span>
+                      <span className="flex items-center rounded-r-md bg-surface px-2 text-xs text-slate">.refugeeschoolos.com</span>
                     </div>
                   </div>
                   <div>
                     <label htmlFor="customDomain" className="block text-sm font-semibold text-ink">Custom Domain</label>
                     <input id="customDomain" name="customDomain" type="text" defaultValue={school.customDomain ?? ""}
-                      className="mt-2 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 focus:border-clay focus:ring-4" />
+                      className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 focus:border-primary focus:ring-4" />
                   </div>
                 </div>
               </div>
 
               {/* Colours */}
-              <div className="border-t border-line pt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-clay">Branding Colours</p>
+              <div className="border-t border-hairline pt-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-orange">Branding Colours</p>
                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="primaryColor" className="block text-sm font-semibold text-ink">Primary</label>
                     <div className="mt-2 flex items-center gap-2">
                       <input id="primaryColor" name="primaryColor" type="color" defaultValue={school.primaryColor}
-                        className="h-9 w-12 cursor-pointer rounded-md border border-line bg-white p-0.5" />
-                      <span className="text-xs text-moss">{school.primaryColor}</span>
+                        className="h-9 w-12 cursor-pointer rounded-md border border-hairline bg-canvas p-0.5" />
+                      <span className="text-xs text-slate">{school.primaryColor}</span>
                     </div>
                   </div>
                   <div>
                     <label htmlFor="secondaryColor" className="block text-sm font-semibold text-ink">Secondary</label>
                     <div className="mt-2 flex items-center gap-2">
                       <input id="secondaryColor" name="secondaryColor" type="color" defaultValue={school.secondaryColor}
-                        className="h-9 w-12 cursor-pointer rounded-md border border-line bg-white p-0.5" />
-                      <span className="text-xs text-moss">{school.secondaryColor}</span>
+                        className="h-9 w-12 cursor-pointer rounded-md border border-hairline bg-canvas p-0.5" />
+                      <span className="text-xs text-slate">{school.secondaryColor}</span>
                     </div>
                   </div>
                 </div>
@@ -227,7 +227,7 @@ export default async function SchoolDetailPage({
 
               <div className="flex justify-end pt-2">
                 <button type="submit"
-                  className="rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-white hover:bg-moss">
+                  className="rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate">
                   Save Settings
                 </button>
               </div>
@@ -235,10 +235,10 @@ export default async function SchoolDetailPage({
           </div>
 
           {/* Logo */}
-          <div className="rounded-lg border border-line bg-white shadow-soft">
-            <div className="border-b border-line px-5 py-4">
+          <div className="rounded-lg border border-hairline bg-canvas shadow-soft">
+            <div className="border-b border-hairline px-5 py-4">
               <h2 className="text-base font-semibold text-ink">School Logo</h2>
-              <p className="mt-1 text-sm text-moss">
+              <p className="mt-1 text-sm text-slate">
                 Provide a public URL to the school logo (PNG, SVG, or WebP recommended).
                 Upload the file to your CDN or object storage first.
               </p>
@@ -246,10 +246,10 @@ export default async function SchoolDetailPage({
             <form action={updateSchoolLogoAction} className="p-5">
               <input type="hidden" name="schoolId" value={school.id} />
               {school.logoUrl && (
-                <div className="mb-4 flex items-center gap-3 rounded-md border border-line bg-rice p-3">
+                <div className="mb-4 flex items-center gap-3 rounded-md border border-hairline bg-surface p-3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={school.logoUrl} alt="Current school logo" className="h-12 w-12 rounded-md object-contain" />
-                  <p className="break-all text-xs text-moss">{school.logoUrl}</p>
+                  <p className="break-all text-xs text-slate">{school.logoUrl}</p>
                 </div>
               )}
               <div className="flex gap-3">
@@ -258,10 +258,10 @@ export default async function SchoolDetailPage({
                   type="url"
                   defaultValue={school.logoUrl ?? ""}
                   placeholder="https://cdn.example.com/school-logo.png"
-                  className="flex-1 rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/50 focus:border-clay focus:ring-4"
+                  className="flex-1 rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/50 focus:border-primary focus:ring-4"
                 />
                 <button type="submit"
-                  className="shrink-0 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-white hover:bg-moss">
+                  className="shrink-0 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate">
                   Update Logo
                 </button>
               </div>
@@ -270,15 +270,15 @@ export default async function SchoolDetailPage({
         </div>
 
         {/* Admins panel */}
-        <div className="rounded-lg border border-line bg-white shadow-soft">
-          <div className="flex items-center justify-between border-b border-line px-5 py-4">
+        <div className="rounded-lg border border-hairline bg-canvas shadow-soft">
+          <div className="flex items-center justify-between border-b border-hairline px-5 py-4">
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-clay" aria-hidden="true" />
+              <Users className="h-4 w-4 text-brand-orange" aria-hidden="true" />
               <h2 className="text-base font-semibold text-ink">School Admins</h2>
             </div>
             <Link
               href={`/super-admin/schools/${school.id}/admins/new`}
-              className="flex items-center gap-1 rounded-md bg-ink px-3 py-1.5 text-xs font-semibold text-white hover:bg-moss"
+              className="flex items-center gap-1 rounded-md bg-ink px-3 py-1.5 text-xs font-semibold text-on-dark hover:bg-slate"
             >
               <Plus className="h-3 w-3" aria-hidden="true" />
               Add Admin
@@ -287,10 +287,10 @@ export default async function SchoolDetailPage({
 
           {admins.length === 0 ? (
             <div className="px-5 py-8 text-center">
-              <p className="text-sm text-moss">No admins yet.</p>
+              <p className="text-sm text-slate">No admins yet.</p>
               <Link
                 href={`/super-admin/schools/${school.id}/admins/new`}
-                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-clay hover:text-ink"
+                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-orange hover:text-ink"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Create first admin
@@ -302,13 +302,13 @@ export default async function SchoolDetailPage({
                 <li key={admin.id} className="flex items-center justify-between px-5 py-3.5">
                   <div>
                     <p className="text-sm font-semibold text-ink">{admin.name}</p>
-                    <p className="text-xs text-moss">{admin.email}</p>
+                    <p className="text-xs text-slate">{admin.email}</p>
                   </div>
                   <span
                     className={`rounded-md px-2 py-0.5 text-xs font-semibold ${
                       admin.isActive
-                        ? "bg-[#e8f3dc] text-[#315933]"
-                        : "bg-rice text-moss"
+                        ? "bg-tint-mint text-success"
+                        : "bg-surface text-slate"
                     }`}
                   >
                     {admin.isActive ? "Active" : "Inactive"}
@@ -319,13 +319,13 @@ export default async function SchoolDetailPage({
           )}
 
           {subdomain && (
-            <div className="border-t border-line p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-moss">School URL</p>
+            <div className="border-t border-hairline p-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate">School URL</p>
               <a
                 href={`https://${subdomain}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-clay hover:text-ink"
+                className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-ink"
               >
                 {subdomain}
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
