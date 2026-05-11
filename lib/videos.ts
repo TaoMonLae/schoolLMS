@@ -195,21 +195,64 @@ export async function getClassVideoProgressForLesson(user: AppUser, lesson: Vide
 }
 
 export function detectVideoProvider(url: string): VideoProvider {
-  if (url.includes("youtube.com") || url.includes("youtu.be")) return "YOUTUBE";
+  if (getYouTubeVideoId(url)) return "YOUTUBE";
   if (url.includes("vimeo.com")) return "VIMEO";
   return "PRIVATE";
 }
 
-export function getEmbeddableVideoUrl(lesson: VideoLesson) {
-  if (lesson.videoProvider === "YOUTUBE") {
-    const match = lesson.videoUrl.match(/[?&]v=([^&]+)/) || lesson.videoUrl.match(/youtu\.be\/([^?]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : lesson.videoUrl;
+export function getYouTubeVideoId(url: string): string | null {
+  try {
+    const parsed = new URL(url.trim());
+    const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+    if (host === "youtu.be") return cleanYouTubeId(parsed.pathname.split("/").filter(Boolean)[0]);
+    if (!host.endsWith("youtube.com")) return null;
+    if (parsed.pathname === "/watch") return cleanYouTubeId(parsed.searchParams.get("v"));
+    const [kind, id] = parsed.pathname.split("/").filter(Boolean);
+    if (["embed", "shorts", "live", "v"].includes(kind)) return cleanYouTubeId(id);
+    return null;
+  } catch {
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/|v\/))([A-Za-z0-9_-]{6,})/);
+    return cleanYouTubeId(match?.[1]);
   }
+}
+
+export function toYouTubeEmbedUrl(url: string): string | null {
+  const id = getYouTubeVideoId(url);
+  if (!id) return null;
+  const start = getYouTubeStartSeconds(url);
+  return `https://www.youtube.com/embed/${id}${start ? `?start=${start}` : ""}`;
+}
+
+export function getEmbeddableVideoUrl(lesson: VideoLesson) {
+  if (lesson.videoProvider === "YOUTUBE") return toYouTubeEmbedUrl(lesson.videoUrl);
   if (lesson.videoProvider === "VIMEO") {
     const match = lesson.videoUrl.match(/vimeo\.com\/(\d+)/);
     return match ? `https://player.vimeo.com/video/${match[1]}` : lesson.videoUrl;
   }
   return lesson.videoUrl;
+}
+
+function cleanYouTubeId(value?: string | null) {
+  if (!value) return null;
+  const [id] = value.split(/[?&#]/);
+  return /^[A-Za-z0-9_-]{6,}$/.test(id) ? id : null;
+}
+
+function getYouTubeStartSeconds(url: string) {
+  try {
+    const parsed = new URL(url.trim());
+    return parseTimestamp(parsed.searchParams.get("start") || parsed.searchParams.get("t"));
+  } catch {
+    return parseTimestamp(url.match(/[?&](?:start|t)=([^&]+)/)?.[1]);
+  }
+}
+
+function parseTimestamp(value?: string | null) {
+  if (!value) return 0;
+  if (/^\d+$/.test(value)) return Number(value);
+  const match = value.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?$/i);
+  if (!match) return 0;
+  return Number(match[1] || 0) * 3600 + Number(match[2] || 0) * 60 + Number(match[3] || 0);
 }
 
 export async function getVideoSubjectName(user: AppUser, subjectId: string) {

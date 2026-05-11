@@ -4,12 +4,12 @@ import { AppUser, SchoolSummary } from "@/lib/types";
 
 const defaultBranding: SchoolSummary = {
   id: "unconfigured",
-  name: "School LMS",
-  shortName: "School LMS",
-  code: "SCHOOL",
+  name: "Mon Refugee Learning Centre",
+  shortName: "Mon RLC",
+  code: "MONRLC",
   logoUrl: "",
-  primaryColor: "#17211b",
-  secondaryColor: "#b46a45",
+  primaryColor: "#5645d4",
+  secondaryColor: "#0a1530",
   city: "",
   country: "",
   timezone: "Asia/Kuala_Lumpur",

@@ -3,6 +3,7 @@ import type { Config } from "tailwindcss";
 const withOpacity = (variable: string) => `rgb(var(${variable}) / <alpha-value>)`;
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",

@@ -60,6 +60,8 @@ const securityHeaders = [
       "img-src 'self' data: https:",
       "font-src 'self'",
       "connect-src 'self'",
+      "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtu.be https://player.vimeo.com",
+      "media-src 'self' https:",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

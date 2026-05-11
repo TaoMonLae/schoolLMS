@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { logout } from "@/app/logout/actions";
 import { SchoolLogo } from "@/components/school-logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { getDisplaySchoolName } from "@/lib/branding";
 import { getNavItemsForRole } from "@/lib/navigation";
 import { Role, SchoolSummary } from "@/lib/types";
@@ -86,6 +87,7 @@ export function Sidebar({ school, role }: { school: SchoolSummary; role: Role })
           </nav>
 
           <div className="mt-auto space-y-3">
+            <ThemeToggle />
             <div className="rounded-lg border border-hairline bg-surface p-md">
               <p className="text-sm font-semibold text-ink">{school.name}</p>
               <p className="mt-1 text-xs leading-5 text-slate">Tenant scope active through school_id.</p>
