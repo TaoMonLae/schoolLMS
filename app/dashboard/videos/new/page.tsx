@@ -2,9 +2,10 @@ import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { createVideoLesson } from "@/app/dashboard/videos/actions";
 import { canUploadVideos } from "@/lib/rbac";
-import { demoCurrentUser, formatEnumLabel } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
+import { formatEnumLabel } from "@/lib/students";
 import { videoVisibilities } from "@/lib/types";
-import { demoVideoSubjects, getManageableVideoClassesForUser } from "@/lib/videos";
+import { getManageableVideoClassesForUser, getVideoSubjectsForUser } from "@/lib/videos";
 
 type NewVideoPageProps = {
   searchParams?: Promise<{ error?: string }>;
@@ -12,8 +13,12 @@ type NewVideoPageProps = {
 
 export default async function NewVideoPage({ searchParams }: NewVideoPageProps) {
   const params = await searchParams;
-  const canUpload = canUploadVideos(demoCurrentUser.role);
-  const manageableClasses = getManageableVideoClassesForUser(demoCurrentUser);
+  const currentUser = await getRequiredCurrentUser();
+  const canUpload = canUploadVideos(currentUser.role);
+  const [manageableClasses, subjects] = await Promise.all([
+    getManageableVideoClassesForUser(currentUser),
+    getVideoSubjectsForUser(currentUser)
+  ]);
 
   return (
     <div className="space-y-6 pb-10">
@@ -28,8 +33,8 @@ export default async function NewVideoPage({ searchParams }: NewVideoPageProps) 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <TextField label="Title" name="title" required />
               <TextField label="Video URL" name="videoUrl" placeholder="https://youtube.com/..., https://vimeo.com/..., or private URL" required />
-              <Select label="Class" name="classId" options={manageableClasses.map((item) => [item.id, item.name])} />
-              <Select label="Subject" name="subjectId" options={demoVideoSubjects.map((item) => [item.id, item.name])} />
+              <Select label="Class" name="classId" options={manageableClasses.map((item) => [item.id, item.name])} disabled={manageableClasses.length === 0} />
+              <Select label="Subject" name="subjectId" options={subjects.map((item) => [item.id, item.name])} disabled={subjects.length === 0} />
               <TextField label="Thumbnail URL" name="thumbnailUrl" />
               <TextField label="Duration minutes" name="durationMinutes" type="number" />
               <Select label="Visibility" name="visibility" options={videoVisibilities.map((item) => [item, formatEnumLabel(item)])} />
@@ -39,11 +44,16 @@ export default async function NewVideoPage({ searchParams }: NewVideoPageProps) 
           </section>
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link href="/dashboard/videos" className="inline-flex justify-center rounded-md border border-line bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-rice">Cancel</Link>
-            <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">Add Video</button>
+            <button disabled={manageableClasses.length === 0 || subjects.length === 0} className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss disabled:cursor-not-allowed disabled:opacity-60">Add Video</button>
           </div>
           {manageableClasses.length === 0 ? (
             <div className="rounded-lg border border-line bg-white p-4 text-sm text-moss shadow-soft">
               No classes are available for your role. Teachers can only upload videos for assigned classes.
+            </div>
+          ) : null}
+          {subjects.length === 0 ? (
+            <div className="rounded-lg border border-line bg-white p-4 text-sm text-moss shadow-soft">
+              No subjects are configured for this school yet. Add school subjects before creating video lessons.
             </div>
           ) : null}
         </form>
@@ -61,11 +71,11 @@ function TextField({ label, name, placeholder, required, type = "text" }: { labe
   );
 }
 
-function Select({ label, name, options }: { label: string; name: string; options: string[][] }) {
+function Select({ label, name, options, disabled }: { label: string; name: string; options: string[][]; disabled?: boolean }) {
   return (
     <div>
       <label htmlFor={name} className="text-sm font-semibold text-ink">{label}</label>
-      <select id={name} name={name} className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4">
+      <select id={name} name={name} disabled={disabled} className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4">
         {options.map(([value, text]) => <option key={value} value={value}>{text}</option>)}
       </select>
     </div>

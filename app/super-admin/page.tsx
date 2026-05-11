@@ -1,7 +1,6 @@
 import { Building2, GraduationCap, Plus, Shield, Users } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { demoSchoolBranding } from "@/lib/branding";
 
 async function getPlatformStats() {
   try {
@@ -12,8 +11,7 @@ async function getPlatformStats() {
     ]);
     return { schoolCount, studentCount, userCount, demo: false };
   } catch {
-    // DB not connected — show demo numbers
-    return { schoolCount: 1, studentCount: 5, userCount: 4, demo: true };
+    return { schoolCount: 0, studentCount: 0, userCount: 0, demo: false };
   }
 }
 
@@ -36,19 +34,7 @@ async function getRecentSchools() {
       },
     });
   } catch {
-    // DB not connected — return demo school
-    return [
-      {
-        id: demoSchoolBranding.id,
-        name: demoSchoolBranding.name,
-        code: demoSchoolBranding.code,
-        subdomain: demoSchoolBranding.subdomain ?? null,
-        city: demoSchoolBranding.city,
-        country: demoSchoolBranding.country,
-        createdAt: new Date(),
-        _count: { students: demoSchoolBranding.activeStudents },
-      },
-    ];
+    return [];
   }
 }
 

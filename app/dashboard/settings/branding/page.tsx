@@ -1,8 +1,8 @@
 import { Building2, Globe2, ImageUp, Mail, Phone } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { updateSchoolBranding } from "@/app/dashboard/settings/branding/actions";
-import { canEditSchoolBranding, demoSchoolBranding, getDisplaySchoolName, getSchoolOrigin } from "@/lib/branding";
-import { demoCurrentUser } from "@/lib/students";
+import { canEditSchoolBranding, getDisplaySchoolName, getSchoolBrandingForUser, getSchoolOrigin } from "@/lib/branding";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type BrandingPageProps = {
   searchParams?: Promise<{ saved?: string; error?: string }>;
@@ -10,8 +10,9 @@ type BrandingPageProps = {
 
 export default async function BrandingPage({ searchParams }: BrandingPageProps) {
   const params = await searchParams;
-  const school = demoSchoolBranding;
-  const canEdit = canEditSchoolBranding(demoCurrentUser, school.id);
+  const currentUser = await getRequiredCurrentUser();
+  const school = await getSchoolBrandingForUser(currentUser);
+  const canEdit = canEditSchoolBranding(currentUser, school.id);
 
   return (
     <div className="space-y-6 pb-10">
@@ -23,12 +24,12 @@ export default async function BrandingPage({ searchParams }: BrandingPageProps) 
 
       {params?.saved ? (
         <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">
-          Branding validated. Connect this action to Prisma persistence when auth is enabled.
+          Branding saved successfully.
         </div>
       ) : null}
       {params?.error ? (
         <div className="rounded-lg border border-[#f2b9af] bg-[#ffe4df] p-4 text-sm font-semibold text-[#8b2b20]">
-          {params.error === "permission" ? "You do not have permission to edit this school branding." : "Theme colors must be valid 6-digit hex colors."}
+          {params.error === "permission" ? "You do not have permission to edit this school branding." : params.error === "name" ? "School name is required." : "Theme colors must be valid 6-digit hex colors."}
         </div>
       ) : null}
 

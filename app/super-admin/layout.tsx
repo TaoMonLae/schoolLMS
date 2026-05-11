@@ -1,12 +1,19 @@
-import { Building2, LayoutDashboard, Plus, Shield } from "lucide-react";
+import { Building2, LayoutDashboard, LogOut, Plus, Shield } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { logout } from "@/app/logout/actions";
+import { getCurrentUser } from "@/lib/session";
 
 const nav = [
   { label: "Overview", href: "/super-admin", icon: LayoutDashboard },
   { label: "Schools", href: "/super-admin/schools", icon: Building2 },
 ];
 
-export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
+export default async function SuperAdminLayout({ children }: { children: React.ReactNode }) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) redirect("/login");
+  if (currentUser.role !== "SUPER_ADMIN") redirect("/dashboard");
+
   return (
     <div className="min-h-screen bg-rice">
       {/* Top bar */}
@@ -35,13 +42,24 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
             ))}
           </nav>
 
-          <Link
-            href="/super-admin/schools/new"
-            className="flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/20"
-          >
-            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-            New School
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/super-admin/schools/new"
+              className="flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/20"
+            >
+              <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+              New School
+            </Link>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="flex items-center gap-1.5 rounded-md border border-white/15 px-3 py-1.5 text-sm font-semibold text-white/85 hover:bg-white/10 hover:text-white"
+              >
+                <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+                Log out
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 
