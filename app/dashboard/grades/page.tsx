@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { StudentPhoto } from "@/components/student-photo";
-import { demoCurrentUser, demoStudents } from "@/lib/students";
+import { getVisibleStudentsForUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 import { getDefaultReportStudentId, getStudentReportCard } from "@/lib/lms";
 
 type GradesPageProps = { searchParams?: Promise<{ studentId?: string }> };
 
 export default async function GradesPage({ searchParams }: GradesPageProps) {
   const params = await searchParams;
-  const studentId = params?.studentId || getDefaultReportStudentId();
-  const report = getStudentReportCard(demoCurrentUser, studentId);
-  const activeStudents = demoStudents.filter((student) => student.status === "ACTIVE");
+  const currentUser = await getRequiredCurrentUser();
+  const studentId = params?.studentId || await getDefaultReportStudentId(currentUser);
+  const report = studentId ? await getStudentReportCard(currentUser, studentId) : undefined;
+  const activeStudents = await getVisibleStudentsForUser(currentUser, { status: "ACTIVE" });
 
   return (
     <div className="space-y-6 pb-10">

@@ -1,8 +1,8 @@
 import { Download } from "lucide-react";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
-import { demoCurrentUser } from "@/lib/students";
-import { getLessonForUser, getSubjectName } from "@/lib/lms";
+import { getRequiredCurrentUser } from "@/lib/session";
+import { getLessonForUser } from "@/lib/lms";
 
 type LessonPageProps = {
   params: Promise<{ lessonId: string }>;
@@ -10,13 +10,14 @@ type LessonPageProps = {
 
 export default async function LessonPage({ params }: LessonPageProps) {
   const { lessonId } = await params;
-  const lesson = getLessonForUser(demoCurrentUser, lessonId);
+  const currentUser = await getRequiredCurrentUser();
+  const lesson = await getLessonForUser(currentUser, lessonId);
 
   if (!lesson) notFound();
 
   return (
     <div className="space-y-6 pb-10">
-      <PageHeader eyebrow="Lesson" title={lesson.title} description={`${lesson.className} | ${getSubjectName(lesson.subjectId)} | Created by ${lesson.createdBy}`} />
+      <PageHeader eyebrow="Lesson" title={lesson.title} description={`${lesson.class.name} | ${lesson.subject.name} | Created by ${lesson.createdBy?.name || "Unknown"}`} />
       <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
         <h2 className="text-lg font-semibold text-ink">Lesson Notes</h2>
         <p className="mt-3 text-sm leading-7 text-moss">{lesson.content}</p>
@@ -28,7 +29,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             <a key={file.id} href={file.fileUrl} className="flex items-center justify-between gap-3 rounded-md border border-line bg-rice p-4 hover:bg-white">
               <div>
                 <p className="text-sm font-semibold text-ink">{file.fileName}</p>
-                <p className="mt-1 text-xs text-moss">{file.fileType} | {file.fileSizeLabel}</p>
+                <p className="mt-1 text-xs text-moss">{file.fileType} | {file.fileSizeBytes ? `${Math.round(file.fileSizeBytes / 1024)} KB` : "Size unavailable"}</p>
               </div>
               <Download className="h-4 w-4 text-clay" />
             </a>

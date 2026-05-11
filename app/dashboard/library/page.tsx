@@ -4,7 +4,7 @@ import { LibraryCover } from "@/components/library-cover";
 import { PageHeader } from "@/components/page-header";
 import { getLibraryBooksForUser, getLibraryFilterOptions } from "@/lib/library";
 import { canUploadLibraryBooks, canViewLibrary } from "@/lib/rbac";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type LibraryPageProps = {
   searchParams?: Promise<{
@@ -19,17 +19,18 @@ type LibraryPageProps = {
 
 export default async function LibraryPage({ searchParams }: LibraryPageProps) {
   const params = await searchParams;
-  const allVisibleBooks = getLibraryBooksForUser(demoCurrentUser);
+  const currentUser = await getRequiredCurrentUser();
+  const allVisibleBooks = await getLibraryBooksForUser(currentUser);
   const options = getLibraryFilterOptions(allVisibleBooks);
-  const books = getLibraryBooksForUser(demoCurrentUser, {
+  const books = await getLibraryBooksForUser(currentUser, {
     search: params?.q,
     subject: params?.subject || "ALL",
     language: params?.language || "ALL",
     readingLevel: params?.readingLevel || "ALL",
     category: params?.category || "ALL"
   });
-  const canView = canViewLibrary(demoCurrentUser.role);
-  const canUpload = canUploadLibraryBooks(demoCurrentUser.role);
+  const canView = canViewLibrary(currentUser.role);
+  const canUpload = canUploadLibraryBooks(currentUser.role);
 
   if (!canView) {
     return (

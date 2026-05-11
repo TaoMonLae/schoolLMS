@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { getLibraryBookForUser, isLibraryFileUrlAllowed } from "@/lib/library";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type DownloadRouteContext = {
   params: Promise<{
@@ -10,9 +10,10 @@ type DownloadRouteContext = {
 
 export async function GET(_request: NextRequest, { params }: DownloadRouteContext) {
   const { id } = await params;
-  const book = getLibraryBookForUser(demoCurrentUser, id);
+  const currentUser = await getRequiredCurrentUser();
+  const book = await getLibraryBookForUser(currentUser, id);
 
-  if (!book || !isLibraryFileUrlAllowed(demoCurrentUser, book, book.fileUrl)) {
+  if (!book || !isLibraryFileUrlAllowed(currentUser, book, book.fileUrl)) {
     return new Response("Not found", { status: 404 });
   }
 

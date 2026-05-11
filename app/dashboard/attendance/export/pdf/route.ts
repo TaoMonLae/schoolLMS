@@ -1,14 +1,17 @@
 import { NextRequest } from "next/server";
-import { demoSchoolBranding } from "@/lib/branding";
+import { getSchoolBrandingForUser } from "@/lib/branding";
 import { getAttendanceClassesForUser, getAttendanceExportRows } from "@/lib/attendance";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
-export function GET(request: NextRequest) {
-  const classId = request.nextUrl.searchParams.get("classId") || getAttendanceClassesForUser(demoCurrentUser)[0]?.id || "";
-  const month = request.nextUrl.searchParams.get("month") || "2026-05";
-  const rows = getAttendanceExportRows(demoCurrentUser, classId, month);
+export async function GET(request: NextRequest) {
+  const currentUser = await getRequiredCurrentUser();
+  const school = await getSchoolBrandingForUser(currentUser);
+  const classes = await getAttendanceClassesForUser(currentUser);
+  const classId = request.nextUrl.searchParams.get("classId") || classes[0]?.id || "";
+  const month = request.nextUrl.searchParams.get("month") || new Date().toISOString().slice(0, 7);
+  const rows = await getAttendanceExportRows(currentUser, classId, month);
   const lines = [
-    `${demoSchoolBranding.name} Attendance Report - ${month}`,
+    `${school.name} Attendance Report - ${month}`,
     "",
     "Date        Student        Class              Status     Note",
     ...rows.map((row) => `${row.date}  ${row.studentName.padEnd(13)}  ${row.className.padEnd(17)}  ${row.status.padEnd(8)}  ${row.note}`)

@@ -4,7 +4,8 @@ import { PageHeader } from "@/components/page-header";
 import { StudentPhoto } from "@/components/student-photo";
 import { StudentStatusBadge } from "@/components/student-status-badge";
 import { canManageStudents } from "@/lib/rbac";
-import { demoClasses, demoCurrentUser, formatEnumLabel, getVisibleStudentsForUser } from "@/lib/students";
+import { formatEnumLabel, getClassOptionsForUser, getVisibleStudentsForUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 import { Gender, genders, StudentStatus, studentStatuses } from "@/lib/types";
 
 type StudentsPageProps = {
@@ -24,8 +25,10 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
     gender: params?.gender || "ALL",
     status: params?.status || "ALL"
   };
-  const students = getVisibleStudentsForUser(demoCurrentUser, filters);
-  const canManage = canManageStudents(demoCurrentUser.role);
+  const currentUser = await getRequiredCurrentUser();
+  const students = await getVisibleStudentsForUser(currentUser, filters);
+  const classes = await getClassOptionsForUser(currentUser);
+  const canManage = canManageStudents(currentUser.role);
 
   return (
     <div className="space-y-6 pb-10">
@@ -46,7 +49,7 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-moss" aria-hidden="true" />
             <input name="q" defaultValue={filters.search} placeholder="Search name, ID, guardian" className="h-11 w-full rounded-md border border-line bg-rice pl-9 pr-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/60 focus:ring-4" />
           </label>
-          <FilterSelect name="classId" defaultValue={filters.classId} options={["ALL", ...demoClasses.map((item) => item.id)]} labels={{ ALL: "All classes", ...Object.fromEntries(demoClasses.map((item) => [item.id, item.name])) }} />
+          <FilterSelect name="classId" defaultValue={filters.classId} options={["ALL", ...classes.map((item) => item.id)]} labels={{ ALL: "All classes", ...Object.fromEntries(classes.map((item) => [item.id, item.name])) }} />
           <FilterSelect name="gender" defaultValue={filters.gender} options={["ALL", ...genders]} labels={{ ALL: "All genders" }} />
           <FilterSelect name="status" defaultValue={filters.status} options={["ALL", ...studentStatuses]} labels={{ ALL: "All statuses" }} />
           <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-white hover:bg-moss">Filter</button>

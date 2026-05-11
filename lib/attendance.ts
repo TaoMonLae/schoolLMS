@@ -1,5 +1,7 @@
-import { filterToTenant } from "@/lib/tenant";
-import { demoClasses, demoStudents } from "@/lib/students";
+import { Prisma } from "@prisma/client";
+import { db } from "@/lib/db";
+import { mapStudentRecord } from "@/lib/students";
+import { tenantFilter } from "@/lib/tenant";
 import { AppUser, AttendanceStatus } from "@/lib/types";
 
 export type AttendanceRecord = {
@@ -20,159 +22,57 @@ export const attendanceStatusStyles: Record<AttendanceStatus, string> = {
   EXCUSED: "border-[#bfd5f7] bg-[#e7f0ff] text-[#24508f]"
 };
 
-export const demoAttendance: AttendanceRecord[] = [
-  {
-    id: "attendance-aye-2026-05-11",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-primary-a",
-    studentId: "student-aye-chan",
-    date: "2026-05-11",
-    status: "PRESENT",
-    recordedBy: "user-teacher-lead"
-  },
-  {
-    id: "attendance-min-2026-05-11",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-primary-a",
-    studentId: "student-min-thu",
-    date: "2026-05-11",
-    status: "PRESENT",
-    recordedBy: "user-teacher-lead"
-  },
-  {
-    id: "attendance-nilar-2026-05-11",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-bridge-english",
-    studentId: "student-nilar-win",
-    date: "2026-05-11",
-    status: "PRESENT",
-    recordedBy: "user-teacher-lead"
-  },
-  {
-    id: "attendance-htun-2026-05-11",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-bridge-english",
-    studentId: "student-htun-lin",
-    date: "2026-05-11",
-    status: "LATE",
-    note: "Arrived after morning circle.",
-    recordedBy: "user-teacher-lead"
-  },
-  {
-    id: "attendance-aye-2026-05-10",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-primary-a",
-    studentId: "student-aye-chan",
-    date: "2026-05-10",
-    status: "ABSENT",
-    note: "Guardian notified school in the morning.",
-    recordedBy: "user-school-admin"
-  },
-  {
-    id: "attendance-min-2026-05-10",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-primary-a",
-    studentId: "student-min-thu",
-    date: "2026-05-10",
-    status: "EXCUSED",
-    note: "Clinic appointment.",
-    recordedBy: "user-school-admin"
-  }
-];
-
-export function getAttendanceClassesForUser(user: AppUser) {
-  return demoClasses.filter((classItem) => {
-    if (user.role === "SUPER_ADMIN") {
-      return true;
-    }
-
-    if (classItem.id && user.role === "TEACHER") {
-      return user.assignedClassIds.includes(classItem.id);
-    }
-
-    return true;
-  });
+function day(date: string) { return new Date(`${date}T00:00:00.000Z`); }
+function mapAttendance(record: { id:string; schoolId:string; classId:string; studentId:string; date:Date; status:AttendanceStatus; note:string|null; recordedById:string|null }): AttendanceRecord {
+  return { id: record.id, schoolId: record.schoolId, classId: record.classId, studentId: record.studentId, date: record.date.toISOString().slice(0,10), status: record.status, note: record.note || undefined, recordedBy: record.recordedById || "" };
 }
 
-export function getAttendanceStudentsForUser(user: AppUser, classId: string) {
-  return demoStudents
-    .filter((student) => !student.deletedAt && student.status === "ACTIVE")
-    .filter((student) => user.role === "SUPER_ADMIN" || student.schoolId === user.schoolId)
-    .filter((student) => student.classId === classId)
-    .filter((student) => user.role !== "STUDENT" || student.id === user.studentId)
-    .filter((student) => user.role !== "TEACHER" || user.assignedClassIds.includes(student.classId));
+export async function getAttendanceClassesForUser(user: AppUser) {
+  const classes = await db.class.findMany({ where: { ...tenantFilter(user), ...(user.role === "TEACHER" ? { id: { in: user.assignedClassIds } } : {}) }, orderBy: [{ academicYear: "desc" }, { name: "asc" }] });
+  return classes.map((classItem) => ({ id: classItem.id, name: classItem.name, teacherId: classItem.teacherId || undefined }));
 }
 
-export function getAttendanceForClassDate(user: AppUser, classId: string, date: string) {
-  const visibleStudentIds = new Set(getAttendanceStudentsForUser(user, classId).map((student) => student.id));
-
-  return filterToTenant(
-    user,
-    demoAttendance.filter((record) => {
-      return record.classId === classId && record.date === date && visibleStudentIds.has(record.studentId);
-    })
-  );
-}
-
-export function getMonthlyAttendanceReport(user: AppUser, classId: string, month: string) {
-  const visibleStudentIds = new Set(getAttendanceStudentsForUser(user, classId).map((student) => student.id));
-
-  return filterToTenant(
-    user,
-    demoAttendance.filter((record) => {
-      return record.classId === classId && record.date.startsWith(month) && visibleStudentIds.has(record.studentId);
-    })
-  );
-}
-
-export function getTodayAttendanceSummary(user: AppUser, date = "2026-05-11") {
-  const visibleStudents = demoStudents.filter((student) => {
-    if (student.deletedAt || student.status !== "ACTIVE") {
-      return false;
-    }
-
-    if (user.role === "SUPER_ADMIN") {
-      return true;
-    }
-
-    if (user.role === "TEACHER") {
-      return user.assignedClassIds.includes(student.classId);
-    }
-
-    if (user.role === "STUDENT") {
-      return student.id === user.studentId;
-    }
-
-    return student.schoolId === user.schoolId;
-  });
-  const visibleStudentIds = new Set(visibleStudents.map((student) => student.id));
-  const todayRecords = demoAttendance.filter((record) => record.date === date && visibleStudentIds.has(record.studentId));
-
-  return {
-    total: visibleStudents.length,
-    present: todayRecords.filter((record) => record.status === "PRESENT" || record.status === "LATE").length,
-    absent: todayRecords.filter((record) => record.status === "ABSENT").length,
-    excused: todayRecords.filter((record) => record.status === "EXCUSED").length
+export async function getAttendanceStudentsForUser(user: AppUser, classId: string) {
+  const where: Prisma.StudentWhereInput = {
+    ...tenantFilter(user), deletedAt: null, status: "ACTIVE",
+    enrollments: { some: { classId, status: "ACTIVE" } },
+    ...(user.role === "STUDENT" ? { id: user.studentId || "__none__" } : {}),
+    ...(user.role === "TEACHER" ? { enrollments: { some: { classId: { in: user.assignedClassIds.filter((id) => id === classId) }, status: "ACTIVE" } } } : {})
   };
+  const students = await db.student.findMany({ where, include: { enrollments: { where: { status: "ACTIVE", classId }, include: { class: true }, take: 1 } }, orderBy: [{ studentNumber: "asc" }] });
+  return students.map(mapStudentRecord);
 }
 
-export function getExistingAttendanceMap(user: AppUser, classId: string, date: string) {
-  return new Map(getAttendanceForClassDate(user, classId, date).map((record) => [record.studentId, record]));
+export async function getAttendanceForClassDate(user: AppUser, classId: string, date: string) {
+  const students = await getAttendanceStudentsForUser(user, classId);
+  const studentIds = students.map((student) => student.id);
+  const rows = await db.attendance.findMany({ where: { ...tenantFilter(user), classId, date: day(date), studentId: { in: studentIds } } });
+  return rows.map(mapAttendance);
 }
 
-export function getAttendanceExportRows(user: AppUser, classId: string, month: string) {
-  const studentsById = new Map(demoStudents.map((student) => [student.id, student]));
+export async function getMonthlyAttendanceReport(user: AppUser, classId: string, month: string) {
+  const start = new Date(`${month}-01T00:00:00.000Z`);
+  const end = new Date(start); end.setUTCMonth(end.getUTCMonth() + 1);
+  const students = await getAttendanceStudentsForUser(user, classId);
+  const studentIds = students.map((student) => student.id);
+  const rows = await db.attendance.findMany({ where: { ...tenantFilter(user), classId, studentId: { in: studentIds }, date: { gte: start, lt: end } }, orderBy: [{ date: "desc" }] });
+  return rows.map(mapAttendance);
+}
 
-  return getMonthlyAttendanceReport(user, classId, month).map((record) => {
-    const student = studentsById.get(record.studentId);
+export async function getTodayAttendanceSummary(user: AppUser, date = new Date().toISOString().slice(0, 10)) {
+  const studentWhere: Prisma.StudentWhereInput = { ...tenantFilter(user), deletedAt: null, status: "ACTIVE", ...(user.role === "STUDENT" ? { id: user.studentId || "__none__" } : {}), ...(user.role === "TEACHER" ? { enrollments: { some: { classId: { in: user.assignedClassIds }, status: "ACTIVE" } } } : {}) };
+  const students = await db.student.findMany({ where: studentWhere, select: { id: true } });
+  const records = await db.attendance.findMany({ where: { ...tenantFilter(user), studentId: { in: students.map((s) => s.id) }, date: day(date) } });
+  return { total: students.length, present: records.filter((r) => r.status === "PRESENT" || r.status === "LATE").length, absent: records.filter((r) => r.status === "ABSENT").length, excused: records.filter((r) => r.status === "EXCUSED").length };
+}
 
-    return {
-      date: record.date,
-      studentNumber: student?.studentNumber || "",
-      studentName: student?.preferredName || student?.legalName || "",
-      className: student?.className || "",
-      status: record.status,
-      note: record.note || ""
-    };
-  });
+export async function getExistingAttendanceMap(user: AppUser, classId: string, date: string) {
+  return new Map((await getAttendanceForClassDate(user, classId, date)).map((record) => [record.studentId, record]));
+}
+
+export async function getAttendanceExportRows(user: AppUser, classId: string, month: string) {
+  const report = await getMonthlyAttendanceReport(user, classId, month);
+  const studentRows = await db.student.findMany({ where: { ...tenantFilter(user), id: { in: report.map((r) => r.studentId) } }, include: { enrollments: { where: { status: "ACTIVE" }, include: { class: true }, take: 1 } } });
+  const studentsById = new Map(studentRows.map((student) => [student.id, mapStudentRecord(student)]));
+  return report.map((record) => { const student = studentsById.get(record.studentId); return { date: record.date, studentNumber: student?.studentNumber || "", studentName: student?.preferredName || student?.legalName || "", className: student?.className || "", status: record.status, note: record.note || "" }; });
 }

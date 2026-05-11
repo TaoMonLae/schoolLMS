@@ -2,7 +2,7 @@ import { Download, LockKeyhole } from "lucide-react";
 import { notFound } from "next/navigation";
 import { LibraryCover } from "@/components/library-cover";
 import { getLibraryBookForUser, isLibraryFileUrlAllowed } from "@/lib/library";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type LibraryBookPageProps = {
   params: Promise<{
@@ -12,13 +12,14 @@ type LibraryBookPageProps = {
 
 export default async function LibraryBookPage({ params }: LibraryBookPageProps) {
   const { id } = await params;
-  const book = getLibraryBookForUser(demoCurrentUser, id);
+  const currentUser = await getRequiredCurrentUser();
+  const book = await getLibraryBookForUser(currentUser, id);
 
   if (!book) {
     notFound();
   }
 
-  const canAccessFile = isLibraryFileUrlAllowed(demoCurrentUser, book, book.fileUrl);
+  const canAccessFile = isLibraryFileUrlAllowed(currentUser, book, book.fileUrl);
 
   return (
     <div className="space-y-6 pb-10">

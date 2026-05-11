@@ -1,20 +1,25 @@
 import Link from "next/link";
-import { demoClasses, formatEnumLabel } from "@/lib/students";
+import { createStudent, softDeleteStudent, updateStudent } from "@/app/dashboard/students/actions";
+import { formatEnumLabel } from "@/lib/students";
 import { canManageSensitiveStudentDocuments } from "@/lib/rbac";
-import { genders, refugeeDocumentTypes, roles, StudentRecord, studentStatuses } from "@/lib/types";
+import { genders, refugeeDocumentTypes, roles, SchoolClassOption, StudentRecord, studentStatuses } from "@/lib/types";
 
 type StudentFormProps = {
   mode: "create" | "edit";
   student?: StudentRecord;
   currentRole: (typeof roles)[number];
+  classOptions: SchoolClassOption[];
 };
 
-export function StudentForm({ mode, student, currentRole }: StudentFormProps) {
+export function StudentForm({ mode, student, currentRole, classOptions }: StudentFormProps) {
   const canManageDocuments = canManageSensitiveStudentDocuments(currentRole);
   const actionLabel = mode === "create" ? "Add Student" : "Save Changes";
 
+  const formAction = mode === "create" ? createStudent : updateStudent.bind(null, student?.id || "");
+  const deleteAction = student ? softDeleteStudent.bind(null, student.id) : undefined;
+
   return (
-    <form className="space-y-5">
+    <form action={formAction} className="space-y-5">
       <FormSection title="Student Details" description="Core record fields used by teachers, administrators, and reports.">
         <div className="grid gap-4 sm:grid-cols-2">
           <TextField label="Student number" name="studentNumber" defaultValue={student?.studentNumber} required />
@@ -23,7 +28,7 @@ export function StudentForm({ mode, student, currentRole }: StudentFormProps) {
           <TextField label="Date of birth" name="dateOfBirth" type="date" defaultValue={student?.dateOfBirth} />
           <SelectField label="Gender" name="gender" defaultValue={student?.gender || "NOT_SPECIFIED"} options={genders} />
           <SelectField label="Status" name="status" defaultValue={student?.status || "ACTIVE"} options={studentStatuses} />
-          <SelectField label="Class" name="classId" defaultValue={student?.classId || demoClasses[0]?.id} options={demoClasses.map((item) => item.id)} labels={Object.fromEntries(demoClasses.map((item) => [item.id, item.name]))} />
+          <SelectField label="Class" name="classId" defaultValue={student?.classId || classOptions[0]?.id} options={classOptions.map((item) => item.id)} labels={Object.fromEntries(classOptions.map((item) => [item.id, item.name]))} />
           <TextField label="Primary language" name="primaryLanguage" defaultValue={student?.primaryLanguage} />
         </div>
         <div className="mt-4">
@@ -31,7 +36,7 @@ export function StudentForm({ mode, student, currentRole }: StudentFormProps) {
             Student photo
           </label>
           <input id="photo" name="photo" type="file" accept="image/*" className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-moss file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
-          <p className="mt-2 text-xs leading-5 text-moss">Upload UI is ready; storage should be connected when file handling is added.</p>
+          <p className="mt-2 text-xs leading-5 text-moss">Photo storage is not implemented yet; this file input is intentionally not persisted until object storage is configured.</p>
         </div>
       </FormSection>
 
@@ -78,7 +83,7 @@ export function StudentForm({ mode, student, currentRole }: StudentFormProps) {
           <p className="mt-2 text-sm leading-6 text-[#7d2a1f]">
             Soft delete marks the student as deleted with `deleted_at` while preserving audit history and related records.
           </p>
-          <button type="button" className="mt-4 rounded-md border border-[#b84a3a] px-4 py-2 text-sm font-semibold text-[#7d2a1f] hover:bg-white">
+          <button formAction={deleteAction} className="mt-4 rounded-md border border-[#b84a3a] px-4 py-2 text-sm font-semibold text-[#7d2a1f] hover:bg-white">
             Soft Delete Student
           </button>
         </div>
@@ -88,7 +93,7 @@ export function StudentForm({ mode, student, currentRole }: StudentFormProps) {
         <Link href={student ? `/dashboard/students/${student.id}` : "/dashboard/students"} className="inline-flex justify-center rounded-md border border-line bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-rice">
           Cancel
         </Link>
-        <button type="button" className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+        <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
           {actionLabel}
         </button>
       </div>

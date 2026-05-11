@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
-import { getSubjectName, getVisibleAssignments, getVisibleSubjects } from "@/lib/lms";
-import { demoCurrentUser, formatEnumLabel } from "@/lib/students";
+import { getVisibleAssignments, getVisibleSubjects } from "@/lib/lms";
+import { formatEnumLabel } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type AssignmentsPageProps = { searchParams?: Promise<{ subjectId?: string }> };
 
 export default async function AssignmentsPage({ searchParams }: AssignmentsPageProps) {
   const params = await searchParams;
+  const currentUser = await getRequiredCurrentUser();
   const selectedSubject = params?.subjectId || "ALL";
-  const assignments = getVisibleAssignments(demoCurrentUser, selectedSubject);
-  const subjects = getVisibleSubjects(demoCurrentUser);
+  const assignments = await getVisibleAssignments(currentUser, selectedSubject);
+  const subjects = await getVisibleSubjects(currentUser);
 
   return (
     <div className="space-y-6 pb-10">
@@ -24,11 +26,11 @@ export default async function AssignmentsPage({ searchParams }: AssignmentsPageP
       <section className="grid gap-4 lg:grid-cols-2">
         {assignments.map((assignment) => (
           <article key={assignment.id} className="rounded-lg border border-line bg-white p-5 shadow-soft">
-            <p className="text-xs font-semibold uppercase tracking-wide text-clay">{assignment.className} | {getSubjectName(assignment.subjectId)}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-clay">{assignment.class.name} | {assignment.subject.name}</p>
             <Link href={`/dashboard/assignments/${assignment.id}`} className="mt-2 block text-xl font-semibold text-ink hover:text-clay">{assignment.title}</Link>
             <p className="mt-2 text-sm leading-6 text-moss">{assignment.description}</p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-moss">
-              <span className="rounded-md bg-rice px-2 py-1">Due {assignment.dueDate}</span>
+              <span className="rounded-md bg-rice px-2 py-1">Due {assignment.dueDate?.toISOString().slice(0, 10) || "No due date"}</span>
               <span className="rounded-md bg-rice px-2 py-1">{assignment.maxPoints} pts</span>
               <span className="rounded-md bg-rice px-2 py-1">{formatEnumLabel(assignment.status)}</span>
             </div>

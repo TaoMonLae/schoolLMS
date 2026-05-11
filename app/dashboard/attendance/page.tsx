@@ -11,7 +11,8 @@ import {
   getAttendanceStudentsForUser
 } from "@/lib/attendance";
 import { canEditAttendance, canTakeAttendance } from "@/lib/rbac";
-import { demoCurrentUser, formatEnumLabel } from "@/lib/students";
+import { formatEnumLabel } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 import { attendanceStatuses } from "@/lib/types";
 
 type AttendancePageProps = {
@@ -26,16 +27,17 @@ type AttendancePageProps = {
 
 export default async function AttendancePage({ searchParams }: AttendancePageProps) {
   const params = await searchParams;
-  const classes = getAttendanceClassesForUser(demoCurrentUser);
+  const currentUser = await getRequiredCurrentUser();
+  const classes = await getAttendanceClassesForUser(currentUser);
   const selectedClassId = params?.classId || classes[0]?.id || "";
-  const selectedDate = params?.date || "2026-05-11";
+  const selectedDate = params?.date || new Date().toISOString().slice(0, 10);
   const selectedMonth = params?.month || selectedDate.slice(0, 7);
-  const students = getAttendanceStudentsForUser(demoCurrentUser, selectedClassId);
-  const attendanceMap = getExistingAttendanceMap(demoCurrentUser, selectedClassId, selectedDate);
-  const monthlyReport = getMonthlyAttendanceReport(demoCurrentUser, selectedClassId, selectedMonth);
-  const exportRows = getAttendanceExportRows(demoCurrentUser, selectedClassId, selectedMonth);
-  const canSave = canTakeAttendance(demoCurrentUser.role);
-  const canEdit = canEditAttendance(demoCurrentUser.role);
+  const students = await getAttendanceStudentsForUser(currentUser, selectedClassId);
+  const attendanceMap = await getExistingAttendanceMap(currentUser, selectedClassId, selectedDate);
+  const monthlyReport = await getMonthlyAttendanceReport(currentUser, selectedClassId, selectedMonth);
+  const exportRows = await getAttendanceExportRows(currentUser, selectedClassId, selectedMonth);
+  const canSave = canTakeAttendance(currentUser.role);
+  const canEdit = canEditAttendance(currentUser.role);
 
   return (
     <div className="space-y-6 pb-10">
@@ -55,7 +57,7 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
 
       {params?.saved ? (
         <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">
-          Attendance ready to save for {params.saved} students. Database persistence can be connected to this server action.
+          Attendance saved for {params.saved} students.
         </div>
       ) : null}
 

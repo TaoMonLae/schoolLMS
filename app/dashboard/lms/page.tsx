@@ -1,9 +1,9 @@
 import { BookOpen, FileUp } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
-import { getSubjectName, getVisibleLessons, getVisibleSubjects } from "@/lib/lms";
+import { getVisibleLessons, getVisibleSubjects } from "@/lib/lms";
 import { canManageLms } from "@/lib/rbac";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type LmsPageProps = {
   searchParams?: Promise<{ subjectId?: string }>;
@@ -11,10 +11,11 @@ type LmsPageProps = {
 
 export default async function LmsPage({ searchParams }: LmsPageProps) {
   const params = await searchParams;
-  const subjects = getVisibleSubjects(demoCurrentUser);
+  const currentUser = await getRequiredCurrentUser();
+  const subjects = await getVisibleSubjects(currentUser);
   const selectedSubject = params?.subjectId || "ALL";
-  const lessons = getVisibleLessons(demoCurrentUser, selectedSubject);
-  const canManage = canManageLms(demoCurrentUser.role);
+  const lessons = await getVisibleLessons(currentUser, selectedSubject);
+  const canManage = canManageLms(currentUser.role);
 
   return (
     <div className="space-y-6 pb-10">
@@ -51,7 +52,7 @@ export default async function LmsPage({ searchParams }: LmsPageProps) {
               <div className="flex items-start gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-md bg-clay text-white"><BookOpen className="h-5 w-5" /></div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-moss">{lesson.className} | {getSubjectName(lesson.subjectId)}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-moss">{lesson.class.name} | {lesson.subject.name}</p>
                   <Link href={`/dashboard/lms/${lesson.id}`} className="mt-1 block text-lg font-semibold text-ink hover:text-clay">{lesson.title}</Link>
                   <p className="mt-2 text-sm leading-6 text-moss">{lesson.description}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
