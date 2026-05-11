@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Building2, LayoutDashboard, LogOut, Plus, Shield } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";

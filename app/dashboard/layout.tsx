@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Sidebar } from "@/components/sidebar";
 import { getSchoolBrandingForUser } from "@/lib/branding";
 import { getRequiredCurrentUser } from "@/lib/session";

@@ -1,56 +1,14 @@
 # Bug Fix Report
 
-Audit date: 2026-05-11
-
-## Fixed bugs
-
-### 1. Super Admin logout missing
-- Root cause: `app/super-admin/layout.tsx` rendered navigation without the shared logout server action and did not validate a fresh active user before rendering.
-- Files changed: `app/super-admin/layout.tsx`, `lib/logout-source.test.ts`.
-- Manual browser test: Login as `SUPER_ADMIN`, confirm `Log out` appears in the top bar, click it, verify redirect to `/login`, then visit `/super-admin` directly and verify it redirects/blocks without login.
-
-### 2. Video lesson dropdowns empty and create action not persisted
-- Root cause: video pages/actions and `lib/videos.ts` used static demo users/classes/subjects/lessons/progress instead of Prisma and the current session.
-- Files changed: `lib/videos.ts`, `app/dashboard/videos/page.tsx`, `app/dashboard/videos/new/page.tsx`, `app/dashboard/videos/[id]/page.tsx`, `app/dashboard/videos/actions.ts`.
-- Manual browser test: Login as teacher and school admin; verify class/subject dropdowns reflect DB records, teacher sees only assigned classes, school admin sees all own-school classes, and creating a video persists after refresh.
-
-### 3. Case Support student dropdown empty
-- Root cause: support page and helper module read demo arrays and `demoCurrentUser`, so real tenant students/notes/referrals/support/reminders never populated.
-- Files changed: `lib/support.ts`, `app/dashboard/support/page.tsx`, `lib/support.test.ts`.
-- Manual browser test: Login as case manager, school admin, and teacher; verify each sees only visible real students and support records. Verify unauthorized sensitive notes are redacted.
-
-### 4. School Admin branding save did not write to DB
-- Root cause: branding settings page used demo branding/current user, while action only validated and redirected.
-- Files changed: `app/dashboard/settings/branding/page.tsx`, `app/dashboard/settings/branding/actions.ts`.
-- Manual browser test: Login as school admin, edit school branding/contact fields, save, refresh, and verify values persist. Login as teacher/student and verify the route/nav is unavailable.
-
-### 5. Duplicate React keys in library badges
-- Root cause: book badges keyed by the display label, so `subject === language` could duplicate keys.
-- Files changed: `app/dashboard/library/page.tsx`, `app/dashboard/library/[id]/page.tsx`.
-- Manual browser test: Open library pages with a book whose subject/language match and confirm no duplicate-key warning in console.
-
-### 6. Users & Access module missing
-- Root cause: RBAC allowed `users:manage`, but `/dashboard/access-control` was only static role badges with no CRUD/action layer.
-- Files changed: `lib/users.ts`, `app/dashboard/users/**`, `app/dashboard/access-control/page.tsx`, `lib/navigation.ts`, `lib/users.test.ts`.
-- Manual browser test: Login as school admin, open Users & Access, create teacher/case manager/student-linked account, assign classes, reset password, deactivate/reactivate, and verify teacher cannot see nav or access the route.
-
-### 7. Production demo import cleanup
-- Root cause: authenticated pages retained legacy compatibility imports.
-- Files changed: video/support/branding/super-admin pages and `lib/production-imports.test.ts`.
-- Manual browser test: Navigate the affected pages under real accounts and verify no demo placeholder data appears.
-
-## Demo/legacy imports removed
-- `demoCurrentUser` removed from video, support, and branding pages/actions.
-- `demoSchoolBranding` removed from branding and super-admin pages.
-- `demoClasses`, `demoStudents`, `demoVideoSubjects`, `demoVideoLessons`, and `demoVideoProgress` removed from production video helpers/pages.
-- `demoCaseNotes`, `demoSponsorSupports`, `demoReferrals`, and `demoDocumentReminders` removed from production support reads.
-
-## Remaining demo-only files intentionally kept
-- `lib/students.ts`: compatibility exports (`demoCurrentUser`, `demoClasses`, `demoStudents`) retained only for legacy/test isolation and are blocked from audited production pages.
-- `lib/branding.ts`: `demoSchoolBranding` retained as a default branding compatibility constant, not used by authenticated branding/super-admin pages.
-- `lib/support.ts`: empty demo arrays retained as compatibility exports only; support reads are Prisma-backed.
-
-## Manual tests still required
-- Full browser verification against a seeded PostgreSQL database.
-- Google Fonts/network-available production build verification.
-- End-to-end user CRUD with login attempts using reset temporary passwords.
+| Bug | Root cause | Files changed | Fix applied | Browser test to verify |
+|---|---|---|---|---|
+| Super Admin logout missing | Super-admin shell needed an authenticated logout control and route guard. | `app/super-admin/layout.tsx`, `app/logout/actions.ts` | Top bar includes `Log out` form using the shared logout server action; layout redirects non-super-admin users. | Log in as super admin, click **Log out**, then browse to `/super-admin` and confirm redirect to `/login`. |
+| Video lesson dropdowns broken | Production video pages previously depended on demo users/classes/subjects. | `lib/videos.ts`, `app/dashboard/videos/actions.ts`, `app/dashboard/videos/new/page.tsx` | Video class/subject lists and creation/progress flows use authenticated Prisma queries with teacher/student restrictions. | Log in as school admin and teacher; confirm class dropdowns differ by assigned classes and student cannot upload. |
+| Support dropdown broken | Support reads were demo-backed and did not honor session visibility. | `lib/support.ts`, `app/dashboard/support/page.tsx` | Support students, notes, sponsor supports, referrals, reminders, and audit previews load from Prisma; sensitive notes redact by role/approval. | Open support as admin, teacher, approved/unapproved case manager; verify real students and redaction. |
+| Branding did not persist | Branding action validated fields but did not update the school record. | `app/dashboard/settings/branding/actions.ts`, `app/dashboard/settings/branding/page.tsx`, `lib/branding.ts` | Authenticated school admins update their own school branding fields with Prisma and revalidation. | Edit branding as school admin, refresh, and confirm values persist; teacher/student blocked. |
+| Duplicate library React key warning | Book chips used label-derived keys that could collide. | `app/dashboard/library/page.tsx` | Library chips use field-specific stable keys. | Open library with duplicate chip labels and verify no duplicate-key console warning. |
+| Class management incomplete | Classes page only listed records and had inline create. | `app/dashboard/classes/*` | Added create page, detail page, edit page, teacher assignment, roster link, action column, and safe delete. | Create/edit a class, assign teacher, open detail, roster link, and safe-delete an unused class. |
+| LMS management incomplete | LMS was read-only and said actions were ready to connect. | `app/dashboard/lms/*` | Added subject CRUD, lesson CRUD, authorized management buttons, edit links, and real empty states. | Create/edit/delete unused subject; create/edit/delete lesson as admin/assigned teacher. |
+| Assignment management incomplete | Assignments were read-only and grade inputs did not save. | `app/dashboard/assignments/*` | Added assignment CRUD/status workflow and submission grade upserts with max-point validation. | Create, publish, edit, and grade an assignment; refresh and confirm grades remain. |
+| Exam management incomplete | Create Exam button had no route and marks inputs were not persisted. | `app/dashboard/exams/*` | Added exam CRUD/status workflow and marks upsert with max-mark validation. | Create/schedule/edit exam, enter marks/feedback, refresh and confirm persistence. |
+| Build failed in constrained/offline environments | `next/font/google` fetched Google Fonts during build; dynamic pages attempted prerender. | `app/layout.tsx`, `app/globals.css`, `app/dashboard/layout.tsx`, `app/super-admin/layout.tsx`, `app/login/page.tsx` | Replaced remote font dependency with system font stack and marked auth/DB layouts/pages dynamic. | Run `npm run build` without external font access and confirm success. |

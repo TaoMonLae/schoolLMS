@@ -1,42 +1,10 @@
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
 import { getVisibleAssignments, getVisibleSubjects } from "@/lib/lms";
+import { canManageGrades } from "@/lib/rbac";
 import { formatEnumLabel } from "@/lib/students";
 import { getRequiredCurrentUser } from "@/lib/session";
 
-type AssignmentsPageProps = { searchParams?: Promise<{ subjectId?: string }> };
-
-export default async function AssignmentsPage({ searchParams }: AssignmentsPageProps) {
-  const params = await searchParams;
-  const currentUser = await getRequiredCurrentUser();
-  const selectedSubject = params?.subjectId || "ALL";
-  const assignments = await getVisibleAssignments(currentUser, selectedSubject);
-  const subjects = await getVisibleSubjects(currentUser);
-
-  return (
-    <div className="space-y-6 pb-10">
-      <PageHeader eyebrow="Assignments" title="Assignments" description="Track submission status and open teacher grading tables." />
-      <form className="flex gap-3 rounded-lg border border-line bg-white p-4 shadow-soft">
-        <select name="subjectId" defaultValue={selectedSubject} className="h-11 rounded-md border border-line bg-rice px-3 text-sm text-ink">
-          <option value="ALL">All subjects</option>
-          {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
-        </select>
-        <button className="rounded-md bg-ink px-4 text-sm font-bold text-white">Filter</button>
-      </form>
-      <section className="grid gap-4 lg:grid-cols-2">
-        {assignments.map((assignment) => (
-          <article key={assignment.id} className="rounded-lg border border-line bg-white p-5 shadow-soft">
-            <p className="text-xs font-semibold uppercase tracking-wide text-clay">{assignment.class.name} | {assignment.subject.name}</p>
-            <Link href={`/dashboard/assignments/${assignment.id}`} className="mt-2 block text-xl font-semibold text-ink hover:text-clay">{assignment.title}</Link>
-            <p className="mt-2 text-sm leading-6 text-moss">{assignment.description}</p>
-            <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-moss">
-              <span className="rounded-md bg-rice px-2 py-1">Due {assignment.dueDate?.toISOString().slice(0, 10) || "No due date"}</span>
-              <span className="rounded-md bg-rice px-2 py-1">{assignment.maxPoints} pts</span>
-              <span className="rounded-md bg-rice px-2 py-1">{formatEnumLabel(assignment.status)}</span>
-            </div>
-          </article>
-        ))}
-      </section>
-    </div>
-  );
-}
+type AssignmentsPageProps = { searchParams?: Promise<{ subjectId?: string; saved?: string }> };
+export default async function AssignmentsPage({ searchParams }: AssignmentsPageProps) { const params = await searchParams; const currentUser = await getRequiredCurrentUser(); const selectedSubject = params?.subjectId || "ALL"; const assignments = await getVisibleAssignments(currentUser, selectedSubject); const subjects = await getVisibleSubjects(currentUser); const canManage = canManageGrades(currentUser.role); return <div className="space-y-6 pb-10"><div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><PageHeader eyebrow="Assignments" title="Assignments" description="Create, publish, close, and grade class assignments." />{canManage ? <Link href="/dashboard/assignments/new" className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white"><Plus className="h-4 w-4" />Create Assignment</Link> : null}</div>{params?.saved ? <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">Assignment changes saved.</div> : null}<form className="flex gap-3 rounded-lg border border-line bg-white p-4 shadow-soft"><select name="subjectId" defaultValue={selectedSubject} className="h-11 rounded-md border border-line bg-rice px-3 text-sm text-ink"><option value="ALL">All subjects</option>{subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}</select><button className="rounded-md bg-ink px-4 text-sm font-bold text-white">Filter</button></form><section className="grid gap-4 lg:grid-cols-2">{assignments.map((assignment) => <article key={assignment.id} className="rounded-lg border border-line bg-white p-5 shadow-soft"><p className="text-xs font-semibold uppercase tracking-wide text-clay">{assignment.class.name} | {assignment.subject.name}</p><Link href={`/dashboard/assignments/${assignment.id}`} className="mt-2 block text-xl font-semibold text-ink hover:text-clay">{assignment.title}</Link><p className="mt-2 text-sm leading-6 text-moss">{assignment.description}</p><div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-moss"><span className="rounded-md bg-rice px-2 py-1">Due {assignment.dueDate?.toISOString().slice(0, 10) || "No due date"}</span><span className="rounded-md bg-rice px-2 py-1">{assignment.maxPoints} pts</span><span className="rounded-md bg-rice px-2 py-1">{formatEnumLabel(assignment.status)}</span>{canManage ? <Link className="rounded-md border border-line px-2 py-1 text-ink" href={`/dashboard/assignments/${assignment.id}/edit`}>Edit</Link> : null}</div></article>)}</section>{assignments.length === 0 ? <div className="rounded-lg border border-line bg-white p-8 text-center text-sm text-moss shadow-soft">No assignments match this real class/subject scope.</div> : null}</div>; }
