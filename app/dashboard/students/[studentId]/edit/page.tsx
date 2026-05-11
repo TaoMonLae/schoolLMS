@@ -29,7 +29,7 @@ export default async function EditStudentPage({ params }: EditStudentPageProps) 
       {canManage ? (
         <StudentForm mode="edit" student={student} currentRole={currentUser.role} classOptions={classOptions} />
       ) : (
-        <div className="rounded-lg border border-line bg-white p-5 text-sm text-moss shadow-soft">You do not have permission to edit student records.</div>
+        <div className="rounded-lg border border-hairline bg-canvas p-5 text-sm text-slate shadow-soft">You do not have permission to edit student records.</div>
       )}
     </div>
   );

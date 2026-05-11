@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   const school = await getSchoolBrandingForUser(currentUser);
   return (
     <div
-      className="min-h-screen bg-rice"
+      className="min-h-screen bg-surface"
       style={{
         "--school-primary": school.primaryColor,
         "--school-secondary": school.secondaryColor
@@ -21,7 +21,7 @@ export default async function DashboardLayout({
     >
       <Sidebar school={school} role={currentUser.role} />
       <main className="lg:pl-72">
-        <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-md py-md sm:px-xl lg:px-xxl">
           {children}
         </div>
       </main>

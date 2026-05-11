@@ -47,39 +47,39 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
         description="Take class attendance, prevent duplicate daily records, and review monthly patterns."
       />
 
-      <section className="rounded-lg border border-line bg-white p-4 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-4 shadow-soft">
         <form className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
           <Select name="classId" label="Class" defaultValue={selectedClassId} options={classes.map((item) => [item.id, item.name])} />
           <DateInput name="date" label="Date" defaultValue={selectedDate} />
-          <button className="self-end rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">Load Register</button>
+          <button className="self-end rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">Load Register</button>
         </form>
       </section>
 
       {params?.saved ? (
-        <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">
+        <div className="rounded-lg border border-success/30 bg-tint-mint p-4 text-sm font-semibold text-success">
           Attendance saved for {params.saved} students.
         </div>
       ) : null}
 
       {params?.duplicate ? (
-        <div className="rounded-lg border border-[#f2b9af] bg-[#ffe4df] p-4 text-sm font-semibold text-[#8b2b20]">
+        <div className="rounded-lg border border-error/30 bg-tint-rose p-4 text-sm font-semibold text-error">
           Duplicate attendance rows were detected for the same student, date, and class.
         </div>
       ) : null}
 
-      <form action={saveAttendanceBulk} className="rounded-lg border border-line bg-white shadow-soft">
+      <form action={saveAttendanceBulk} className="rounded-lg border border-hairline bg-canvas shadow-soft">
         <input type="hidden" name="classId" value={selectedClassId} />
         <input type="hidden" name="date" value={selectedDate} />
 
-        <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b border-hairline p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-ink">Daily Register</h2>
-            <p className="mt-1 text-sm text-moss">
+            <p className="mt-1 text-sm text-slate">
               {students.length} active students | {canEdit ? "School admin edit mode" : "Role-limited attendance mode"}
             </p>
           </div>
           {canSave ? (
-            <button className="inline-flex items-center justify-center gap-2 rounded-md bg-clay px-4 py-3 text-sm font-bold text-white hover:bg-[#9c5736]">
+            <button className="inline-flex items-center justify-center gap-2 rounded-md bg-brand-orange px-4 py-3 text-sm font-bold text-on-dark hover:bg-brand-orange-deep">
               <Save className="h-4 w-4" aria-hidden="true" />
               Save Attendance
             </button>
@@ -98,7 +98,7 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
                   <StudentPhoto student={student} size="sm" />
                   <div>
                     <p className="text-sm font-semibold text-ink">{student.preferredName || student.legalName}</p>
-                    <p className="text-xs text-moss">{student.studentNumber} | {student.className}</p>
+                    <p className="text-xs text-slate">{student.studentNumber} | {student.className}</p>
                   </div>
                 </div>
 
@@ -119,7 +119,7 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
                     defaultValue={existing?.note}
                     disabled={!canSave}
                     placeholder="Optional note"
-                    className="w-full rounded-md border border-line bg-rice px-3 py-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/60 focus:ring-4 disabled:opacity-65"
+                    className="w-full rounded-md border border-hairline bg-surface px-3 py-3 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/60 focus:ring-4 disabled:opacity-65"
                   />
                 </label>
               </article>
@@ -127,34 +127,34 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
           })}
         </div>
 
-        {students.length === 0 ? <div className="p-8 text-center text-sm text-moss">No students are available for this class and role.</div> : null}
+        {students.length === 0 ? <div className="p-8 text-center text-sm text-slate">No students are available for this class and role.</div> : null}
       </form>
 
-      <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-lg font-semibold text-ink">Monthly Attendance Report</h2>
-            <p className="mt-1 text-sm text-moss">Review recorded attendance by month, then export for reports.</p>
+            <p className="mt-1 text-sm text-slate">Review recorded attendance by month, then export for reports.</p>
           </div>
           <form className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <input type="hidden" name="classId" value={selectedClassId} />
             <input type="hidden" name="date" value={selectedDate} />
             <DateInput type="month" name="month" label="Month" defaultValue={selectedMonth} />
-            <button className="rounded-md border border-line bg-rice px-4 py-3 text-sm font-bold text-ink hover:bg-white">Update</button>
+            <button className="rounded-md border border-hairline bg-surface px-4 py-3 text-sm font-bold text-ink hover:bg-canvas">Update</button>
           </form>
         </div>
 
         <div className="mt-5 flex flex-wrap gap-3">
           <a
             href={`/dashboard/attendance/export/pdf?classId=${selectedClassId}&month=${selectedMonth}`}
-            className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss"
+            className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             Export PDF
           </a>
           <a
             href={`/dashboard/attendance/export/excel?classId=${selectedClassId}&month=${selectedMonth}`}
-            className="inline-flex items-center gap-2 rounded-md border border-ink px-4 py-3 text-sm font-bold text-ink hover:bg-rice"
+            className="inline-flex items-center gap-2 rounded-md border border-ink px-4 py-3 text-sm font-bold text-ink hover:bg-surface"
           >
             <Download className="h-4 w-4" aria-hidden="true" />
             Export Excel
@@ -163,10 +163,10 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
 
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full divide-y divide-line text-sm">
-            <thead className="bg-rice">
+            <thead className="bg-surface">
               <tr>
                 {["Date", "Student", "Class", "Status", "Note"].map((header) => (
-                  <th key={header} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-moss">
+                  <th key={header} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate">
                     {header}
                   </th>
                 ))}
@@ -175,16 +175,16 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
             <tbody className="divide-y divide-line">
               {exportRows.map((row) => (
                 <tr key={`${row.date}-${row.studentNumber}`}>
-                  <td className="px-4 py-3 text-moss">{row.date}</td>
+                  <td className="px-4 py-3 text-slate">{row.date}</td>
                   <td className="px-4 py-3 font-semibold text-ink">{row.studentName}</td>
-                  <td className="px-4 py-3 text-moss">{row.className}</td>
-                  <td className="px-4 py-3 text-moss">{formatEnumLabel(row.status)}</td>
-                  <td className="px-4 py-3 text-moss">{row.note || "None"}</td>
+                  <td className="px-4 py-3 text-slate">{row.className}</td>
+                  <td className="px-4 py-3 text-slate">{formatEnumLabel(row.status)}</td>
+                  <td className="px-4 py-3 text-slate">{row.note || "None"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {monthlyReport.length === 0 ? <div className="p-6 text-center text-sm text-moss">No attendance records for this month.</div> : null}
+          {monthlyReport.length === 0 ? <div className="p-6 text-center text-sm text-slate">No attendance records for this month.</div> : null}
         </div>
       </section>
     </div>
@@ -205,7 +205,7 @@ function Select({
   return (
     <label>
       <span className="text-sm font-semibold text-ink">{label}</span>
-      <select name={name} defaultValue={defaultValue} className="mt-2 h-11 w-full rounded-md border border-line bg-rice px-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4">
+      <select name={name} defaultValue={defaultValue} className="mt-2 h-11 w-full rounded-md border border-hairline bg-surface px-3 text-sm text-ink outline-none ring-primary/20 focus:ring-4">
         {options.map(([value, labelText]) => (
           <option key={value} value={value}>
             {labelText}
@@ -234,7 +234,7 @@ function DateInput({
         type={type}
         name={name}
         defaultValue={defaultValue}
-        className="mt-2 h-11 w-full rounded-md border border-line bg-rice px-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4"
+        className="mt-2 h-11 w-full rounded-md border border-hairline bg-surface px-3 text-sm text-ink outline-none ring-primary/20 focus:ring-4"
       />
     </label>
   );

@@ -5,6 +5,112 @@
 :root {
   color-scheme: light;
   --font-notion: "Notion Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --color-primary: #5645d4;
+  --color-primary-rgb: 86 69 212;
+  --color-primary-pressed: #4534b3;
+  --color-primary-pressed-rgb: 69 52 179;
+  --color-primary-deep: #3a2a99;
+  --color-primary-deep-rgb: 58 42 153;
+  --color-on-primary: #ffffff;
+  --color-on-primary-rgb: 255 255 255;
+  --color-brand-navy: #0a1530;
+  --color-brand-navy-rgb: 10 21 48;
+  --color-brand-navy-deep: #070f24;
+  --color-brand-navy-deep-rgb: 7 15 36;
+  --color-brand-navy-mid: #1a2a52;
+  --color-brand-navy-mid-rgb: 26 42 82;
+  --color-link-blue: #0075de;
+  --color-link-blue-rgb: 0 117 222;
+  --color-link-blue-pressed: #005bab;
+  --color-link-blue-pressed-rgb: 0 91 171;
+  --color-brand-orange: #dd5b00;
+  --color-brand-orange-rgb: 221 91 0;
+  --color-brand-orange-deep: #793400;
+  --color-brand-orange-deep-rgb: 121 52 0;
+  --color-brand-pink: #ff64c8;
+  --color-brand-pink-rgb: 255 100 200;
+  --color-brand-pink-deep: #a02e6d;
+  --color-brand-pink-deep-rgb: 160 46 109;
+  --color-brand-purple: #7b3ff2;
+  --color-brand-purple-rgb: 123 63 242;
+  --color-brand-purple-300: #d6b6f6;
+  --color-brand-purple-300-rgb: 214 182 246;
+  --color-brand-purple-800: #391c57;
+  --color-brand-purple-800-rgb: 57 28 87;
+  --color-brand-teal: #2a9d99;
+  --color-brand-teal-rgb: 42 157 153;
+  --color-brand-green: #1aae39;
+  --color-brand-green-rgb: 26 174 57;
+  --color-brand-yellow: #f5d75e;
+  --color-brand-yellow-rgb: 245 215 94;
+  --color-brand-brown: #523410;
+  --color-brand-brown-rgb: 82 52 16;
+  --color-card-tint-peach: #ffe8d4;
+  --color-card-tint-peach-rgb: 255 232 212;
+  --color-card-tint-rose: #fde0ec;
+  --color-card-tint-rose-rgb: 253 224 236;
+  --color-card-tint-mint: #d9f3e1;
+  --color-card-tint-mint-rgb: 217 243 225;
+  --color-card-tint-lavender: #e6e0f5;
+  --color-card-tint-lavender-rgb: 230 224 245;
+  --color-card-tint-sky: #dcecfa;
+  --color-card-tint-sky-rgb: 220 236 250;
+  --color-card-tint-yellow: #fef7d6;
+  --color-card-tint-yellow-rgb: 254 247 214;
+  --color-card-tint-yellow-bold: #f9e79f;
+  --color-card-tint-yellow-bold-rgb: 249 231 159;
+  --color-card-tint-cream: #f8f5e8;
+  --color-card-tint-cream-rgb: 248 245 232;
+  --color-card-tint-gray: #f0eeec;
+  --color-card-tint-gray-rgb: 240 238 236;
+  --color-canvas: #ffffff;
+  --color-canvas-rgb: 255 255 255;
+  --color-surface: #f6f5f4;
+  --color-surface-rgb: 246 245 244;
+  --color-surface-soft: #fafaf9;
+  --color-surface-soft-rgb: 250 250 249;
+  --color-hairline: #e5e3df;
+  --color-hairline-rgb: 229 227 223;
+  --color-hairline-soft: #ede9e4;
+  --color-hairline-soft-rgb: 237 233 228;
+  --color-hairline-strong: #c8c4be;
+  --color-hairline-strong-rgb: 200 196 190;
+  --color-ink-deep: #000000;
+  --color-ink-deep-rgb: 0 0 0;
+  --color-ink: #1a1a1a;
+  --color-ink-rgb: 26 26 26;
+  --color-charcoal: #37352f;
+  --color-charcoal-rgb: 55 53 47;
+  --color-slate: #5d5b54;
+  --color-slate-rgb: 93 91 84;
+  --color-steel: #787671;
+  --color-steel-rgb: 120 118 113;
+  --color-stone: #a4a097;
+  --color-stone-rgb: 164 160 151;
+  --color-muted: #bbb8b1;
+  --color-muted-rgb: 187 184 177;
+  --color-on-dark: #ffffff;
+  --color-on-dark-rgb: 255 255 255;
+  --color-on-dark-muted: #a4a097;
+  --color-on-dark-muted-rgb: 164 160 151;
+  --color-semantic-success: #1aae39;
+  --color-semantic-success-rgb: 26 174 57;
+  --color-semantic-warning: #dd5b00;
+  --color-semantic-warning-rgb: 221 91 0;
+  --color-semantic-error: #e03131;
+  --color-semantic-error-rgb: 224 49 49;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-xxl: 20px;
+  --radius-xxxl: 24px;
+  --shadow-soft: 0 18px 45px rgba(15, 15, 15, 0.08);
+  --shadow-card: 0 1px 2px rgba(15, 15, 15, 0.04);
+  --focus-ring: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.18);
 }
 
 * {
@@ -18,8 +124,8 @@ html {
 body {
   margin: 0;
   font-family: var(--font-notion);
-  background: #ffffff;
-  color: #1a1a1a;
+  background: var(--color-surface);
+  color: var(--color-ink);
 }
 
 a {
@@ -28,6 +134,92 @@ a {
 }
 
 ::selection {
-  background: #d6b6f6;
-  color: #1a1a1a;
+  background: var(--color-brand-purple-300);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@layer base {
+  input,
+  select,
+  textarea {
+    @apply border-hairline-strong bg-canvas text-ink placeholder:text-muted;
+  }
+
+  input:disabled,
+  select:disabled,
+  textarea:disabled,
+  button:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+}
+
+@layer components {
+  .ds-page-shell {
+    @apply space-y-6 pb-10;
+  }
+
+  .ds-card {
+    @apply rounded-lg border border-hairline bg-canvas shadow-card;
+  }
+
+  .ds-section-card {
+    @apply rounded-lg border border-hairline bg-canvas p-xl shadow-soft;
+  }
+
+  .ds-input {
+    @apply h-11 w-full rounded-md border border-hairline-strong bg-canvas px-md text-body-sm text-ink outline-none transition placeholder:text-muted focus:border-primary focus:shadow-[var(--focus-ring)];
+  }
+
+  .ds-textarea {
+    @apply w-full rounded-md border border-hairline-strong bg-canvas px-md py-sm text-body-sm text-ink outline-none transition placeholder:text-muted focus:border-primary focus:shadow-[var(--focus-ring)];
+  }
+
+  .ds-button {
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium leading-[1.3] transition disabled:bg-hairline disabled:text-muted;
+  }
+
+  .ds-button-primary {
+    @apply ds-button bg-primary text-on-primary hover:bg-primary-pressed active:bg-primary-deep;
+  }
+
+  .ds-button-dark {
+    @apply ds-button bg-ink-deep text-on-dark hover:bg-charcoal active:bg-ink;
+  }
+
+  .ds-button-secondary {
+    @apply ds-button border border-hairline-strong bg-transparent text-ink hover:bg-surface;
+  }
+
+  .ds-button-ghost {
+    @apply ds-button min-h-9 rounded-sm px-sm py-xs text-ink hover:bg-surface;
+  }
+
+  .ds-button-destructive {
+    @apply ds-button border border-error/45 bg-tint-rose text-error hover:bg-tint-rose/70;
+  }
+
+  .ds-table {
+    @apply w-full border-collapse text-left text-body-sm text-slate;
+  }
+
+  .ds-table thead {
+    @apply bg-surface-soft text-micro uppercase tracking-[0.08em] text-stone;
+  }
+
+  .ds-table th {
+    @apply px-lg py-sm font-semibold;
+  }
+
+  .ds-table td {
+    @apply border-t border-hairline-soft px-lg py-md align-middle;
+  }
+
+  .ds-badge {
+    @apply inline-flex items-center rounded-full px-[10px] py-1 text-caption font-semibold;
+  }
 }

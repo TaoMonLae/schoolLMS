@@ -160,7 +160,7 @@ function Header() {
           <Link href="/login" className="rounded-md border border-hairlineStrong px-3 py-2 text-sm font-medium hover:bg-surface">
             School Login
           </Link>
-          <Link href="#pricing" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-white hover:bg-primary-pressed">
+          <Link href="#pricing" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-on-dark hover:bg-primary-pressed">
             Start free
           </Link>
         </div>
@@ -171,26 +171,26 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden bg-navy px-4 pb-20 pt-16 text-white sm:px-6 sm:pb-24 lg:px-8">
+    <section className="relative isolate overflow-hidden bg-navy px-4 pb-20 pt-16 text-on-dark sm:px-6 sm:pb-24 lg:px-8">
       <DecorativeField />
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/78">
+          <p className="inline-flex items-center gap-2 rounded-full border border-on-dark/18 bg-canvas/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-on-dark/78">
             <Sparkles className="h-3.5 w-3.5 text-brand-yellow" aria-hidden="true" />
             Education continuity for displaced learners
           </p>
           <h1 className="mt-7 text-5xl font-semibold leading-[1.05] tracking-[-0.05em] sm:text-6xl lg:text-[80px]">
             Meet the school day workspace.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/72">
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-on-dark/72">
             Refugee SchoolOS gives NGO schools one calm operating system for student records, attendance, classes, learning materials, videos, and impact reports.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-[18px] py-[10px] text-sm font-medium text-white hover:bg-primary-pressed">
+            <Link href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-[18px] py-[10px] text-sm font-medium text-on-dark hover:bg-primary-pressed">
               Get SchoolOS free
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            <a href="mailto:hello@refugeeschoolos.org" className="inline-flex items-center justify-center rounded-md border border-white/38 px-[18px] py-[10px] text-sm font-medium text-white hover:bg-white/10">
+            <a href="mailto:hello@refugeeschoolos.org" className="inline-flex items-center justify-center rounded-md border border-on-dark/38 px-[18px] py-[10px] text-sm font-medium text-on-dark hover:bg-canvas/10">
               Request a demo
             </a>
           </div>
@@ -204,7 +204,7 @@ function Hero() {
 function DecorativeField() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(86,69,212,0.22),transparent_26%),radial-gradient(circle_at_76%_18%,rgba(255,100,200,0.18),transparent_22%),linear-gradient(180deg,#0a1530,#070f24)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(86,69,212,0.22),transparent_26%),radial-gradient(circle_at_76%_18%,rgba(255,100,200,0.18),transparent_22%),linear-gradient(180deg,var(--color-brand-navy),var(--color-brand-navy-deep))]" />
       {[
         "left-[8%] top-[18%] bg-brand-pink",
         "left-[18%] top-[65%] bg-brand-yellow",
@@ -214,8 +214,8 @@ function DecorativeField() {
       ].map((className) => (
         <span key={className} className={`absolute h-4 w-4 rounded-sm opacity-90 shadow-lg ${className}`} />
       ))}
-      <div className="absolute left-6 top-32 h-40 w-40 rounded-full border border-white/12" />
-      <div className="absolute right-10 top-24 h-36 w-56 rotate-12 rounded-[32px] border border-white/12" />
+      <div className="absolute left-6 top-32 h-40 w-40 rounded-full border border-on-dark/12" />
+      <div className="absolute right-10 top-24 h-36 w-56 rotate-12 rounded-[32px] border border-on-dark/12" />
       <div className="absolute bottom-24 left-1/2 h-px w-[560px] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
     </div>
   );
@@ -226,9 +226,9 @@ function WorkspaceMockup() {
     <div className="relative mx-auto mt-14 max-w-6xl rounded-lg border border-hairline bg-canvas text-ink shadow-mockup">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-surface px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-          <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-          <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+          <span className="h-3 w-3 rounded-full bg-error" />
+          <span className="h-3 w-3 rounded-full bg-brand-yellow" />
+          <span className="h-3 w-3 rounded-full bg-success" />
           <span className="ml-3 text-xs font-medium text-steel">schoolos.app/dashboard</span>
         </div>
         <div className="hidden items-center gap-2 rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-steel sm:flex">
@@ -239,7 +239,7 @@ function WorkspaceMockup() {
       <div className="grid min-h-[360px] gap-0 overflow-hidden rounded-b-lg lg:grid-cols-[220px_1fr]">
         <aside className="hidden border-r border-hairline bg-surfaceSoft p-4 lg:block">
           {['Dashboard', 'Students', 'Classes', 'Attendance', 'Library', 'Reports'].map((item, index) => (
-            <div key={item} className={`mb-2 rounded-md px-3 py-2 text-sm font-medium ${index === 0 ? 'bg-inkDeep text-white' : 'text-slate hover:bg-surface'}`}>
+            <div key={item} className={`mb-2 rounded-md px-3 py-2 text-sm font-medium ${index === 0 ? 'bg-inkDeep text-on-dark' : 'text-slate hover:bg-surface'}`}>
               {item}
             </div>
           ))}
@@ -261,7 +261,7 @@ function WorkspaceMockup() {
             <div className="rounded-lg border border-hairline bg-canvas p-5">
               <div className="flex items-center justify-between border-b border-hairlineSoft pb-3">
                 <p className="font-semibold text-ink">Today&apos;s register</p>
-                <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">Live</span>
+                <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-dark">Live</span>
               </div>
               {['Primary A', 'Bridge English', 'Math Level 2'].map((item, index) => (
                 <div key={item} className="flex items-center justify-between border-b border-hairlineSoft py-4 last:border-0">
@@ -303,7 +303,7 @@ function FeatureSection() {
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
             <article key={feature.title} className={`${feature.tint} rounded-lg p-8 text-charcoal`}>
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-md bg-white/80">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-md bg-canvas/80">
                 <feature.icon className={`h-6 w-6 ${feature.accent}`} aria-hidden="true" />
               </span>
               <h3 className="mt-6 text-xl font-semibold tracking-[-0.02em]">{feature.title}</h3>
@@ -353,7 +353,7 @@ function LibrarySection() {
               <div key={title} className={`rounded-lg border border-hairline bg-canvas p-4 ${tint}`}>
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate">{type}</p>
                 <p className="mt-3 text-lg font-semibold tracking-[-0.02em] text-charcoal">{title}</p>
-                <div className="mt-5 h-2 rounded-full bg-white/75">
+                <div className="mt-5 h-2 rounded-full bg-canvas/75">
                   <div className="h-2 w-2/3 rounded-full bg-primary" />
                 </div>
               </div>
@@ -395,7 +395,7 @@ function BrandingSection() {
         </div>
         <div className="rounded-lg border border-hairline bg-canvas p-6 shadow-soft">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary text-white">
+            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary text-on-dark">
               <Palette className="h-7 w-7" aria-hidden="true" />
             </div>
             <div>
@@ -426,11 +426,11 @@ function PricingSection() {
         <div id="demo" className="mt-10 grid gap-4 lg:grid-cols-4">
           {pricing.map((plan) => (
             <article key={plan.name} className={`relative rounded-lg p-6 ${plan.featured ? 'border-2 border-primary bg-surface' : 'border border-hairline bg-canvas'}`}>
-              {plan.featured ? <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">Popular</span> : null}
+              {plan.featured ? <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-dark">Popular</span> : null}
               <h3 className="text-xl font-semibold tracking-[-0.02em] text-ink">{plan.name}</h3>
               <p className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-ink">{plan.price}</p>
               <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate">{plan.description}</p>
-              <Link href="/login" className={`mt-5 inline-flex w-full items-center justify-center rounded-md px-[18px] py-[10px] text-sm font-medium ${plan.featured ? 'bg-primary text-white hover:bg-primary-pressed' : 'border border-hairlineStrong text-ink hover:bg-surface'}`}>
+              <Link href="/login" className={`mt-5 inline-flex w-full items-center justify-center rounded-md px-[18px] py-[10px] text-sm font-medium ${plan.featured ? 'bg-primary text-on-dark hover:bg-primary-pressed' : 'border border-hairlineStrong text-ink hover:bg-surface'}`}>
                 {plan.name === 'Enterprise' ? 'Contact us' : 'Get started'}
               </Link>
               <ul className="mt-5 space-y-3 text-sm text-charcoal">
@@ -481,19 +481,19 @@ function FaqSection() {
 
 function Footer() {
   return (
-    <footer className="border-t border-hairline bg-navy-deep py-10 text-white">
+    <footer className="border-t border-hairline bg-navy-deep py-10 text-on-dark">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
         <div>
           <p className="flex items-center gap-2 text-base font-semibold">
             <ShieldCheck className="h-5 w-5 text-brand-yellow" aria-hidden="true" />
             Refugee SchoolOS
           </p>
-          <p className="mt-2 text-sm text-white/60">hello@refugeeschoolos.org</p>
+          <p className="mt-2 text-sm text-on-dark/60">hello@refugeeschoolos.org</p>
         </div>
-        <div className="flex flex-wrap gap-4 text-sm text-white/64">
-          <a href="mailto:hello@refugeeschoolos.org" className="hover:text-white">Contact</a>
-          <a href="#" className="hover:text-white">Privacy</a>
-          <a href="#" className="hover:text-white">Terms</a>
+        <div className="flex flex-wrap gap-4 text-sm text-on-dark/64">
+          <a href="mailto:hello@refugeeschoolos.org" className="hover:text-on-dark">Contact</a>
+          <a href="#" className="hover:text-on-dark">Privacy</a>
+          <a href="#" className="hover:text-on-dark">Terms</a>
         </div>
       </div>
     </footer>

@@ -35,34 +35,34 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <PageHeader eyebrow="Students" title="Student Records" description="Search, filter, and manage learner profiles with school-scoped access controls." />
         {canManage ? (
-          <Link href="/dashboard/students/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+          <Link href="/dashboard/students/new" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
             <Plus className="h-4 w-4" aria-hidden="true" />
             Add Student
           </Link>
         ) : null}
       </div>
 
-      <section className="rounded-lg border border-line bg-white p-4 shadow-soft">
+      <section className="rounded-lg border border-hairline bg-canvas p-4 shadow-soft">
         <form className="grid gap-3 md:grid-cols-[1.5fr_1fr_1fr_1fr_auto]">
           <label className="relative">
             <span className="sr-only">Search students</span>
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-moss" aria-hidden="true" />
-            <input name="q" defaultValue={filters.search} placeholder="Search name, ID, guardian" className="h-11 w-full rounded-md border border-line bg-rice pl-9 pr-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/60 focus:ring-4" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate" aria-hidden="true" />
+            <input name="q" defaultValue={filters.search} placeholder="Search name, ID, guardian" className="h-11 w-full rounded-md border border-hairline bg-surface pl-9 pr-3 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/60 focus:ring-4" />
           </label>
           <FilterSelect name="classId" defaultValue={filters.classId} options={["ALL", ...classes.map((item) => item.id)]} labels={{ ALL: "All classes", ...Object.fromEntries(classes.map((item) => [item.id, item.name])) }} />
           <FilterSelect name="gender" defaultValue={filters.gender} options={["ALL", ...genders]} labels={{ ALL: "All genders" }} />
           <FilterSelect name="status" defaultValue={filters.status} options={["ALL", ...studentStatuses]} labels={{ ALL: "All statuses" }} />
-          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-white hover:bg-moss">Filter</button>
+          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-on-dark hover:bg-slate">Filter</button>
         </form>
       </section>
 
-      <section className="overflow-hidden rounded-lg border border-line bg-white shadow-soft">
+      <section className="overflow-hidden rounded-lg border border-hairline bg-canvas shadow-soft">
         <div className="hidden overflow-x-auto lg:block">
           <table className="min-w-full divide-y divide-line">
-            <thead className="bg-rice">
+            <thead className="bg-surface">
               <tr>
                 {["Student", "Class", "Gender", "Status", "Guardian", "Emergency", ""].map((header) => (
-                  <th key={header} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-moss">
+                  <th key={header} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate">
                     {header}
                   </th>
                 ))}
@@ -70,27 +70,27 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
             </thead>
             <tbody className="divide-y divide-line">
               {students.map((student) => (
-                <tr key={student.id} className="hover:bg-rice/70">
+                <tr key={student.id} className="hover:bg-surface/70">
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
                       <StudentPhoto student={student} size="sm" />
                       <div>
-                        <Link href={`/dashboard/students/${student.id}`} className="text-sm font-semibold text-ink hover:text-clay">
+                        <Link href={`/dashboard/students/${student.id}`} className="text-sm font-semibold text-ink hover:text-brand-orange">
                           {student.preferredName || student.legalName}
                         </Link>
-                        <p className="text-xs text-moss">{student.studentNumber}</p>
+                        <p className="text-xs text-slate">{student.studentNumber}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-4 text-sm text-ink">{student.className}</td>
-                  <td className="px-4 py-4 text-sm text-moss">{formatEnumLabel(student.gender)}</td>
+                  <td className="px-4 py-4 text-sm text-slate">{formatEnumLabel(student.gender)}</td>
                   <td className="px-4 py-4">
                     <StudentStatusBadge status={student.status} />
                   </td>
-                  <td className="px-4 py-4 text-sm text-moss">{student.guardianName || "Not recorded"}</td>
-                  <td className="px-4 py-4 text-sm text-moss">{student.emergencyContactPhone || "Not recorded"}</td>
+                  <td className="px-4 py-4 text-sm text-slate">{student.guardianName || "Not recorded"}</td>
+                  <td className="px-4 py-4 text-sm text-slate">{student.emergencyContactPhone || "Not recorded"}</td>
                   <td className="px-4 py-4 text-right">
-                    <Link href={`/dashboard/students/${student.id}`} className="text-sm font-semibold text-clay hover:text-ink">
+                    <Link href={`/dashboard/students/${student.id}`} className="text-sm font-semibold text-brand-orange hover:text-ink">
                       View
                     </Link>
                   </td>
@@ -111,17 +111,17 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
                       <Link href={`/dashboard/students/${student.id}`} className="font-semibold text-ink">
                         {student.preferredName || student.legalName}
                       </Link>
-                      <p className="text-xs text-moss">{student.studentNumber} | {student.className}</p>
+                      <p className="text-xs text-slate">{student.studentNumber} | {student.className}</p>
                     </div>
                     <StudentStatusBadge status={student.status} />
                   </div>
                   <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <dt className="text-xs font-semibold uppercase tracking-wide text-moss">Guardian</dt>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-slate">Guardian</dt>
                       <dd className="mt-1 text-ink">{student.guardianName || "Not recorded"}</dd>
                     </div>
                     <div>
-                      <dt className="text-xs font-semibold uppercase tracking-wide text-moss">Emergency</dt>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-slate">Emergency</dt>
                       <dd className="mt-1 text-ink">{student.emergencyContactPhone || "Not recorded"}</dd>
                     </div>
                   </dl>
@@ -131,7 +131,7 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
           ))}
         </div>
 
-        {students.length === 0 ? <div className="p-8 text-center text-sm text-moss">No students match the current filters.</div> : null}
+        {students.length === 0 ? <div className="p-8 text-center text-sm text-slate">No students match the current filters.</div> : null}
       </section>
     </div>
   );
@@ -139,7 +139,7 @@ export default async function StudentsPage({ searchParams }: StudentsPageProps) 
 
 function FilterSelect({ name, defaultValue, options, labels = {} }: { name: string; defaultValue?: string; options: readonly string[]; labels?: Record<string, string> }) {
   return (
-    <select name={name} defaultValue={defaultValue} className="h-11 rounded-md border border-line bg-rice px-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4">
+    <select name={name} defaultValue={defaultValue} className="h-11 rounded-md border border-hairline bg-surface px-3 text-sm text-ink outline-none ring-primary/20 focus:ring-4">
       {options.map((option) => (
         <option key={option} value={option}>
           {labels[option] || formatEnumLabel(option)}

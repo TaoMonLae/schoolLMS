@@ -47,10 +47,10 @@ export default async function SuperAdminPage() {
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-ink">Platform Overview</h1>
-          <p className="mt-1 text-sm text-moss">
+          <p className="mt-1 text-sm text-slate">
             All school tenants, students, and staff across Refugee SchoolOS.
             {stats.demo && (
-              <span className="ml-2 rounded-md bg-rice px-2 py-0.5 text-xs font-semibold text-clay">
+              <span className="ml-2 rounded-md bg-surface px-2 py-0.5 text-xs font-semibold text-brand-orange">
                 Demo mode — connect DB for live data
               </span>
             )}
@@ -58,7 +58,7 @@ export default async function SuperAdminPage() {
         </div>
         <Link
           href="/super-admin/schools/new"
-          className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-white hover:bg-moss"
+          className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           Create School
@@ -72,18 +72,18 @@ export default async function SuperAdminPage() {
           { label: "Active Students", value: stats.studentCount, icon: GraduationCap, href: null },
           { label: "Active Users", value: stats.userCount, icon: Users, href: null },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-lg border border-line bg-white p-5 shadow-soft">
+          <div key={stat.label} className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-rice text-clay">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-surface text-brand-orange">
                 <stat.icon className="h-5 w-5" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-moss">{stat.label}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate">{stat.label}</p>
                 <p className="mt-0.5 text-2xl font-semibold text-ink">{stat.value.toLocaleString()}</p>
               </div>
             </div>
             {stat.href && (
-              <Link href={stat.href} className="mt-4 block text-xs font-semibold text-clay hover:text-ink">
+              <Link href={stat.href} className="mt-4 block text-xs font-semibold text-brand-orange hover:text-ink">
                 View all →
               </Link>
             )}
@@ -92,22 +92,22 @@ export default async function SuperAdminPage() {
       </div>
 
       {/* Recent schools */}
-      <div className="rounded-lg border border-line bg-white shadow-soft">
-        <div className="flex items-center justify-between border-b border-line px-5 py-4">
+      <div className="rounded-lg border border-hairline bg-canvas shadow-soft">
+        <div className="flex items-center justify-between border-b border-hairline px-5 py-4">
           <h2 className="text-base font-semibold text-ink">Schools</h2>
-          <Link href="/super-admin/schools" className="text-sm font-semibold text-clay hover:text-ink">
+          <Link href="/super-admin/schools" className="text-sm font-semibold text-brand-orange hover:text-ink">
             View all →
           </Link>
         </div>
 
         {recentSchools.length === 0 ? (
           <div className="px-5 py-12 text-center">
-            <Building2 className="mx-auto h-8 w-8 text-moss/40" />
+            <Building2 className="mx-auto h-8 w-8 text-slate/40" />
             <p className="mt-3 text-sm font-semibold text-ink">No schools yet</p>
-            <p className="mt-1 text-sm text-moss">Get started by creating the first school tenant.</p>
+            <p className="mt-1 text-sm text-slate">Get started by creating the first school tenant.</p>
             <Link
               href="/super-admin/schools/new"
-              className="mt-4 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-moss"
+              className="mt-4 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-on-dark hover:bg-slate"
             >
               <Plus className="h-4 w-4" />
               Create School
@@ -118,12 +118,12 @@ export default async function SuperAdminPage() {
             {recentSchools.map((school) => (
               <div key={school.id} className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-ink text-xs font-semibold text-white">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-ink text-xs font-semibold text-on-dark">
                     {school.code.slice(0, 2)}
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-ink">{school.name}</p>
-                    <p className="text-xs text-moss">
+                    <p className="text-xs text-slate">
                       {school.code}
                       {school.city ? ` · ${school.city}, ${school.country}` : ""}
                       {school.subdomain ? ` · ${school.subdomain}.refugeeschoolos.com` : ""}
@@ -131,12 +131,12 @@ export default async function SuperAdminPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <span className="hidden text-sm text-moss sm:block">
+                  <span className="hidden text-sm text-slate sm:block">
                     {school._count.students} student{school._count.students !== 1 ? "s" : ""}
                   </span>
                   <Link
                     href={`/super-admin/schools/${school.id}`}
-                    className="text-sm font-semibold text-clay hover:text-ink"
+                    className="text-sm font-semibold text-brand-orange hover:text-ink"
                   >
                     Manage →
                   </Link>
@@ -149,32 +149,32 @@ export default async function SuperAdminPage() {
 
       {/* Security overview */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-line bg-white p-5">
+        <div className="rounded-lg border border-hairline bg-canvas p-5">
           <div className="flex items-start gap-3">
-            <Shield className="mt-0.5 h-5 w-5 shrink-0 text-leaf" aria-hidden="true" />
+            <Shield className="mt-0.5 h-5 w-5 shrink-0 text-success" aria-hidden="true" />
             <div>
               <p className="text-sm font-semibold text-ink">Tenant Isolation Active</p>
-              <p className="mt-2 text-sm leading-6 text-moss">
+              <p className="mt-2 text-sm leading-6 text-slate">
                 Every query in the system is guarded by{" "}
-                <code className="rounded bg-rice px-1 text-xs">tenantFilter(user)</code> from{" "}
-                <code className="rounded bg-rice px-1 text-xs">lib/tenant.ts</code>. School admins
+                <code className="rounded bg-surface px-1 text-xs">tenantFilter(user)</code> from{" "}
+                <code className="rounded bg-surface px-1 text-xs">lib/tenant.ts</code>. School admins
                 see only their own school&apos;s data. A second-layer{" "}
-                <code className="rounded bg-rice px-1 text-xs">filterToTenant()</code> safety net
+                <code className="rounded bg-surface px-1 text-xs">filterToTenant()</code> safety net
                 catches any missed query.
               </p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border border-line bg-white p-5">
+        <div className="rounded-lg border border-hairline bg-canvas p-5">
           <div className="flex items-start gap-3">
-            <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-clay" aria-hidden="true" />
+            <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-orange" aria-hidden="true" />
             <div>
               <p className="text-sm font-semibold text-ink">Subdomain Routing</p>
-              <p className="mt-2 text-sm leading-6 text-moss">
+              <p className="mt-2 text-sm leading-6 text-slate">
                 Each school can be accessed via{" "}
-                <code className="rounded bg-rice px-1 text-xs">subdomain.refugeeschoolos.com</code>{" "}
+                <code className="rounded bg-surface px-1 text-xs">subdomain.refugeeschoolos.com</code>{" "}
                 or a custom domain. The middleware extracts the subdomain and passes it as the{" "}
-                <code className="rounded bg-rice px-1 text-xs">x-school-subdomain</code> header for
+                <code className="rounded bg-surface px-1 text-xs">x-school-subdomain</code> header for
                 server-side branding resolution.
               </p>
             </div>

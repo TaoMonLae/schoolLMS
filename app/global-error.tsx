@@ -23,8 +23,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
         style={{
           margin: 0,
           fontFamily: "system-ui, -apple-system, sans-serif",
-          background: "#ffffff",
-          color: "#111827",
+          background: "var(--color-canvas)",
+          color: "var(--color-ink)",
         }}
       >
         <div
@@ -41,11 +41,11 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           <h1 style={{ fontSize: "1.5rem", fontWeight: 600 }}>
             Application error
           </h1>
-          <p style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "#6b7280" }}>
+          <p style={{ marginTop: "0.75rem", fontSize: "0.875rem", color: "var(--color-slate)" }}>
             A critical error has occurred. Please reload the page.
           </p>
           {error.digest && (
-            <p style={{ marginTop: "0.5rem", fontFamily: "monospace", fontSize: "0.75rem", color: "#9ca3af" }}>
+            <p style={{ marginTop: "0.5rem", fontFamily: "monospace", fontSize: "0.75rem", color: "var(--color-stone)" }}>
               Reference: {error.digest}
             </p>
           )}
@@ -55,8 +55,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             style={{
               marginTop: "2rem",
               padding: "0.5rem 1.5rem",
-              background: "#111827",
-              color: "#ffffff",
+              background: "var(--color-ink-deep)",
+              color: "var(--color-on-dark)",
               border: "none",
               borderRadius: "0.375rem",
               fontSize: "0.875rem",

@@ -13,14 +13,14 @@ export function SchoolLogo({ school, className = "h-10 w-10", imageClassName = "
 
   if (school.logoUrl) {
     return (
-      <span className={`flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-line bg-white ${className}`}>
+      <span className={`flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-hairline bg-canvas ${className}`}>
         <img src={school.logoUrl} alt={label} className={imageClassName} />
       </span>
     );
   }
 
   return (
-    <span className={`flex shrink-0 items-center justify-center rounded-md text-white ${className}`} style={{ backgroundColor: school.primaryColor }}>
+    <span className={`flex shrink-0 items-center justify-center rounded-md text-on-dark ${className}`} style={{ backgroundColor: school.primaryColor }}>
       <School className={iconClassName} aria-hidden="true" />
     </span>
   );

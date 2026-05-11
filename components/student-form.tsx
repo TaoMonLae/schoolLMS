@@ -35,8 +35,8 @@ export function StudentForm({ mode, student, currentRole, classOptions }: Studen
           <label htmlFor="photo" className="text-sm font-semibold text-ink">
             Student photo
           </label>
-          <input id="photo" name="photo" type="file" accept="image/*" className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-moss file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
-          <p className="mt-2 text-xs leading-5 text-moss">Photo storage is not implemented yet; this file input is intentionally not persisted until object storage is configured.</p>
+          <input id="photo" name="photo" type="file" accept="image/*" className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-slate file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-on-dark" />
+          <p className="mt-2 text-xs leading-5 text-slate">Photo storage is not implemented yet; this file input is intentionally not persisted until object storage is configured.</p>
         </div>
       </FormSection>
 
@@ -50,7 +50,7 @@ export function StudentForm({ mode, student, currentRole, classOptions }: Studen
         <label htmlFor="homeAddress" className="mt-4 block text-sm font-semibold text-ink">
           Home address
         </label>
-        <textarea id="homeAddress" name="homeAddress" defaultValue={student?.homeAddress} rows={3} className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4" />
+        <textarea id="homeAddress" name="homeAddress" defaultValue={student?.homeAddress} rows={3} className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink outline-none ring-primary/20 focus:ring-4" />
       </FormSection>
 
       <FormSection title="Emergency Contact" description="Backup contact details for urgent school situations.">
@@ -73,27 +73,27 @@ export function StudentForm({ mode, student, currentRole, classOptions }: Studen
             <TextField label="Expiry date" name="documentExpiryDate" type="date" defaultValue={student?.documentExpiryDate} />
           </div>
         ) : (
-          <div className="rounded-md border border-line bg-rice p-4 text-sm leading-6 text-moss">Your current role can manage general student records but cannot view or edit refugee document identifiers.</div>
+          <div className="rounded-md border border-hairline bg-surface p-4 text-sm leading-6 text-slate">Your current role can manage general student records but cannot view or edit refugee document identifiers.</div>
         )}
       </FormSection>
 
       {mode === "edit" ? (
-        <div className="rounded-lg border border-[#f0c2b8] bg-[#fff1ed] p-5">
-          <h2 className="text-base font-semibold text-[#7d2a1f]">Soft Delete</h2>
-          <p className="mt-2 text-sm leading-6 text-[#7d2a1f]">
+        <div className="rounded-lg border border-error/30 bg-tint-rose p-5">
+          <h2 className="text-base font-semibold text-error">Soft Delete</h2>
+          <p className="mt-2 text-sm leading-6 text-error">
             Soft delete marks the student as deleted with `deleted_at` while preserving audit history and related records.
           </p>
-          <button formAction={deleteAction} className="mt-4 rounded-md border border-[#b84a3a] px-4 py-2 text-sm font-semibold text-[#7d2a1f] hover:bg-white">
+          <button formAction={deleteAction} className="mt-4 rounded-md border border-error/45 px-4 py-2 text-sm font-semibold text-error hover:bg-canvas">
             Soft Delete Student
           </button>
         </div>
       ) : null}
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <Link href={student ? `/dashboard/students/${student.id}` : "/dashboard/students"} className="inline-flex justify-center rounded-md border border-line bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-rice">
+        <Link href={student ? `/dashboard/students/${student.id}` : "/dashboard/students"} className="inline-flex justify-center rounded-md border border-hairline bg-canvas px-4 py-3 text-sm font-semibold text-ink hover:bg-surface">
           Cancel
         </Link>
-        <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+        <button className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
           {actionLabel}
         </button>
       </div>
@@ -103,10 +103,10 @@ export function StudentForm({ mode, student, currentRole, classOptions }: Studen
 
 function FormSection({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
+    <section className="rounded-lg border border-hairline bg-canvas p-5 shadow-soft">
       <div className="mb-5">
         <h2 className="text-lg font-semibold text-ink">{title}</h2>
-        <p className="mt-1 text-sm leading-6 text-moss">{description}</p>
+        <p className="mt-1 text-sm leading-6 text-slate">{description}</p>
       </div>
       {children}
     </section>
@@ -125,7 +125,7 @@ function TextField({ label, name, type = "text", defaultValue, required }: { lab
         type={type}
         defaultValue={defaultValue}
         required={required}
-        className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/55 focus:ring-4"
+        className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/55 focus:ring-4"
       />
     </div>
   );
@@ -149,7 +149,7 @@ function SelectField({
       <label htmlFor={name} className="text-sm font-semibold text-ink">
         {label}
       </label>
-      <select id={name} name={name} defaultValue={defaultValue} className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 focus:ring-4">
+      <select id={name} name={name} defaultValue={defaultValue} className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink outline-none ring-primary/20 focus:ring-4">
         {options.map((option) => (
           <option key={option} value={option}>
             {labels[option] || formatEnumLabel(option)}
