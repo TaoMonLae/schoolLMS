@@ -10,41 +10,55 @@ import {
   LibraryBig,
   Palette,
   PlayCircle,
+  Search,
+  ShieldCheck,
+  Sparkles,
   Users
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 const features = [
   {
     title: "Student Records",
-    description: "Keep learner profiles, guardian details, enrollment history, and support notes together.",
-    icon: Users
+    description: "Learner profiles, guardian details, enrollment history, and support notes in one protected workspace.",
+    icon: Users,
+    tint: "bg-tint-peach",
+    accent: "text-brand-orange"
   },
   {
     title: "Attendance",
-    description: "Track daily presence by class with simple statuses and export-ready registers.",
-    icon: CalendarCheck
+    description: "Daily class registers with simple statuses, trends, and export-ready ministry evidence.",
+    icon: CalendarCheck,
+    tint: "bg-tint-mint",
+    accent: "text-brand-green"
   },
   {
     title: "LMS",
-    description: "Organize classes, assignments, resources, and school workflows in one calm workspace.",
-    icon: GraduationCap
+    description: "Organize classes, assignments, resources, and teacher workflows without spreadsheet sprawl.",
+    icon: GraduationCap,
+    tint: "bg-tint-lavender",
+    accent: "text-brand-purple"
   },
   {
     title: "E-Library",
-    description: "Share reading packs, worksheets, and offline-friendly resources across the school.",
-    icon: LibraryBig
+    description: "Share reading packs, worksheets, teacher guides, and reusable learning resources.",
+    icon: LibraryBig,
+    tint: "bg-tint-sky",
+    accent: "text-link"
   },
   {
     title: "Video Lessons",
-    description: "Support blended learning with teacher-created lessons and curated learning videos.",
-    icon: PlayCircle
+    description: "Support blended classrooms with teacher-created lessons and curated learning videos.",
+    icon: PlayCircle,
+    tint: "bg-tint-rose",
+    accent: "text-brand-pink"
   },
   {
     title: "Reports",
-    description: "Generate attendance, enrollment, class, and donor-ready school reports without spreadsheets.",
-    icon: BarChart3
+    description: "Generate attendance, enrollment, class, and donor-ready school reports in minutes.",
+    icon: BarChart3,
+    tint: "bg-tint-yellow",
+    accent: "text-brand-brown"
   }
 ];
 
@@ -53,6 +67,34 @@ const benefits = [
   "Multilingual-ready student and family workflows",
   "Printable reports for ministries, donors, and case teams",
   "Sensitive data controls for vulnerable learner records"
+];
+
+const pricing = [
+  {
+    name: "Free",
+    price: "$0",
+    description: "Start a small learning centre with core records and registers.",
+    features: ["Student directory", "Attendance basics", "Class workspace", "Printable summaries"]
+  },
+  {
+    name: "Plus",
+    price: "$29",
+    description: "Add richer teaching resources for growing school teams.",
+    features: ["E-Library", "Video lessons", "Teacher guides", "Priority imports"]
+  },
+  {
+    name: "Business",
+    price: "$79",
+    description: "Coordinate multiple programmes with stronger reporting.",
+    features: ["Donor reports", "Advanced roles", "School branding", "Audit history"],
+    featured: true
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    description: "For NGO networks operating across regions and partners.",
+    features: ["Multi-school rollout", "Custom workflows", "Data migration", "Dedicated support"]
+  }
 ];
 
 const faqs = [
@@ -74,12 +116,18 @@ const faqs = [
   }
 ];
 
+const navLinks = [
+  ["Features", "#features"],
+  ["Library", "#library"],
+  ["Pricing", "#pricing"],
+  ["Request demo", "#demo"]
+];
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-rice text-ink">
+    <main className="min-h-screen bg-canvas text-ink">
       <Header />
       <Hero />
-      <DashboardPreview />
       <FeatureSection />
       <BenefitsSection />
       <LibrarySection />
@@ -93,31 +141,27 @@ export default function Home() {
 
 function Header() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/20 bg-ink/80 text-white backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-hairline bg-canvas/92 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-md bg-white text-ink">
+          <span className="flex h-9 w-9 items-center justify-center rounded-md border border-hairline bg-surface text-inkDeep">
             <BookOpen className="h-5 w-5" aria-hidden="true" />
           </span>
-          <span className="text-base font-semibold">Refugee SchoolOS</span>
+          <span className="text-base font-semibold tracking-[-0.01em]">Refugee SchoolOS</span>
         </Link>
-        <nav className="order-3 flex w-full flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/82 md:order-2 md:w-auto">
-          <a href="#features" className="hover:text-white">
-            Features
-          </a>
-          <a href="#library" className="hover:text-white">
-            E-Library
-          </a>
-          <a href="#pricing" className="hover:text-white">
-            Pricing
-          </a>
-          <a href="#demo" className="hover:text-white">
-            Request Demo
-          </a>
+        <nav className="order-3 flex w-full flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-steel md:order-2 md:w-auto">
+          {navLinks.map(([label, href]) => (
+            <a key={href} href={href} className="hover:text-ink">
+              {label}
+            </a>
+          ))}
         </nav>
         <div className="order-2 flex items-center gap-2 md:order-3">
-          <Link href="/login" className="rounded-md border border-white/25 px-3 py-2 text-sm font-semibold hover:bg-white/10">
+          <Link href="/login" className="rounded-md border border-hairlineStrong px-3 py-2 text-sm font-medium hover:bg-surface">
             School Login
+          </Link>
+          <Link href="#pricing" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-white hover:bg-primary-pressed">
+            Start free
           </Link>
         </div>
       </div>
@@ -127,119 +171,143 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="relative isolate flex min-h-[720px] items-center overflow-hidden pt-28 sm:min-h-[760px]">
-      <Image
-        src="/images/refugee-schoolos-hero.png"
-        alt="Teacher supporting students in a refugee learning centre classroom"
-        fill
-        priority
-        sizes="100vw"
-        className="absolute inset-0 -z-20 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(23,33,27,0.92)_0%,rgba(23,33,27,0.78)_40%,rgba(23,33,27,0.26)_100%)]" />
-      <div className="mx-auto w-full max-w-7xl px-4 py-20 text-white sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#ffd6a5]">Education continuity for displaced learners</p>
-          <h1 className="mt-5 text-4xl font-semibold leading-tight sm:text-6xl lg:text-7xl">
-            School management software for refugee learning centres.
-          </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-white/82 sm:text-lg">
-            Refugee SchoolOS helps NGO schools protect learner records, run classes, track attendance, share lessons, and report impact with dignity.
+    <section className="relative isolate overflow-hidden bg-navy px-4 pb-20 pt-16 text-white sm:px-6 sm:pb-24 lg:px-8">
+      <DecorativeField />
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-white/78">
+            <Sparkles className="h-3.5 w-3.5 text-brand-yellow" aria-hidden="true" />
+            Education continuity for displaced learners
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#ffd166] px-5 py-3 text-sm font-bold text-ink hover:bg-[#ffe08f]">
-              Start Free
+          <h1 className="mt-7 text-5xl font-semibold leading-[1.05] tracking-[-0.05em] sm:text-6xl lg:text-[80px]">
+            Meet the school day workspace.
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-white/72">
+            Refugee SchoolOS gives NGO schools one calm operating system for student records, attendance, classes, learning materials, videos, and impact reports.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-[18px] py-[10px] text-sm font-medium text-white hover:bg-primary-pressed">
+              Get SchoolOS free
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            <Link href="#demo" className="inline-flex items-center justify-center rounded-md border border-white/35 px-5 py-3 text-sm font-bold text-white hover:bg-white/10">
-              Request Demo
-            </Link>
-            <Link href="/login" className="inline-flex items-center justify-center rounded-md bg-white px-5 py-3 text-sm font-bold text-ink hover:bg-rice">
-              School Login
-            </Link>
+            <a href="mailto:hello@refugeeschoolos.org" className="inline-flex items-center justify-center rounded-md border border-white/38 px-[18px] py-[10px] text-sm font-medium text-white hover:bg-white/10">
+              Request a demo
+            </a>
           </div>
         </div>
+        <WorkspaceMockup />
       </div>
     </section>
   );
 }
 
-function DashboardPreview() {
+function DecorativeField() {
   return (
-    <section className="bg-white py-16 sm:py-24">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-clay">Dashboard preview</p>
-          <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">A calm operating system for busy school teams.</h2>
-          <p className="mt-4 text-base leading-7 text-moss">
-            Administrators, teachers, and case managers get a shared view of the school without exposing sensitive student data beyond their role.
-          </p>
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(86,69,212,0.22),transparent_26%),radial-gradient(circle_at_76%_18%,rgba(255,100,200,0.18),transparent_22%),linear-gradient(180deg,#0a1530,#070f24)]" />
+      {[
+        "left-[8%] top-[18%] bg-brand-pink",
+        "left-[18%] top-[65%] bg-brand-yellow",
+        "left-[77%] top-[16%] bg-brand-teal",
+        "left-[88%] top-[54%] bg-brand-orange",
+        "left-[61%] top-[74%] bg-brand-purple"
+      ].map((className) => (
+        <span key={className} className={`absolute h-4 w-4 rounded-sm opacity-90 shadow-lg ${className}`} />
+      ))}
+      <div className="absolute left-6 top-32 h-40 w-40 rounded-full border border-white/12" />
+      <div className="absolute right-10 top-24 h-36 w-56 rotate-12 rounded-[32px] border border-white/12" />
+      <div className="absolute bottom-24 left-1/2 h-px w-[560px] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+    </div>
+  );
+}
+
+function WorkspaceMockup() {
+  return (
+    <div className="relative mx-auto mt-14 max-w-6xl rounded-lg border border-hairline bg-canvas text-ink shadow-mockup">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline bg-surface px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+          <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+          <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+          <span className="ml-3 text-xs font-medium text-steel">schoolos.app/dashboard</span>
         </div>
-        <div className="overflow-hidden rounded-lg border border-line bg-rice shadow-soft">
-          <div className="flex items-center gap-2 border-b border-line bg-ink px-4 py-3">
-            <span className="h-3 w-3 rounded-full bg-[#ff6b6b]" />
-            <span className="h-3 w-3 rounded-full bg-[#ffd166]" />
-            <span className="h-3 w-3 rounded-full bg-[#6bcb77]" />
-            <span className="ml-3 text-xs font-medium text-white/70">schoolos.app/dashboard</span>
+        <div className="hidden items-center gap-2 rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-steel sm:flex">
+          <Search className="h-4 w-4" aria-hidden="true" />
+          Search learners, classes, reports
+        </div>
+      </div>
+      <div className="grid min-h-[360px] gap-0 overflow-hidden rounded-b-lg lg:grid-cols-[220px_1fr]">
+        <aside className="hidden border-r border-hairline bg-surfaceSoft p-4 lg:block">
+          {['Dashboard', 'Students', 'Classes', 'Attendance', 'Library', 'Reports'].map((item, index) => (
+            <div key={item} className={`mb-2 rounded-md px-3 py-2 text-sm font-medium ${index === 0 ? 'bg-inkDeep text-white' : 'text-slate hover:bg-surface'}`}>
+              {item}
+            </div>
+          ))}
+        </aside>
+        <div className="bg-canvas p-4 sm:p-6">
+          <div className="grid gap-4 lg:grid-cols-3">
+            {[
+              ["Students", "248", "bg-tint-peach"],
+              ["Classes", "18", "bg-tint-mint"],
+              ["Attendance", "94%", "bg-tint-lavender"]
+            ].map(([label, value, tint]) => (
+              <div key={label} className={`rounded-lg border border-hairline p-5 ${tint}`}>
+                <p className="text-sm font-medium text-slate">{label}</p>
+                <p className="mt-2 text-4xl font-semibold tracking-[-0.04em] text-charcoal">{value}</p>
+              </div>
+            ))}
           </div>
-          <div className="grid gap-4 p-4 sm:grid-cols-[180px_1fr]">
-            <div className="hidden rounded-md bg-white p-3 sm:block">
-              {["Dashboard", "Students", "Classes", "Attendance", "Reports"].map((item) => (
-                <div key={item} className="mb-2 rounded-md px-3 py-2 text-xs font-semibold text-moss last:mb-0">
-                  {item}
+          <div className="mt-5 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-lg border border-hairline bg-canvas p-5">
+              <div className="flex items-center justify-between border-b border-hairlineSoft pb-3">
+                <p className="font-semibold text-ink">Today&apos;s register</p>
+                <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">Live</span>
+              </div>
+              {['Primary A', 'Bridge English', 'Math Level 2'].map((item, index) => (
+                <div key={item} className="flex items-center justify-between border-b border-hairlineSoft py-4 last:border-0">
+                  <div>
+                    <p className="text-sm font-semibold text-ink">{item}</p>
+                    <p className="text-xs text-steel">{index === 0 ? 'Teacher: Lead Teacher' : `Room ${index + 1}`}</p>
+                  </div>
+                  <p className="text-sm font-semibold text-link">{index === 1 ? '89%' : '96%'}</p>
                 </div>
               ))}
             </div>
-            <div className="space-y-4">
-              <div className="grid gap-3 sm:grid-cols-3">
-                {[
-                  ["Students", "248"],
-                  ["Classes", "18"],
-                  ["Attendance", "94%"]
-                ].map(([label, value]) => (
-                  <div key={label} className="rounded-md bg-white p-4">
-                    <p className="text-xs font-semibold text-moss">{label}</p>
-                    <p className="mt-2 text-2xl font-semibold text-ink">{value}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="rounded-md bg-white p-4">
-                <div className="flex items-center justify-between border-b border-line pb-3">
-                  <p className="text-sm font-semibold text-ink">Today&apos;s register</p>
-                  <span className="rounded-md bg-[#e8f3dc] px-2 py-1 text-xs font-semibold text-[#315933]">Live</span>
-                </div>
-                {["Primary A", "Bridge English", "Math Level 2"].map((item, index) => (
-                  <div key={item} className="flex items-center justify-between border-b border-line py-3 last:border-0">
-                    <div>
-                      <p className="text-sm font-semibold text-ink">{item}</p>
-                      <p className="text-xs text-moss">{index === 0 ? "Teacher: Lead Teacher" : "Room " + (index + 1)}</p>
-                    </div>
-                    <p className="text-sm font-semibold text-clay">{index === 1 ? "89%" : "96%"}</p>
-                  </div>
+            <div className="rounded-lg bg-tint-yellowBold p-5 text-charcoal">
+              <p className="text-sm font-semibold uppercase tracking-[0.14em]">Impact snapshot</p>
+              <p className="mt-4 text-2xl font-semibold tracking-[-0.03em]">Donor-ready weekly summary</p>
+              <div className="mt-5 space-y-3 text-sm">
+                {['18 classes reported', '27 support notes updated', '6 new library resources'].map((item) => (
+                  <p key={item} className="flex items-center gap-2">
+                    <Check className="h-4 w-4" aria-hidden="true" />
+                    {item}
+                  </p>
                 ))}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
 function FeatureSection() {
   return (
-    <section id="features" className="py-16 sm:py-24">
+    <section id="features" className="bg-canvas py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-clay">Features</p>
-          <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">Everything a learning centre needs to run the school day.</h2>
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">Keep work moving 24/7</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Everything a learning centre needs to run the school day.</h2>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
-            <article key={feature.title} className="rounded-lg border border-line bg-white p-6 shadow-soft">
-              <feature.icon className="h-7 w-7 text-clay" aria-hidden="true" />
-              <h3 className="mt-5 text-lg font-semibold text-ink">{feature.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-moss">{feature.description}</p>
+            <article key={feature.title} className={`${feature.tint} rounded-lg p-8 text-charcoal`}>
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-md bg-white/80">
+                <feature.icon className={`h-6 w-6 ${feature.accent}`} aria-hidden="true" />
+              </span>
+              <h3 className="mt-6 text-xl font-semibold tracking-[-0.02em]">{feature.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate">{feature.description}</p>
             </article>
           ))}
         </div>
@@ -250,17 +318,18 @@ function FeatureSection() {
 
 function BenefitsSection() {
   return (
-    <section className="bg-ink py-16 text-white sm:py-24">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:px-8">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#ffd166]">Built for refugee schools</p>
-          <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">Practical tools for schools doing complex work with limited resources.</h2>
+    <section className="bg-surface py-16 sm:py-24">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+        <div className="rounded-lg bg-tint-yellowBold p-8 text-charcoal sm:p-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-brown">Ask your on-demand assistants</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Practical tools for complex school work.</h2>
+          <p className="mt-5 text-base leading-7 text-slate">Purpose-built workflows help administrators, teachers, and case teams coordinate without exposing more student data than each role needs.</p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {benefits.map((benefit) => (
-            <div key={benefit} className="flex gap-3 rounded-lg border border-white/15 bg-white/7 p-5">
-              <Check className="mt-1 h-5 w-5 shrink-0 text-[#ffd166]" aria-hidden="true" />
-              <p className="text-sm leading-6 text-white/84">{benefit}</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {benefits.map((benefit, index) => (
+            <div key={benefit} className="rounded-lg border border-hairline bg-canvas p-6">
+              <Check className={`h-6 w-6 ${index % 2 === 0 ? 'text-primary' : 'text-brand-green'}`} aria-hidden="true" />
+              <p className="mt-4 text-base font-medium leading-7 text-charcoal">{benefit}</p>
             </div>
           ))}
         </div>
@@ -271,39 +340,39 @@ function BenefitsSection() {
 
 function LibrarySection() {
   return (
-    <section id="library" className="bg-white py-16 sm:py-24">
+    <section id="library" className="bg-canvas py-16 sm:py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-        <div className="rounded-lg border border-line bg-rice p-6 shadow-soft">
+        <div className="rounded-lg border border-hairline bg-surface p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             {[
-              ["Reading Pack", "Beginner English"],
-              ["Video Lesson", "Fractions"],
-              ["Worksheet", "Health & Safety"],
-              ["Teacher Guide", "Bridge Class"]
-            ].map(([type, title]) => (
-              <div key={title} className="rounded-md bg-white p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-clay">{type}</p>
-                <p className="mt-2 text-sm font-semibold text-ink">{title}</p>
-                <div className="mt-4 h-2 rounded-full bg-line">
-                  <div className="h-2 w-2/3 rounded-full bg-leaf" />
+              ["Reading Pack", "Beginner English", "bg-tint-sky"],
+              ["Video Lesson", "Fractions", "bg-tint-rose"],
+              ["Worksheet", "Health & Safety", "bg-tint-mint"],
+              ["Teacher Guide", "Bridge Class", "bg-tint-peach"]
+            ].map(([type, title, tint]) => (
+              <div key={title} className={`rounded-lg border border-hairline bg-canvas p-4 ${tint}`}>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate">{type}</p>
+                <p className="mt-3 text-lg font-semibold tracking-[-0.02em] text-charcoal">{title}</p>
+                <div className="mt-5 h-2 rounded-full bg-white/75">
+                  <div className="h-2 w-2/3 rounded-full bg-primary" />
                 </div>
               </div>
             ))}
           </div>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-clay">E-Library and video lessons</p>
-          <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">Keep learning materials accessible, organized, and reusable.</h2>
-          <p className="mt-4 text-base leading-7 text-moss">
-            Build a school library of worksheets, reading packs, teacher guides, and video lessons so new teachers and students can keep moving.
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">E-Library and video lessons</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Bring all your school materials together.</h2>
+          <p className="mt-5 text-base leading-7 text-slate">
+            Build a searchable library of worksheets, reading packs, teacher guides, and video lessons so new teachers and students can keep moving.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <span className="inline-flex items-center gap-2 rounded-md bg-rice px-3 py-2 text-sm font-semibold text-ink">
-              <Globe2 className="h-4 w-4 text-clay" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-md border border-hairline bg-surface px-3 py-2 text-sm font-medium text-ink">
+              <Globe2 className="h-4 w-4 text-link" aria-hidden="true" />
               Multilingual-ready
             </span>
-            <span className="inline-flex items-center gap-2 rounded-md bg-rice px-3 py-2 text-sm font-semibold text-ink">
-              <FileText className="h-4 w-4 text-clay" aria-hidden="true" />
+            <span className="inline-flex items-center gap-2 rounded-md border border-hairline bg-surface px-3 py-2 text-sm font-medium text-ink">
+              <FileText className="h-4 w-4 text-brand-orange" aria-hidden="true" />
               Print-friendly
             </span>
           </div>
@@ -315,29 +384,29 @@ function LibrarySection() {
 
 function BrandingSection() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="bg-surfaceSoft py-16 sm:py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-clay">Custom school branding</p>
-          <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">Make each school feel seen.</h2>
-          <p className="mt-4 text-base leading-7 text-moss">
-            Configure school names, colours, report headers, and identity details so the platform supports local trust.
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">Custom school branding</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Make each school feel seen.</h2>
+          <p className="mt-5 text-base leading-7 text-slate">
+            Configure school names, colors, report headers, and identity details so the platform supports local trust.
           </p>
         </div>
-        <div className="rounded-lg border border-line bg-white p-6 shadow-soft">
+        <div className="rounded-lg border border-hairline bg-canvas p-6 shadow-soft">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-[#2f6f73] text-white">
+            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary text-white">
               <Palette className="h-7 w-7" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-lg font-semibold text-ink">Mon Refugee Learning Centre</p>
-              <p className="text-sm text-moss">Custom reports, school code, and branded workspace.</p>
+              <p className="text-xl font-semibold tracking-[-0.02em] text-ink">Mon Refugee Learning Centre</p>
+              <p className="text-sm text-steel">Custom reports, school code, and branded workspace.</p>
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            <span className="h-12 rounded-md bg-[#2f6f73]" />
-            <span className="h-12 rounded-md bg-[#ffd166]" />
-            <span className="h-12 rounded-md bg-[#b46a45]" />
+            <span className="h-12 rounded-md bg-primary" />
+            <span className="h-12 rounded-md bg-brand-yellow" />
+            <span className="h-12 rounded-md bg-brand-teal" />
           </div>
         </div>
       </div>
@@ -347,33 +416,44 @@ function BrandingSection() {
 
 function PricingSection() {
   return (
-    <section id="pricing" className="bg-white py-16 sm:py-24">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-wide text-clay">Pricing</p>
-          <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">An NGO plan that starts simple.</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-moss">
-            Start with the school foundation today. Billing is intentionally not connected yet.
-          </p>
+    <section id="pricing" className="bg-canvas py-16 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">Pricing</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Start simple, grow when teams are ready.</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate">A four-tier comparison mirrors the way NGO programmes expand from a single learning centre to regional networks.</p>
         </div>
-        <div id="demo" className="mt-10 rounded-lg border border-line bg-rice p-6 shadow-soft sm:p-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-clay">NGO School Plan</p>
-              <p className="mt-3 text-4xl font-semibold text-ink">Free to start</p>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-moss">
-                Includes student records, attendance, class management, E-Library foundations, video lesson support, and basic reports.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Link href="/login" className="inline-flex items-center justify-center rounded-md bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-moss">
-                Start Free
+        <div id="demo" className="mt-10 grid gap-4 lg:grid-cols-4">
+          {pricing.map((plan) => (
+            <article key={plan.name} className={`relative rounded-lg p-6 ${plan.featured ? 'border-2 border-primary bg-surface' : 'border border-hairline bg-canvas'}`}>
+              {plan.featured ? <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">Popular</span> : null}
+              <h3 className="text-xl font-semibold tracking-[-0.02em] text-ink">{plan.name}</h3>
+              <p className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-ink">{plan.price}</p>
+              <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate">{plan.description}</p>
+              <Link href="/login" className={`mt-5 inline-flex w-full items-center justify-center rounded-md px-[18px] py-[10px] text-sm font-medium ${plan.featured ? 'bg-primary text-white hover:bg-primary-pressed' : 'border border-hairlineStrong text-ink hover:bg-surface'}`}>
+                {plan.name === 'Enterprise' ? 'Contact us' : 'Get started'}
               </Link>
-              <a href="mailto:hello@refugeeschoolos.org" className="inline-flex items-center justify-center rounded-md border border-ink px-5 py-3 text-sm font-bold text-ink hover:bg-white">
-                Request Demo
-              </a>
+              <ul className="mt-5 space-y-3 text-sm text-charcoal">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex gap-2">
+                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" aria-hidden="true" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+        <div className="mt-6 rounded-md border border-hairline bg-canvas text-sm text-slate">
+          {['Student records', 'Attendance exports', 'Library resources', 'Role-based data controls'].map((row) => (
+            <div key={row} className="grid grid-cols-[1fr_auto] gap-4 border-b border-hairlineSoft px-5 py-4 last:border-0 sm:grid-cols-5">
+              <span className="font-medium text-ink">{row}</span>
+              <span className="hidden sm:block">Included</span>
+              <span className="hidden sm:block">Expanded</span>
+              <span className="hidden sm:block">Advanced</span>
+              <span>Custom</span>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
@@ -382,15 +462,15 @@ function PricingSection() {
 
 function FaqSection() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="bg-surface py-16 sm:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-wide text-clay">FAQ</p>
-        <h2 className="mt-3 text-3xl font-semibold text-ink sm:text-4xl">Questions school teams ask first.</h2>
-        <div className="mt-8 divide-y divide-line rounded-lg border border-line bg-white shadow-soft">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-orange">FAQ</p>
+        <h2 className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Questions school teams ask first.</h2>
+        <div className="mt-8 divide-y divide-hairline rounded-lg border border-hairline bg-canvas">
           {faqs.map((faq) => (
-            <div key={faq.question} className="p-5">
-              <h3 className="text-base font-semibold text-ink">{faq.question}</h3>
-              <p className="mt-2 text-sm leading-6 text-moss">{faq.answer}</p>
+            <div key={faq.question} className="p-6">
+              <h3 className="text-lg font-semibold tracking-[-0.02em] text-ink">{faq.question}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate">{faq.answer}</p>
             </div>
           ))}
         </div>
@@ -401,22 +481,19 @@ function FaqSection() {
 
 function Footer() {
   return (
-    <footer className="border-t border-line bg-ink py-10 text-white">
+    <footer className="border-t border-hairline bg-navy-deep py-10 text-white">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
         <div>
-          <p className="text-base font-semibold">Refugee SchoolOS</p>
-          <p className="mt-2 text-sm text-white/68">hello@refugeeschoolos.org</p>
+          <p className="flex items-center gap-2 text-base font-semibold">
+            <ShieldCheck className="h-5 w-5 text-brand-yellow" aria-hidden="true" />
+            Refugee SchoolOS
+          </p>
+          <p className="mt-2 text-sm text-white/60">hello@refugeeschoolos.org</p>
         </div>
-        <div className="flex flex-wrap gap-4 text-sm text-white/72">
-          <a href="mailto:hello@refugeeschoolos.org" className="hover:text-white">
-            Contact
-          </a>
-          <a href="#" className="hover:text-white">
-            Privacy
-          </a>
-          <a href="#" className="hover:text-white">
-            Terms
-          </a>
+        <div className="flex flex-wrap gap-4 text-sm text-white/64">
+          <a href="mailto:hello@refugeeschoolos.org" className="hover:text-white">Contact</a>
+          <a href="#" className="hover:text-white">Privacy</a>
+          <a href="#" className="hover:text-white">Terms</a>
         </div>
       </div>
     </footer>
