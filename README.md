@@ -1,6 +1,7 @@
 # Refugee SchoolOS
+Built by Tao Mon Lae
 
-A multi-tenant Learning Management System built for refugee learning centres. Each school gets its own isolated data environment, accessible via subdomain (`school.refugeeschoolos.com`) or a custom domain.
+A multi-tenant Learning Management System built for refugee learning centres. Each school gets its own isolated data environment, accessible via subdomain (`school.refugeeschoolos.com`) or a custom domain. 
 
 ---
 
