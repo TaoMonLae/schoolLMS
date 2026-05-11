@@ -3,9 +3,10 @@ import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { VideoThumbnail } from "@/components/video-thumbnail";
 import { canUploadVideos, canViewVideos } from "@/lib/rbac";
-import { demoClasses, demoCurrentUser, formatEnumLabel } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
+import { formatEnumLabel } from "@/lib/students";
 import { videoProviders, VideoProvider } from "@/lib/types";
-import { demoVideoSubjects, getVisibleVideoLessonsForUser } from "@/lib/videos";
+import { getVisibleVideoClassesForUser, getVideoSubjectsForUser, getVisibleVideoLessonsForUser } from "@/lib/videos";
 
 type VideosPageProps = {
   searchParams?: Promise<{
@@ -20,14 +21,19 @@ type VideosPageProps = {
 
 export default async function VideosPage({ searchParams }: VideosPageProps) {
   const params = await searchParams;
-  const canView = canViewVideos(demoCurrentUser.role);
-  const canUpload = canUploadVideos(demoCurrentUser.role);
-  const lessons = getVisibleVideoLessonsForUser(demoCurrentUser, {
+  const currentUser = await getRequiredCurrentUser();
+  const canView = canViewVideos(currentUser.role);
+  const canUpload = canUploadVideos(currentUser.role);
+  const [lessons, classes, subjects] = await Promise.all([
+    getVisibleVideoLessonsForUser(currentUser, {
     search: params?.q,
     classId: params?.classId || "ALL",
     subjectId: params?.subjectId || "ALL",
     provider: params?.provider || "ALL"
-  });
+    }),
+    getVisibleVideoClassesForUser(currentUser),
+    getVideoSubjectsForUser(currentUser)
+  ]);
 
   if (!canView) {
     return <PageHeader eyebrow="Video Lessons" title="Video Access" description="You do not have permission to view video lessons." />;
@@ -47,7 +53,7 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
 
       {params?.created ? (
         <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">
-          Video URL validated. Persistence can be connected to this action.
+Video lesson created and saved.
         </div>
       ) : null}
 
@@ -58,8 +64,8 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-moss" aria-hidden="true" />
             <input name="q" defaultValue={params?.q} placeholder="Search title, subject, teacher" className="h-11 w-full rounded-md border border-line bg-rice pl-9 pr-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/60 focus:ring-4" />
           </label>
-          <Select name="classId" defaultValue={params?.classId || "ALL"} label="All classes" options={demoClasses.map((item) => [item.id, item.name])} />
-          <Select name="subjectId" defaultValue={params?.subjectId || "ALL"} label="All subjects" options={demoVideoSubjects.map((item) => [item.id, item.name])} />
+          <Select name="classId" defaultValue={params?.classId || "ALL"} label="All classes" options={classes.map((item) => [item.id, item.name])} />
+          <Select name="subjectId" defaultValue={params?.subjectId || "ALL"} label="All subjects" options={subjects.map((item) => [item.id, item.name])} />
           <Select name="provider" defaultValue={params?.provider || "ALL"} label="All providers" options={videoProviders.map((item) => [item, formatEnumLabel(item)])} />
           <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-white hover:bg-moss">Filter</button>
         </form>

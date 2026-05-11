@@ -1,7 +1,6 @@
 import { Building2, ExternalLink, Plus } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { demoSchoolBranding } from "@/lib/branding";
 
 async function getSchools() {
   try {
@@ -30,27 +29,7 @@ async function getSchools() {
       },
     });
   } catch {
-    return [
-      {
-        id: demoSchoolBranding.id,
-        name: demoSchoolBranding.name,
-        shortName: demoSchoolBranding.shortName ?? null,
-        code: demoSchoolBranding.code,
-        subdomain: demoSchoolBranding.subdomain ?? null,
-        customDomain: demoSchoolBranding.customDomain ?? null,
-        city: demoSchoolBranding.city,
-        country: demoSchoolBranding.country,
-        email: demoSchoolBranding.email ?? null,
-        primaryColor: demoSchoolBranding.primaryColor,
-        logoUrl: demoSchoolBranding.logoUrl ?? null,
-        createdAt: new Date(),
-        _count: {
-          students: demoSchoolBranding.activeStudents,
-          classes: demoSchoolBranding.activeClasses,
-          users: 4,
-        },
-      },
-    ];
+    return [];
   }
 }
 

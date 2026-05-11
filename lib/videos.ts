@@ -1,11 +1,10 @@
-import { filterToTenant } from "@/lib/tenant";
-import { demoClasses, demoStudents } from "@/lib/students";
-import { AppUser, TenantScoped, VideoProvider, VideoVisibility } from "@/lib/types";
+import { Prisma } from "@prisma/client";
+import { db } from "@/lib/db";
+import { tenantFilter } from "@/lib/tenant";
+import { AppUser, SchoolClassOption, StudentRecord, TenantScoped, VideoProvider, VideoVisibility } from "@/lib/types";
+import { mapStudentRecord } from "@/lib/students";
 
-export type VideoSubject = {
-  id: string;
-  name: string;
-};
+export type VideoSubject = { id: string; name: string };
 
 export type VideoLesson = TenantScoped & {
   id: string;
@@ -34,217 +33,170 @@ export type VideoProgressRecord = TenantScoped & {
   lastWatchedAt?: string;
 };
 
-export const demoVideoSubjects: VideoSubject[] = [
-  { id: "subject-english", name: "English" },
-  { id: "subject-math", name: "Math" },
-  { id: "subject-life-skills", name: "Life Skills" },
-  { id: "subject-literacy", name: "Literacy" }
-];
-
-export const demoVideoLessons: VideoLesson[] = [
-  {
-    id: "video-english-greetings",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-primary-a",
-    className: "Primary A",
-    subjectId: "subject-english",
-    subjectName: "English",
-    title: "English Greetings and Classroom Words",
-    description: "A short introduction to greetings, classroom routines, and common teacher instructions.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    videoProvider: "YOUTUBE",
-    thumbnailUrl: "",
-    durationMinutes: 12,
-    visibility: "CLASS_ONLY",
-    uploadedBy: "Lead Teacher",
-    createdAt: "2026-05-06",
-    updatedAt: "2026-05-06"
-  },
-  {
-    id: "video-math-fractions",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-math-2",
-    className: "Math Level 2",
-    subjectId: "subject-math",
-    subjectName: "Math",
-    title: "Fractions with Paper Shapes",
-    description: "Teacher-led fraction explanation using folded paper, shapes, and classroom practice questions.",
-    videoUrl: "https://vimeo.com/76979871",
-    videoProvider: "VIMEO",
-    thumbnailUrl: "",
-    durationMinutes: 18,
-    visibility: "CLASS_ONLY",
-    uploadedBy: "Math Teacher",
-    createdAt: "2026-05-07",
-    updatedAt: "2026-05-07"
-  },
-  {
-    id: "video-safety-routines",
-    schoolId: "seed-school-mon-rlc",
-    classId: "class-bridge-english",
-    className: "Bridge English",
-    subjectId: "subject-life-skills",
-    subjectName: "Life Skills",
-    title: "School Safety Routines",
-    description: "Private school video for safe travel, emergency contact routines, and respectful classroom care.",
-    videoUrl: "https://schoolos.local/videos/safety-routines.mp4",
-    videoProvider: "PRIVATE",
-    thumbnailUrl: "",
-    durationMinutes: 9,
-    visibility: "SCHOOL",
-    uploadedBy: "School Administrator",
-    createdAt: "2026-05-08",
-    updatedAt: "2026-05-08"
-  }
-];
-
-export const demoVideoProgress: VideoProgressRecord[] = [
-  {
-    id: "progress-aye-english",
-    schoolId: "seed-school-mon-rlc",
-    videoLessonId: "video-english-greetings",
-    studentId: "student-aye-chan",
-    watchedSeconds: 480,
-    completed: false,
-    lastWatchedAt: "2026-05-10T08:30:00.000Z"
-  },
-  {
-    id: "progress-min-english",
-    schoolId: "seed-school-mon-rlc",
-    videoLessonId: "video-english-greetings",
-    studentId: "student-min-thu",
-    watchedSeconds: 720,
-    completed: true,
-    lastWatchedAt: "2026-05-10T09:10:00.000Z"
-  }
-];
-
 export type VideoFilters = {
   search?: string;
   classId?: string;
   subjectId?: string;
   provider?: VideoProvider | "ALL";
+  schoolId?: string;
 };
 
-export function getVisibleVideoLessonsForUser(user: AppUser, filters: VideoFilters = {}) {
-  const search = filters.search?.trim().toLowerCase();
+type VideoWithRelations = Prisma.VideoLessonGetPayload<{ include: { class: true; uploadedBy: { select: { name: true } } } }>;
 
-  return filterToTenant(
-    user,
-    demoVideoLessons
-      .filter((lesson) => user.role === "SUPER_ADMIN" || lesson.schoolId === user.schoolId)
-      .filter((lesson) => {
-        if (user.role === "TEACHER") {
-          return lesson.visibility === "SCHOOL" || user.assignedClassIds.includes(lesson.classId);
-        }
-
-        if (user.role === "STUDENT") {
-          const student = demoStudents.find((item) => item.id === user.studentId);
-          return Boolean(student && (lesson.visibility === "SCHOOL" || lesson.classId === student.classId));
-        }
-
-        return true;
-      })
-      .filter((lesson) => !filters.classId || filters.classId === "ALL" || lesson.classId === filters.classId)
-      .filter((lesson) => !filters.subjectId || filters.subjectId === "ALL" || lesson.subjectId === filters.subjectId)
-      .filter((lesson) => !filters.provider || filters.provider === "ALL" || lesson.videoProvider === filters.provider)
-      .filter((lesson) => {
-        if (!search) {
-          return true;
-        }
-
-        return [lesson.title, lesson.description, lesson.subjectName, lesson.className, lesson.uploadedBy]
-          .filter(Boolean)
-          .some((value) => value?.toLowerCase().includes(search));
-      })
-  );
+function dateValue(value: Date) {
+  return value.toISOString().slice(0, 10);
 }
 
-export function getVideoLessonForUser(user: AppUser, lessonId: string) {
-  return getVisibleVideoLessonsForUser(user).find((lesson) => lesson.id === lessonId);
+async function subjectNameMap(schoolId: string, subjectIds: string[]) {
+  if (subjectIds.length === 0) return new Map<string, string>();
+  const subjects = await db.subject.findMany({ where: { schoolId, id: { in: [...new Set(subjectIds)] } }, select: { id: true, name: true } });
+  return new Map(subjects.map((subject) => [subject.id, subject.name]));
 }
 
-export function getPlaylistLessonsForUser(user: AppUser, currentLesson: VideoLesson) {
-  return getVisibleVideoLessonsForUser(user, {
-    classId: currentLesson.classId,
-    subjectId: currentLesson.subjectId
+function mapVideoLesson(lesson: VideoWithRelations, subjects: Map<string, string>): VideoLesson {
+  return {
+    id: lesson.id,
+    schoolId: lesson.schoolId,
+    classId: lesson.classId,
+    className: lesson.class.name,
+    subjectId: lesson.subjectId,
+    subjectName: subjects.get(lesson.subjectId) || "Unknown subject",
+    title: lesson.title,
+    description: lesson.description || undefined,
+    videoUrl: lesson.videoUrl,
+    videoProvider: lesson.videoProvider,
+    thumbnailUrl: lesson.thumbnailUrl || undefined,
+    durationMinutes: lesson.durationMinutes || undefined,
+    visibility: lesson.visibility,
+    uploadedBy: lesson.uploadedBy?.name || "School staff",
+    createdAt: dateValue(lesson.createdAt),
+    updatedAt: dateValue(lesson.updatedAt)
+  };
+}
+
+export async function getVideoSubjectsForUser(user: AppUser, explicitSchoolId?: string): Promise<VideoSubject[]> {
+  const subjects = await db.subject.findMany({
+    where: tenantFilter(user, explicitSchoolId),
+    orderBy: { name: "asc" },
+    select: { id: true, name: true }
   });
+  return subjects;
 }
 
-export function getManageableVideoClassesForUser(user: AppUser) {
-  if (user.role === "SUPER_ADMIN" || user.role === "SCHOOL_ADMIN") {
-    return demoClasses;
-  }
+export async function getVisibleVideoClassesForUser(user: AppUser, explicitSchoolId?: string): Promise<SchoolClassOption[]> {
+  const classes = await db.class.findMany({
+    where: {
+      ...tenantFilter(user, explicitSchoolId),
+      ...(user.role === "TEACHER" ? { id: { in: user.assignedClassIds } } : {})
+    },
+    orderBy: [{ academicYear: "desc" }, { name: "asc" }],
+    select: { id: true, name: true, teacherId: true }
+  });
+  return classes.map((item) => ({ id: item.id, name: item.name, teacherId: item.teacherId || undefined }));
+}
+
+export const getManageableVideoClassesForUser = getVisibleVideoClassesForUser;
+
+export async function getVisibleVideoLessonsForUser(user: AppUser, filters: VideoFilters = {}): Promise<VideoLesson[]> {
+  const schoolFilter = tenantFilter(user, filters.schoolId);
+  const where: Prisma.VideoLessonWhereInput = {
+    ...schoolFilter,
+    ...(filters.classId && filters.classId !== "ALL" ? { classId: filters.classId } : {}),
+    ...(filters.subjectId && filters.subjectId !== "ALL" ? { subjectId: filters.subjectId } : {}),
+    ...(filters.provider && filters.provider !== "ALL" ? { videoProvider: filters.provider } : {})
+  };
 
   if (user.role === "TEACHER") {
-    return demoClasses.filter((classItem) => user.assignedClassIds.includes(classItem.id));
+    where.OR = [{ visibility: "SCHOOL" }, { classId: { in: user.assignedClassIds } }];
   }
 
-  return [];
+  if (user.role === "STUDENT") {
+    const student = user.studentId
+      ? await db.student.findFirst({
+          where: { id: user.studentId, ...schoolFilter, deletedAt: null },
+          include: { enrollments: { where: { status: "ACTIVE" }, take: 1, orderBy: { startDate: "desc" } } }
+        })
+      : null;
+    const classId = student?.enrollments[0]?.classId || "__none__";
+    where.OR = [{ visibility: "SCHOOL" }, { classId }];
+  }
+
+  const search = filters.search?.trim();
+  if (search) {
+    where.AND = [{
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { class: { name: { contains: search, mode: "insensitive" } } },
+        { uploadedBy: { name: { contains: search, mode: "insensitive" } } }
+      ]
+    }];
+  }
+
+  const lessons = await db.videoLesson.findMany({
+    where,
+    include: { class: true, uploadedBy: { select: { name: true } } },
+    orderBy: { createdAt: "desc" }
+  });
+  const subjects = await subjectNameMap(schoolFilter.schoolId, lessons.map((lesson) => lesson.subjectId));
+  return lessons.map((lesson) => mapVideoLesson(lesson, subjects));
 }
 
-export function canManageVideoClass(user: AppUser, classId: string) {
-  return getManageableVideoClassesForUser(user).some((classItem) => classItem.id === classId);
+export async function getVideoLessonForUser(user: AppUser, lessonId: string) {
+  const lesson = await db.videoLesson.findFirst({
+    where: { id: lessonId, ...tenantFilter(user) },
+    include: { class: true, uploadedBy: { select: { name: true } } }
+  });
+  if (!lesson) return null;
+  const visible = await getVisibleVideoLessonsForUser(user, { classId: lesson.classId, subjectId: lesson.subjectId });
+  return visible.find((item) => item.id === lesson.id) || null;
+}
+
+export async function getPlaylistLessonsForUser(user: AppUser, currentLesson: VideoLesson) {
+  return getVisibleVideoLessonsForUser(user, { classId: currentLesson.classId, subjectId: currentLesson.subjectId });
+}
+
+export async function canManageVideoClass(user: AppUser, classId: string) {
+  return (await getManageableVideoClassesForUser(user)).some((classItem) => classItem.id === classId);
 }
 
 export function canManageVideoLesson(user: AppUser, lesson: VideoLesson) {
-  if (user.role === "SUPER_ADMIN" || user.role === "SCHOOL_ADMIN") {
-    return user.role === "SUPER_ADMIN" || lesson.schoolId === user.schoolId;
-  }
-
-  if (user.role === "TEACHER") {
-    return lesson.schoolId === user.schoolId && user.assignedClassIds.includes(lesson.classId);
-  }
-
+  if (user.role === "SUPER_ADMIN") return true;
+  if (user.role === "SCHOOL_ADMIN") return lesson.schoolId === user.schoolId;
+  if (user.role === "TEACHER") return lesson.schoolId === user.schoolId && user.assignedClassIds.includes(lesson.classId);
   return false;
 }
 
-export function getVideoProgressForLesson(user: AppUser, lessonId: string) {
-  return demoVideoProgress.filter((progress) => {
-    if (user.role !== "SUPER_ADMIN" && progress.schoolId !== user.schoolId) {
-      return false;
-    }
-
-    if (progress.videoLessonId !== lessonId) {
-      return false;
-    }
-
-    if (user.role === "STUDENT") {
-      return progress.studentId === user.studentId;
-    }
-
-    return true;
-  });
-}
-
-export function getClassVideoProgressForLesson(user: AppUser, lesson: VideoLesson) {
-  if (!canManageVideoLesson(user, lesson)) {
-    return [];
-  }
-
-  const progressByStudent = new Map(
-    demoVideoProgress
-      .filter((progress) => progress.schoolId === lesson.schoolId && progress.videoLessonId === lesson.id)
-      .map((progress) => [progress.studentId, progress])
-  );
-
-  return demoStudents
-    .filter((student) => student.schoolId === lesson.schoolId && student.classId === lesson.classId && student.status === "ACTIVE" && !student.deletedAt)
-    .map((student) => ({
-      student,
-      progress: progressByStudent.get(student.id)
+export async function getVideoProgressForLesson(user: AppUser, lessonId: string): Promise<VideoProgressRecord[]> {
+  const progress = await db.videoProgress.findMany({ where: { videoLessonId: lessonId, ...tenantFilter(user) }, orderBy: { lastWatchedAt: "desc" } });
+  return progress
+    .filter((item) => user.role !== "STUDENT" || item.studentId === user.studentId)
+    .map((item) => ({
+      id: item.id,
+      schoolId: item.schoolId,
+      videoLessonId: item.videoLessonId,
+      studentId: item.studentId,
+      watchedSeconds: item.watchedSeconds,
+      completed: item.completed,
+      lastWatchedAt: item.lastWatchedAt?.toISOString()
     }));
 }
 
+export async function getClassVideoProgressForLesson(user: AppUser, lesson: VideoLesson): Promise<{ student: StudentRecord; progress?: VideoProgressRecord }[]> {
+  if (!canManageVideoLesson(user, lesson)) return [];
+  const progress = await getVideoProgressForLesson(user, lesson.id);
+  const progressByStudent = new Map(progress.map((item) => [item.studentId, item]));
+  const students = await db.student.findMany({
+    where: { schoolId: lesson.schoolId, deletedAt: null, status: "ACTIVE", enrollments: { some: { status: "ACTIVE", classId: lesson.classId } } },
+    include: { enrollments: { where: { status: "ACTIVE" }, include: { class: true }, orderBy: { startDate: "desc" }, take: 1 } },
+    orderBy: [{ studentNumber: "asc" }]
+  });
+  return students.map((student) => ({ student: mapStudentRecord(student), progress: progressByStudent.get(student.id) }));
+}
+
 export function detectVideoProvider(url: string): VideoProvider {
-  if (url.includes("youtube.com") || url.includes("youtu.be")) {
-    return "YOUTUBE";
-  }
-
-  if (url.includes("vimeo.com")) {
-    return "VIMEO";
-  }
-
+  if (url.includes("youtube.com") || url.includes("youtu.be")) return "YOUTUBE";
+  if (url.includes("vimeo.com")) return "VIMEO";
   return "PRIVATE";
 }
 
@@ -253,15 +205,13 @@ export function getEmbeddableVideoUrl(lesson: VideoLesson) {
     const match = lesson.videoUrl.match(/[?&]v=([^&]+)/) || lesson.videoUrl.match(/youtu\.be\/([^?]+)/);
     return match ? `https://www.youtube.com/embed/${match[1]}` : lesson.videoUrl;
   }
-
   if (lesson.videoProvider === "VIMEO") {
     const match = lesson.videoUrl.match(/vimeo\.com\/(\d+)/);
     return match ? `https://player.vimeo.com/video/${match[1]}` : lesson.videoUrl;
   }
-
   return lesson.videoUrl;
 }
 
-export function getVideoSubjectName(subjectId: string) {
-  return demoVideoSubjects.find((subject) => subject.id === subjectId)?.name || "Unknown subject";
+export async function getVideoSubjectName(user: AppUser, subjectId: string) {
+  return (await db.subject.findFirst({ where: { id: subjectId, ...tenantFilter(user) }, select: { name: true } }))?.name || "Unknown subject";
 }

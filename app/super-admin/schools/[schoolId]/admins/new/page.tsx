@@ -2,7 +2,6 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { demoSchoolBranding } from "@/lib/branding";
 import { createSchoolAdminAction } from "../actions";
 
 async function getSchoolName(schoolId: string): Promise<string | null> {
@@ -10,7 +9,6 @@ async function getSchoolName(schoolId: string): Promise<string | null> {
     const school = await db.school.findUnique({ where: { id: schoolId }, select: { name: true } });
     return school?.name ?? null;
   } catch {
-    if (schoolId === demoSchoolBranding.id) return demoSchoolBranding.name;
     return null;
   }
 }

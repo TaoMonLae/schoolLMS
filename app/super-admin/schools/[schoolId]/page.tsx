@@ -2,7 +2,6 @@ import { ArrowLeft, Check, ExternalLink, Plus, Settings, Users } from "lucide-re
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { demoSchoolBranding } from "@/lib/branding";
 import { updateSchoolAction, updateSchoolLogoAction } from "./actions";
 
 async function getSchool(schoolId: string) {
@@ -20,33 +19,6 @@ async function getSchool(schoolId: string) {
       },
     });
   } catch {
-    if (schoolId === demoSchoolBranding.id) {
-      return {
-        id: demoSchoolBranding.id,
-        name: demoSchoolBranding.name,
-        shortName: demoSchoolBranding.shortName ?? null,
-        code: demoSchoolBranding.code,
-        logoUrl: demoSchoolBranding.logoUrl ?? null,
-        primaryColor: demoSchoolBranding.primaryColor,
-        secondaryColor: demoSchoolBranding.secondaryColor,
-        address: demoSchoolBranding.address ?? null,
-        phone: demoSchoolBranding.phone ?? null,
-        email: demoSchoolBranding.email ?? null,
-        website: demoSchoolBranding.website ?? null,
-        customDomain: demoSchoolBranding.customDomain ?? null,
-        subdomain: demoSchoolBranding.subdomain ?? null,
-        city: demoSchoolBranding.city,
-        country: demoSchoolBranding.country,
-        timezone: "Asia/Kuala_Lumpur",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        _count: {
-          students: demoSchoolBranding.activeStudents,
-          classes: demoSchoolBranding.activeClasses,
-          users: 4,
-        },
-      };
-    }
     return null;
   }
 }
@@ -59,15 +31,7 @@ async function getAdmins(schoolId: string) {
       orderBy: { createdAt: "desc" },
     });
   } catch {
-    return [
-      {
-        id: "demo-admin",
-        name: "School Administrator",
-        email: "admin@monrlc.example",
-        isActive: true,
-        createdAt: new Date(),
-      },
-    ];
+    return [];
   }
 }
 

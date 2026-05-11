@@ -71,8 +71,8 @@ export const navItems: NavItemDef[] = [
     allowedRoles: ["SUPER_ADMIN", "SCHOOL_ADMIN"],
   },
   {
-    label: "Access Control",
-    href: "/dashboard/access-control",
+    label: "Users & Access",
+    href: "/dashboard/users",
     icon: "ShieldCheck",
     allowedRoles: ["SUPER_ADMIN", "SCHOOL_ADMIN"],
   },

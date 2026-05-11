@@ -32,8 +32,8 @@ export default async function LibraryBookPage({ params }: LibraryBookPageProps) 
             <p className="mt-2 text-sm text-moss">{book.author || "Unknown author"}</p>
             <p className="mt-5 max-w-3xl text-base leading-7 text-moss">{book.description}</p>
             <div className="mt-6 flex flex-wrap gap-2">
-              {[book.subject, book.language, book.readingLevel].map((label) => (
-                <span key={label} className="rounded-md bg-rice px-3 py-2 text-xs font-semibold text-moss">
+              {[[`${book.id}-subject`, book.subject], [`${book.id}-language`, book.language], [`${book.id}-readingLevel`, book.readingLevel]].map(([key, label]) => (
+                <span key={key} className="rounded-md bg-rice px-3 py-2 text-xs font-semibold text-moss">
                   {label}
                 </span>
               ))}

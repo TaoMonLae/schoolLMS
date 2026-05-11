@@ -94,3 +94,7 @@ export function canManageSupport(role: Role) {
 export function canManageClasses(role: Role) {
   return hasPermission(role, "classes:manage");
 }
+
+export function canManageUsers(role: Role) {
+  return hasPermission(role, "users:manage");
+}

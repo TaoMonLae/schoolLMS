@@ -2,7 +2,9 @@ import { AlertTriangle, Bell, HeartHandshake, LockKeyhole, Plus } from "lucide-r
 import { PageHeader } from "@/components/page-header";
 import { StudentPhoto } from "@/components/student-photo";
 import { canManageSupport } from "@/lib/rbac";
-import { demoCurrentUser, formatEnumLabel } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
+import { formatEnumLabel } from "@/lib/students";
+import { AppUser, StudentRecord } from "@/lib/types";
 import {
   canAddBasicSupport,
   canAddSensitiveSupport,
@@ -22,9 +24,10 @@ type SupportPageProps = {
 
 export default async function SupportPage({ searchParams }: SupportPageProps) {
   const params = await searchParams;
-  const students = getSupportStudentsForUser(demoCurrentUser);
-  const selectedStudent = getSupportStudentForUser(demoCurrentUser, params?.studentId || students[0]?.id || "");
-  const reminders = getDocumentRemindersForUser(demoCurrentUser);
+  const currentUser = await getRequiredCurrentUser();
+  const students = await getSupportStudentsForUser(currentUser);
+  const selectedStudent = params?.studentId ? await getSupportStudentForUser(currentUser, params.studentId) : students[0];
+  const reminders = await getDocumentRemindersForUser(currentUser);
 
   return (
     <div className="space-y-6 pb-10">
@@ -39,6 +42,7 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
           <h2 className="text-lg font-semibold text-ink">Students</h2>
           <form className="mt-4">
             <select name="studentId" defaultValue={selectedStudent?.id} className="h-11 w-full rounded-md border border-line bg-rice px-3 text-sm text-ink">
+              {students.length === 0 ? <option value="">No visible students</option> : null}
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.preferredName || student.legalName} | {student.className}
@@ -57,7 +61,7 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
           </div>
         </aside>
 
-        {selectedStudent ? <StudentSupportPanel student={selectedStudent} /> : null}
+        {selectedStudent ? <StudentSupportPanel user={currentUser} student={selectedStudent} /> : <div className="rounded-lg border border-line bg-white p-8 text-center text-sm text-moss shadow-soft">No visible students are available for your role.</div>}
       </section>
 
       <section className="rounded-lg border border-line bg-white p-5 shadow-soft">
@@ -79,14 +83,16 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
   );
 }
 
-function StudentSupportPanel({ student }: { student: ReturnType<typeof getSupportStudentsForUser>[number] }) {
-  const notes = getVisibleCaseNotesForStudent(demoCurrentUser, student.id);
-  const sponsorSupports = getSponsorSupportsForStudent(demoCurrentUser, student.id);
-  const referrals = getReferralsForStudent(demoCurrentUser, student.id);
-  const auditPreview = getSensitiveAuditPreview(demoCurrentUser, student.id);
-  const canAddBasic = canAddBasicSupport(demoCurrentUser, student);
-  const canAddSensitive = canAddSensitiveSupport(demoCurrentUser);
-  const canSeeSensitive = canViewSensitiveSupport(demoCurrentUser);
+async function StudentSupportPanel({ user, student }: { user: AppUser; student: StudentRecord }) {
+  const [notes, sponsorSupports, referrals, auditPreview] = await Promise.all([
+    getVisibleCaseNotesForStudent(user, student.id),
+    getSponsorSupportsForStudent(user, student.id),
+    getReferralsForStudent(user, student.id),
+    getSensitiveAuditPreview(user, student.id)
+  ]);
+  const canAddBasic = canAddBasicSupport(user, student);
+  const canAddSensitive = canAddSensitiveSupport(user);
+  const canSeeSensitive = canViewSensitiveSupport(user);
 
   return (
     <div className="space-y-5">
@@ -100,7 +106,7 @@ function StudentSupportPanel({ student }: { student: ReturnType<typeof getSuppor
               <p className="mt-1 text-sm text-moss">{student.className}</p>
             </div>
           </div>
-          {canManageSupport(demoCurrentUser.role) ? (
+          {canManageSupport(user.role) ? (
             <button className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white">
               <Plus className="h-4 w-4" />
               Add Support Record
@@ -131,6 +137,7 @@ function StudentSupportPanel({ student }: { student: ReturnType<typeof getSuppor
               </p>
             </article>
           ))}
+          {notes.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No case notes recorded for this student.</div> : null}
         </div>
       </section>
 
@@ -171,6 +178,7 @@ function StudentSupportPanel({ student }: { student: ReturnType<typeof getSuppor
                 <p className="mt-2 text-xs font-semibold text-clay">{formatEnumLabel(support.status)}</p>
               </div>
             ))}
+            {sponsorSupports.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No sponsor support records.</div> : null}
           </div>
         </div>
         <div className="rounded-lg border border-line bg-white p-5 shadow-soft">
@@ -183,6 +191,7 @@ function StudentSupportPanel({ student }: { student: ReturnType<typeof getSuppor
                 <p className="mt-2 text-xs font-semibold text-clay">{formatEnumLabel(referral.status)}</p>
               </div>
             ))}
+            {referrals.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No referrals recorded.</div> : null}
           </div>
         </div>
       </section>
@@ -196,6 +205,7 @@ function StudentSupportPanel({ student }: { student: ReturnType<typeof getSuppor
               {event.action} | {event.resourceType}:{event.resourceId} | contentLogged={String(event.metadata.contentLogged)}
             </div>
           ))}
+          {auditPreview.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No sensitive audit events for this student.</div> : null}
         </div>
       </section>
     </div>

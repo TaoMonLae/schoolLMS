@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { StudentPhoto } from "@/components/student-photo";
-import { demoCurrentUser, demoStudents, formatEnumLabel } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
+import { formatEnumLabel } from "@/lib/students";
 import {
   canManageVideoLesson,
   getClassVideoProgressForLesson,
@@ -18,17 +19,20 @@ type VideoDetailPageProps = {
 
 export default async function VideoDetailPage({ params }: VideoDetailPageProps) {
   const { id } = await params;
-  const lesson = getVideoLessonForUser(demoCurrentUser, id);
+  const currentUser = await getRequiredCurrentUser();
+  const lesson = await getVideoLessonForUser(currentUser, id);
 
   if (!lesson) {
     notFound();
   }
 
-  const progress = getVideoProgressForLesson(demoCurrentUser, lesson.id);
-  const playlist = getPlaylistLessonsForUser(demoCurrentUser, lesson);
-  const classProgress = getClassVideoProgressForLesson(demoCurrentUser, lesson);
-  const canSeeClassProgress = canManageVideoLesson(demoCurrentUser, lesson);
-  const studentsById = new Map(demoStudents.map((student) => [student.id, student]));
+  const [progress, playlist, classProgress] = await Promise.all([
+    getVideoProgressForLesson(currentUser, lesson.id),
+    getPlaylistLessonsForUser(currentUser, lesson),
+    getClassVideoProgressForLesson(currentUser, lesson)
+  ]);
+  const canSeeClassProgress = canManageVideoLesson(currentUser, lesson);
+  const studentsById = new Map(classProgress.map((item) => [item.student.id, item.student]));
 
   return (
     <div className="space-y-6 pb-10">
