@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { AlertTriangle, Bell, HeartHandshake, LockKeyhole, Plus } from "lucide-react";
 import { PageHeader } from "@/components/page-header";
+import { deleteCaseNote, deleteSponsorSupport, resolveDocumentReminder, updateDocumentReminder, updateCaseNote, updateReferral, updateSponsorSupport } from "@/app/dashboard/support/actions";
 import { StudentPhoto } from "@/components/student-photo";
 import { canManageSupport } from "@/lib/rbac";
 import { getRequiredCurrentUser } from "@/lib/session";
@@ -19,7 +21,7 @@ import {
 } from "@/lib/support";
 
 type SupportPageProps = {
-  searchParams?: Promise<{ studentId?: string }>;
+  searchParams?: Promise<{ studentId?: string; saved?: string; error?: string }>;
 };
 
 export default async function SupportPage({ searchParams }: SupportPageProps) {
@@ -36,6 +38,9 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
         title="Case Support"
         description="Restricted case notes, family context, sponsor support, referrals, document reminders, and emergency contacts."
       />
+
+      {params?.saved ? <div className="rounded-lg border border-[#b9dfac] bg-[#e8f3dc] p-4 text-sm font-semibold text-[#315933]">{params.saved}</div> : null}
+      {params?.error ? <div className="rounded-lg border border-[#efb4a9] bg-[#fff1ee] p-4 text-sm font-semibold text-[#8a3b2d]">{params.error}</div> : null}
 
       <section className="grid gap-4 lg:grid-cols-[320px_1fr]">
         <aside className="rounded-lg border border-line bg-white p-4 shadow-soft">
@@ -75,6 +80,7 @@ export default async function SupportPage({ searchParams }: SupportPageProps) {
               <p className="text-sm font-semibold text-ink">{reminder.documentType}</p>
               <p className="mt-1 text-xs text-moss">Reminder: {reminder.reminderDate} | Expiry: {reminder.expiryDate}</p>
               <p className="mt-2 text-xs font-semibold text-clay">{reminder.resolved ? "Resolved" : "Open"}</p>
+              {canManageSupport(currentUser.role) ? <details className="mt-3 rounded-md bg-white p-3"><summary className="cursor-pointer text-xs font-bold text-clay">Edit / resolve reminder</summary><form action={updateDocumentReminder} className="mt-3 grid gap-2"><input type="hidden" name="id" value={reminder.id} /><input type="hidden" name="studentId" value={reminder.studentId} /><input name="documentType" defaultValue={reminder.documentType} className="rounded-md border border-line px-3 py-2 text-sm" /><input name="documentRef" defaultValue={reminder.documentRef} className="rounded-md border border-line px-3 py-2 text-sm" /><input type="date" name="expiryDate" defaultValue={reminder.expiryDate} className="rounded-md border border-line px-3 py-2 text-sm" /><input type="date" name="reminderDate" defaultValue={reminder.reminderDate} className="rounded-md border border-line px-3 py-2 text-sm" /><label className="text-xs font-semibold text-moss"><input type="checkbox" name="resolved" defaultChecked={reminder.resolved} /> Resolved</label><button className="rounded-md bg-ink px-3 py-2 text-xs font-bold text-white">Update reminder</button></form>{!reminder.resolved ? <form action={resolveDocumentReminder} className="mt-2"><input type="hidden" name="id" value={reminder.id} /><input type="hidden" name="studentId" value={reminder.studentId} /><button className="text-xs font-bold text-clay">Mark resolved</button></form> : null}</details> : null}
             </div>
           ))}
         </div>
@@ -106,11 +112,11 @@ async function StudentSupportPanel({ user, student }: { user: AppUser; student: 
               <p className="mt-1 text-sm text-moss">{student.className}</p>
             </div>
           </div>
-          {canManageSupport(user.role) ? (
-            <button className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white">
+          {(canManageSupport(user.role) || canAddBasic) ? (
+            <Link href={`/dashboard/support/new?studentId=${student.id}`} className="inline-flex items-center justify-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-white">
               <Plus className="h-4 w-4" />
               Add Support Record
-            </button>
+            </Link>
           ) : null}
         </div>
       </section>
@@ -135,6 +141,19 @@ async function StudentSupportPanel({ user, student }: { user: AppUser; student: 
               <p className="mt-3 text-sm leading-6 text-moss">
                 {note.redacted ? "Sensitive note hidden. Request access from a school admin or approved case manager." : note.note}
               </p>
+              {!note.redacted && (note.sensitivity === "BASIC" ? canAddBasic : canAddSensitive) ? (
+                <details className="mt-3 rounded-md border border-line bg-white p-3">
+                  <summary className="cursor-pointer text-xs font-bold text-clay">Edit / delete note</summary>
+                  <form action={updateCaseNote} className="mt-3 grid gap-2">
+                    <input type="hidden" name="id" value={note.id} /><input type="hidden" name="studentId" value={student.id} />
+                    <input name="title" defaultValue={note.title} className="rounded-md border border-line px-3 py-2 text-sm" />
+                    <textarea name="note" defaultValue={note.note || ""} className="min-h-20 rounded-md border border-line px-3 py-2 text-sm" />
+                    <select name="sensitivity" defaultValue={note.sensitivity} className="rounded-md border border-line px-3 py-2 text-sm"><option value="BASIC">Basic</option>{canAddSensitive ? <option value="SENSITIVE">Sensitive</option> : null}</select>
+                    <button className="rounded-md bg-ink px-3 py-2 text-xs font-bold text-white">Update note</button>
+                  </form>
+                  <form action={deleteCaseNote} className="mt-2"><input type="hidden" name="id" value={note.id} /><input type="hidden" name="studentId" value={student.id} /><button className="text-xs font-bold text-[#8a3b2d]">Delete note</button></form>
+                </details>
+              ) : null}
             </article>
           ))}
           {notes.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No case notes recorded for this student.</div> : null}
@@ -176,6 +195,7 @@ async function StudentSupportPanel({ user, student }: { user: AppUser; student: 
                 <p className="text-sm font-semibold text-ink">{support.sponsorName}</p>
                 <p className="mt-1 text-xs text-moss">{support.supportType} | {support.currency} {support.amount}</p>
                 <p className="mt-2 text-xs font-semibold text-clay">{formatEnumLabel(support.status)}</p>
+                {canManageSupport(user.role) ? <details className="mt-3 rounded-md bg-white p-3"><summary className="cursor-pointer text-xs font-bold text-clay">Edit / delete sponsor support</summary><form action={updateSponsorSupport} className="mt-3 grid gap-2"><input type="hidden" name="id" value={support.id} /><input type="hidden" name="studentId" value={student.id} /><input name="sponsorName" defaultValue={support.sponsorName} className="rounded-md border border-line px-3 py-2 text-sm" /><input name="supportType" defaultValue={support.supportType} className="rounded-md border border-line px-3 py-2 text-sm" /><input name="amount" defaultValue={support.amount} className="rounded-md border border-line px-3 py-2 text-sm" /><input name="currency" defaultValue={support.currency} className="rounded-md border border-line px-3 py-2 text-sm" /><select name="status" defaultValue={support.status} className="rounded-md border border-line px-3 py-2 text-sm"><option>ACTIVE</option><option>PAUSED</option><option>ENDED</option></select><input type="date" name="startDate" defaultValue={support.startDate} className="rounded-md border border-line px-3 py-2 text-sm" /><input type="date" name="endDate" defaultValue={support.endDate} className="rounded-md border border-line px-3 py-2 text-sm" /><textarea name="notes" defaultValue={support.notes || ""} className="rounded-md border border-line px-3 py-2 text-sm" /><button className="rounded-md bg-ink px-3 py-2 text-xs font-bold text-white">Update sponsor support</button></form><form action={deleteSponsorSupport} className="mt-2"><input type="hidden" name="id" value={support.id} /><input type="hidden" name="studentId" value={student.id} /><button className="text-xs font-bold text-[#8a3b2d]">Delete sponsor support</button></form></details> : null}
               </div>
             ))}
             {sponsorSupports.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No sponsor support records.</div> : null}
@@ -189,6 +209,7 @@ async function StudentSupportPanel({ user, student }: { user: AppUser; student: 
                 <p className="text-sm font-semibold text-ink">{referral.agency}</p>
                 <p className="mt-1 text-xs text-moss">{referral.reason} | Referred {referral.referredAt}</p>
                 <p className="mt-2 text-xs font-semibold text-clay">{formatEnumLabel(referral.status)}</p>
+                {canManageSupport(user.role) ? <details className="mt-3 rounded-md bg-white p-3"><summary className="cursor-pointer text-xs font-bold text-clay">Edit / resolve referral</summary><form action={updateReferral} className="mt-3 grid gap-2"><input type="hidden" name="id" value={referral.id} /><input type="hidden" name="studentId" value={student.id} /><input name="agency" defaultValue={referral.agency} className="rounded-md border border-line px-3 py-2 text-sm" /><input name="reason" defaultValue={referral.reason} className="rounded-md border border-line px-3 py-2 text-sm" /><select name="status" defaultValue={referral.status} className="rounded-md border border-line px-3 py-2 text-sm"><option>OPEN</option><option>IN_PROGRESS</option><option>RESOLVED</option><option>CLOSED</option></select><input type="date" name="referredAt" defaultValue={referral.referredAt} className="rounded-md border border-line px-3 py-2 text-sm" /><input type="date" name="resolvedAt" defaultValue={referral.resolvedAt} className="rounded-md border border-line px-3 py-2 text-sm" /><textarea name="notes" defaultValue={referral.notes || ""} className="rounded-md border border-line px-3 py-2 text-sm" /><button className="rounded-md bg-ink px-3 py-2 text-xs font-bold text-white">Update referral</button></form></details> : null}
               </div>
             ))}
             {referrals.length === 0 ? <div className="rounded-md border border-line bg-rice p-4 text-sm text-moss">No referrals recorded.</div> : null}

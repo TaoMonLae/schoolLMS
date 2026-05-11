@@ -65,6 +65,12 @@ export async function getVisibleCaseNotesForStudent(user: AppUser, studentId: st
   if (!student) return [];
   const canSeeSensitive = canViewSensitiveSupport(user);
   const notes = await db.caseNote.findMany({ where: { schoolId: student.schoolId, studentId: student.id }, include: { author: { select: { name: true } } }, orderBy: { createdAt: "desc" } });
+  if (canSeeSensitive) {
+    const sensitiveNoteIds = notes.filter((note) => note.sensitivity === "SENSITIVE").map((note) => note.id);
+    if (sensitiveNoteIds.length > 0) {
+      await db.sensitiveAuditLog.createMany({ data: sensitiveNoteIds.map((resourceId) => ({ schoolId: student.schoolId, studentId: student.id, actorId: user.id, action: "VIEW", resourceType: "case_note", resourceId, metadata: { contentLogged: false } })) });
+    }
+  }
   return notes.map(mapCaseNote).map((note) => {
     if (note.sensitivity === "SENSITIVE" && !canSeeSensitive) {
       const { note: _privateNote, ...safeNote } = note;
