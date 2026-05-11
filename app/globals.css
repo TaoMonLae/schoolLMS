@@ -113,6 +113,49 @@
   --focus-ring: 0 0 0 4px rgb(var(--color-primary-rgb) / 0.18);
 }
 
+
+.dark {
+  color-scheme: dark;
+  --color-canvas: #0a1530;
+  --color-canvas-rgb: 10 21 48;
+  --color-surface: #070f24;
+  --color-surface-rgb: 7 15 36;
+  --color-surface-soft: #111d3a;
+  --color-surface-soft-rgb: 17 29 58;
+  --color-hairline: #1a2a52;
+  --color-hairline-rgb: 26 42 82;
+  --color-hairline-soft: #162443;
+  --color-hairline-soft-rgb: 22 36 67;
+  --color-hairline-strong: #33456f;
+  --color-hairline-strong-rgb: 51 69 111;
+  --color-ink-deep: #ffffff;
+  --color-ink-deep-rgb: 255 255 255;
+  --color-ink: #ffffff;
+  --color-ink-rgb: 255 255 255;
+  --color-charcoal: #e5e3df;
+  --color-charcoal-rgb: 229 227 223;
+  --color-slate: #c8c4be;
+  --color-slate-rgb: 200 196 190;
+  --color-steel: #a4a097;
+  --color-steel-rgb: 164 160 151;
+  --color-stone: #a4a097;
+  --color-stone-rgb: 164 160 151;
+  --color-muted: #787671;
+  --color-muted-rgb: 120 118 113;
+  --color-card-tint-lavender: #1f2a56;
+  --color-card-tint-lavender-rgb: 31 42 86;
+  --color-card-tint-yellow: #3b3214;
+  --color-card-tint-yellow-rgb: 59 50 20;
+  --color-card-tint-mint: #12351f;
+  --color-card-tint-mint-rgb: 18 53 31;
+  --color-card-tint-rose: #421b2a;
+  --color-card-tint-rose-rgb: 66 27 42;
+  --color-card-tint-sky: #132f52;
+  --color-card-tint-sky-rgb: 19 47 82;
+  --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.32);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
 * {
   box-sizing: border-box;
 }
