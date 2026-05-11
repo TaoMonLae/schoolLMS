@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/page-header";
 import { uploadLibraryBook } from "@/app/dashboard/library/actions";
 import { allowedBookFileTypes, allowedCoverImageTypes, maxBookFileSizeMb, maxCoverImageSizeMb } from "@/lib/library";
 import { canUploadLibraryBooks } from "@/lib/rbac";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type NewLibraryBookPageProps = {
   searchParams?: Promise<{
@@ -13,7 +13,8 @@ type NewLibraryBookPageProps = {
 
 export default async function NewLibraryBookPage({ searchParams }: NewLibraryBookPageProps) {
   const params = await searchParams;
-  const canUpload = canUploadLibraryBooks(demoCurrentUser.role);
+  const currentUser = await getRequiredCurrentUser();
+  const canUpload = canUploadLibraryBooks(currentUser.role);
 
   return (
     <div className="space-y-6 pb-10">

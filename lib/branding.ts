@@ -1,84 +1,93 @@
+import { db } from "@/lib/db";
+import { resolveSchoolId } from "@/lib/tenant";
 import { AppUser, SchoolSummary } from "@/lib/types";
 
-// ─── Demo / seed school ───────────────────────────────────────────────────────
-
-/**
- * Static fallback used when no DB connection is available.
- * All demo pages reference this so the UI renders without a live database.
- */
-export const demoSchoolBranding: SchoolSummary = {
-  id: "seed-school-mon-rlc",
-  name: "Mon Refugee Learning Centre",
-  shortName: "Mon RLC",
-  code: "MON-RLC",
+const defaultBranding: SchoolSummary = {
+  id: "unconfigured",
+  name: "School LMS",
+  shortName: "School LMS",
+  code: "SCHOOL",
   logoUrl: "",
   primaryColor: "#17211b",
   secondaryColor: "#b46a45",
-  address: "Sentul, Kuala Lumpur, Malaysia",
-  phone: "+60 12 000 0000",
-  email: "admin@monrlc.example",
-  website: "https://monrlc.example",
-  customDomain: "learn.monrlc.example",
-  subdomain: "monrlc",
-  city: "Kuala Lumpur",
-  country: "Malaysia",
-  activeStudents: 5,
-  activeClasses: 3,
+  city: "",
+  country: "",
+  activeStudents: 0,
+  activeClasses: 0
 };
 
-// ─── Branding helpers ─────────────────────────────────────────────────────────
+export async function getSchoolBrandingForUser(user: AppUser, requestedSchoolId?: string): Promise<SchoolSummary> {
+  const schoolId = resolveSchoolId(user, requestedSchoolId);
+  const school = await db.school.findFirst({
+    where: { id: schoolId, isActive: true },
+    include: {
+      _count: {
+        select: {
+          students: { where: { status: "ACTIVE", deletedAt: null } },
+          classes: true
+        }
+      }
+    }
+  });
 
-export function getSchoolBrandingForUser(user: AppUser): SchoolSummary | undefined {
-  if (user.role === "SUPER_ADMIN" || user.schoolId === demoSchoolBranding.id) {
-    return demoSchoolBranding;
-  }
-  return undefined;
+  if (!school) return defaultBranding;
+
+  return {
+    id: school.id,
+    name: school.name,
+    shortName: school.shortName || undefined,
+    code: school.code,
+    logoUrl: school.logoUrl || undefined,
+    primaryColor: school.primaryColor,
+    secondaryColor: school.secondaryColor,
+    address: school.address || undefined,
+    phone: school.phone || undefined,
+    email: school.email || undefined,
+    website: school.website || undefined,
+    customDomain: school.customDomain || undefined,
+    subdomain: school.subdomain || undefined,
+    city: school.city || "",
+    country: school.country || "",
+    activeStudents: school._count.students,
+    activeClasses: school._count.classes
+  };
+}
+
+export async function getFirstActiveSchoolBranding(): Promise<SchoolSummary> {
+  const school = await db.school.findFirst({ where: { isActive: true }, orderBy: { createdAt: "asc" } });
+  if (!school) return defaultBranding;
+  return {
+    ...defaultBranding,
+    id: school.id,
+    name: school.name,
+    shortName: school.shortName || undefined,
+    code: school.code,
+    logoUrl: school.logoUrl || undefined,
+    primaryColor: school.primaryColor,
+    secondaryColor: school.secondaryColor,
+    address: school.address || undefined,
+    phone: school.phone || undefined,
+    email: school.email || undefined,
+    website: school.website || undefined,
+    customDomain: school.customDomain || undefined,
+    subdomain: school.subdomain || undefined,
+    city: school.city || "",
+    country: school.country || ""
+  };
 }
 
 export function canEditSchoolBranding(user: AppUser, schoolId: string): boolean {
   return user.role === "SUPER_ADMIN" || (user.role === "SCHOOL_ADMIN" && user.schoolId === schoolId);
 }
 
-export function getDisplaySchoolName(
-  school: Pick<SchoolSummary, "name" | "shortName"> = demoSchoolBranding
-): string {
+export function getDisplaySchoolName(school: Pick<SchoolSummary, "name" | "shortName">): string {
   return school.shortName || school.name;
 }
 
-export function getSchoolOrigin(school: Pick<SchoolSummary, "code" | "subdomain" | "customDomain"> = demoSchoolBranding): string {
-  if (school.customDomain) {
-    return `https://${school.customDomain}`;
-  }
+export function getSchoolOrigin(school: Pick<SchoolSummary, "code" | "subdomain" | "customDomain">): string {
+  if (school.customDomain) return `https://${school.customDomain}`;
   return `https://${school.subdomain || school.code.toLowerCase()}.refugeeschoolos.com`;
 }
 
-// ─── Dynamic branding from request headers ────────────────────────────────────
-
-export type MinimalBranding = {
-  id: string;
-  name: string;
-  shortName?: string | null;
-  primaryColor: string;
-  secondaryColor: string;
-  logoUrl?: string | null;
-  code: string;
-};
-
-/**
- * Reads school branding from the Next.js request headers set by middleware.
- * Falls back to the demo school when headers are absent (local dev / demo mode).
- *
- * Call from a Server Component that has access to `next/headers`.
- */
-export function getBrandingFromHeaders(headerMap: Map<string, string>): MinimalBranding {
-  const schoolId = headerMap.get("x-session-school-id");
-
-  // In demo/dev mode with no DB, just return the demo school branding
-  if (!schoolId || schoolId === demoSchoolBranding.id) {
-    return demoSchoolBranding;
-  }
-
-  // Branding is resolved fully in the dashboard layout via lib/schools.ts
-  // This function provides the static fallback shape only
-  return demoSchoolBranding;
-}
+// Compatibility export for legacy super-admin fallback UI only; runtime tenant pages use DB branding helpers above.
+export const demoSchoolBranding: SchoolSummary = defaultBranding;

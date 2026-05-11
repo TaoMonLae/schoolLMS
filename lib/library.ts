@@ -1,4 +1,5 @@
-import { filterToTenant } from "@/lib/tenant";
+import { db } from "@/lib/db";
+import { tenantFilter } from "@/lib/tenant";
 import { AppUser, TenantScoped } from "@/lib/types";
 
 export const allowedBookFileTypes = ["application/pdf"] as const;
@@ -36,98 +37,34 @@ export type FileValidationInput = {
   kind: "book" | "cover";
 };
 
-export const demoLibraryBooks: LibraryBook[] = [
-  {
-    id: "book-english-starter",
-    schoolId: "seed-school-mon-rlc",
-    title: "English Starter Reader",
-    author: "Refugee SchoolOS Curriculum Team",
-    description: "A beginner reading pack with simple classroom vocabulary, picture prompts, and short practice passages.",
-    category: "Reader",
-    subject: "English",
-    readingLevel: "Beginner",
-    language: "English",
-    fileUrl: "/demo-files/english-starter-reader.pdf",
-    coverImageUrl: "",
-    uploadedBy: "Lead Teacher",
-    createdAt: "2026-05-01",
-    updatedAt: "2026-05-01"
-  },
-  {
-    id: "book-math-foundations",
-    schoolId: "seed-school-mon-rlc",
-    title: "Math Foundations Workbook",
-    author: "Mon Refugee Learning Centre",
-    description: "Printable number sense, addition, subtraction, and fractions practice for mixed-age classrooms.",
-    category: "Workbook",
-    subject: "Math",
-    readingLevel: "Primary",
-    language: "English",
-    fileUrl: "/demo-files/math-foundations-workbook.pdf",
-    coverImageUrl: "",
-    uploadedBy: "School Administrator",
-    createdAt: "2026-05-03",
-    updatedAt: "2026-05-03"
-  },
-  {
-    id: "book-health-safety",
-    schoolId: "seed-school-mon-rlc",
-    title: "Health and Safety Picture Guide",
-    author: "Community Education Network",
-    description: "Visual guide for hygiene, safe travel, emergency contacts, and school wellbeing routines.",
-    category: "Guide",
-    subject: "Life Skills",
-    readingLevel: "Beginner",
-    language: "Burmese",
-    fileUrl: "/demo-files/health-safety-picture-guide.pdf",
-    coverImageUrl: "",
-    uploadedBy: "Case Manager",
-    createdAt: "2026-05-05",
-    updatedAt: "2026-05-05"
-  },
-  {
-    id: "book-mon-stories",
-    schoolId: "seed-school-mon-rlc",
-    title: "Mon Stories for Young Readers",
-    author: "Community Teachers",
-    description: "Short cultural stories and reading questions for mother-tongue literacy sessions.",
-    category: "Stories",
-    subject: "Literacy",
-    readingLevel: "Intermediate",
-    language: "Mon",
-    fileUrl: "/demo-files/mon-stories-young-readers.pdf",
-    coverImageUrl: "",
-    uploadedBy: "Lead Teacher",
-    createdAt: "2026-05-06",
-    updatedAt: "2026-05-06"
-  }
-];
-
-export function getLibraryBooksForUser(user: AppUser, filters: LibraryFilters = {}) {
-  const search = filters.search?.trim().toLowerCase();
-
-  return filterToTenant(
-    user,
-    demoLibraryBooks
-      .filter((book) => user.role === "SUPER_ADMIN" || book.schoolId === user.schoolId)
-      .filter((book) => !filters.subject || filters.subject === "ALL" || book.subject === filters.subject)
-      .filter((book) => !filters.language || filters.language === "ALL" || book.language === filters.language)
-      .filter((book) => !filters.readingLevel || filters.readingLevel === "ALL" || book.readingLevel === filters.readingLevel)
-      .filter((book) => !filters.category || filters.category === "ALL" || book.category === filters.category)
-      .filter((book) => {
-        if (!search) {
-          return true;
-        }
-
-        return [book.title, book.author, book.description, book.category, book.subject, book.language, book.readingLevel]
-          .filter(Boolean)
-          .some((value) => value?.toLowerCase().includes(search));
-      })
-  );
+function mapBook(book: { id:string; schoolId:string; title:string; author:string|null; description:string|null; category:string; subject:string; readingLevel:string; language:string; fileUrl:string; coverImageUrl:string|null; uploadedBy?: { name: string } | null; createdAt: Date; updatedAt: Date; }): LibraryBook {
+  return { id: book.id, schoolId: book.schoolId, title: book.title, author: book.author || undefined, description: book.description || undefined, category: book.category, subject: book.subject, readingLevel: book.readingLevel, language: book.language, fileUrl: book.fileUrl, coverImageUrl: book.coverImageUrl || undefined, uploadedBy: book.uploadedBy?.name || "", createdAt: book.createdAt.toISOString().slice(0,10), updatedAt: book.updatedAt.toISOString().slice(0,10) };
 }
 
-export function getLibraryBookForUser(user: AppUser, bookId: string) {
-  return getLibraryBooksForUser(user).find((book) => book.id === bookId);
+export async function getLibraryBooksForUser(user: AppUser, filters: LibraryFilters = {}) {
+  const search = filters.search?.trim();
+  const books = await db.libraryBook.findMany({
+    where: {
+      ...tenantFilter(user),
+      ...(!filters.subject || filters.subject === "ALL" ? {} : { subject: filters.subject }),
+      ...(!filters.language || filters.language === "ALL" ? {} : { language: filters.language }),
+      ...(!filters.readingLevel || filters.readingLevel === "ALL" ? {} : { readingLevel: filters.readingLevel }),
+      ...(!filters.category || filters.category === "ALL" ? {} : { category: filters.category }),
+      ...(search ? { OR: [
+        { title: { contains: search, mode: "insensitive" } }, { author: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } }, { category: { contains: search, mode: "insensitive" } },
+        { subject: { contains: search, mode: "insensitive" } }, { language: { contains: search, mode: "insensitive" } }, { readingLevel: { contains: search, mode: "insensitive" } }
+      ] } : {})
+    },
+    include: { uploadedBy: { select: { name: true } } },
+    orderBy: { title: "asc" }
+  });
+  return books.map(mapBook);
+}
+
+export async function getLibraryBookForUser(user: AppUser, bookId: string) {
+  const book = await db.libraryBook.findFirst({ where: { id: bookId, ...tenantFilter(user) }, include: { uploadedBy: { select: { name: true } } } });
+  return book ? mapBook(book) : undefined;
 }
 
 export function getLibraryFilterOptions(books: LibraryBook[]) {

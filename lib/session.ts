@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { db } from "@/lib/db";
 import { AppUser } from "@/lib/types";
 
 export const SESSION_COOKIE = "school_session";
@@ -52,6 +53,35 @@ export function sessionToAppUser(session: SessionPayload): AppUser {
     studentId: session.studentId,
     approvedForSensitiveCaseNotes: session.approvedForSensitiveCaseNotes,
   };
+}
+
+/** Reads the session user from the database so roles, school, class assignments,
+ * student links, and active flags are never taken only from stale cookie data. */
+export async function getCurrentUser(): Promise<AppUser | null> {
+  const session = await getSession();
+  if (!session) return null;
+
+  const user = await db.user.findUnique({
+    where: { id: session.userId, isActive: true },
+    include: { classes: { select: { id: true } }, student: { select: { id: true } } }
+  });
+
+  if (!user) return null;
+
+  return {
+    id: user.id,
+    schoolId: user.schoolId || undefined,
+    role: user.role,
+    assignedClassIds: user.classes.map((classItem) => classItem.id),
+    studentId: user.student?.id,
+    approvedForSensitiveCaseNotes: user.caseManagerApproved
+  };
+}
+
+export async function getRequiredCurrentUser(): Promise<AppUser> {
+  const user = await getCurrentUser();
+  if (!user) throw new Error("Unauthenticated: no active user found");
+  return user;
 }
 
 /**

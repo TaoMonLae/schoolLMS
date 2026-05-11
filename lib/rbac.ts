@@ -90,3 +90,7 @@ export function canViewSupport(role: Role) {
 export function canManageSupport(role: Role) {
   return hasPermission(role, "support:manage");
 }
+
+export function canManageClasses(role: Role) {
+  return hasPermission(role, "classes:manage");
+}

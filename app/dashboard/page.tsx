@@ -3,12 +3,13 @@ import { DashboardCard } from "@/components/dashboard-card";
 import { PageHeader } from "@/components/page-header";
 import { RoleBadge } from "@/components/role-badge";
 import { getTodayAttendanceSummary } from "@/lib/attendance";
-import { demoSchoolBranding } from "@/lib/branding";
-import { demoCurrentUser } from "@/lib/students";
+import { getSchoolBrandingForUser } from "@/lib/branding";
+import { getRequiredCurrentUser } from "@/lib/session";
 
-export default function DashboardPage() {
-  const school = demoSchoolBranding;
-  const attendance = getTodayAttendanceSummary(demoCurrentUser);
+export default async function DashboardPage() {
+  const currentUser = await getRequiredCurrentUser();
+  const school = await getSchoolBrandingForUser(currentUser);
+  const attendance = await getTodayAttendanceSummary(currentUser);
   const stats = [
     { label: "Students", value: school.activeStudents, icon: GraduationCap },
     { label: "Classes", value: school.activeClasses, icon: BookOpenCheck },

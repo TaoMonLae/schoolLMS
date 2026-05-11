@@ -1,134 +1,7 @@
-import { filterToTenant } from "@/lib/tenant";
+import { Prisma, StudentStatus as PrismaStudentStatus } from "@prisma/client";
+import { db } from "@/lib/db";
+import { tenantFilter } from "@/lib/tenant";
 import { AppUser, Gender, SchoolClassOption, StudentRecord, StudentStatus } from "@/lib/types";
-
-export const demoClasses: SchoolClassOption[] = [
-  { id: "class-primary-a", name: "Primary A", teacherId: "user-teacher-lead" },
-  { id: "class-bridge-english", name: "Bridge English", teacherId: "user-teacher-lead" },
-  { id: "class-math-2", name: "Math Level 2", teacherId: "user-teacher-math" }
-];
-
-export const demoCurrentUser: AppUser = {
-  id: "user-school-admin",
-  schoolId: "seed-school-mon-rlc",
-  role: "SCHOOL_ADMIN",
-  assignedClassIds: []
-};
-
-export const demoStudents: StudentRecord[] = [
-  {
-    id: "student-aye-chan",
-    schoolId: "seed-school-mon-rlc",
-    studentNumber: "MON-001",
-    legalName: "Aye Chan",
-    preferredName: "Aye",
-    gender: "FEMALE",
-    status: "ACTIVE",
-    dateOfBirth: "2014-04-10",
-    primaryLanguage: "Burmese",
-    classId: "class-primary-a",
-    className: "Primary A",
-    guardianName: "Daw Mya",
-    guardianRelationship: "Mother",
-    guardianPhone: "+60 12 000 0000",
-    guardianEmail: "mya.guardian@example.org",
-    homeAddress: "Sentul, Kuala Lumpur",
-    emergencyContactName: "Ko Lin",
-    emergencyContactPhone: "+60 13 000 0000",
-    emergencyRelationship: "Uncle",
-    unhcrStatus: "Registered",
-    documentType: "UNHCR_CARD",
-    documentNumber: "UNHCR-2026-001",
-    documentExpiryDate: "2027-12-31"
-  },
-  {
-    id: "student-min-thu",
-    schoolId: "seed-school-mon-rlc",
-    studentNumber: "MON-002",
-    legalName: "Min Thu",
-    preferredName: "Min",
-    gender: "MALE",
-    status: "ACTIVE",
-    dateOfBirth: "2013-09-18",
-    primaryLanguage: "Mon",
-    classId: "class-primary-a",
-    className: "Primary A",
-    guardianName: "Nai Soe",
-    guardianRelationship: "Father",
-    guardianPhone: "+60 12 222 0000",
-    homeAddress: "Gombak, Kuala Lumpur",
-    emergencyContactName: "Mi Hnin",
-    emergencyContactPhone: "+60 16 222 0000",
-    emergencyRelationship: "Aunt",
-    unhcrStatus: "Pending renewal",
-    documentType: "ASYLUM_SEEKER_CERTIFICATE",
-    documentNumber: "ASC-88219",
-    documentExpiryDate: "2026-10-15"
-  },
-  {
-    id: "student-nilar-win",
-    schoolId: "seed-school-mon-rlc",
-    studentNumber: "MON-003",
-    legalName: "Nilar Win",
-    preferredName: "Nilar",
-    gender: "FEMALE",
-    status: "ACTIVE",
-    dateOfBirth: "2012-02-03",
-    primaryLanguage: "Burmese",
-    classId: "class-bridge-english",
-    className: "Bridge English",
-    guardianName: "Daw Khin",
-    guardianRelationship: "Grandmother",
-    guardianPhone: "+60 11 333 0000",
-    emergencyContactName: "Ko Win",
-    emergencyContactPhone: "+60 17 333 0000",
-    emergencyRelationship: "Neighbour",
-    unhcrStatus: "Registered",
-    documentType: "UNHCR_CARD",
-    documentNumber: "UNHCR-2026-003",
-    documentExpiryDate: "2028-01-20"
-  },
-  {
-    id: "student-htun-lin",
-    schoolId: "seed-school-mon-rlc",
-    studentNumber: "MON-004",
-    legalName: "Htun Lin",
-    preferredName: "Htun",
-    gender: "MALE",
-    status: "TRANSFERRED",
-    dateOfBirth: "2011-11-25",
-    primaryLanguage: "Mon",
-    classId: "class-bridge-english",
-    className: "Bridge English",
-    guardianName: "Nai Tun",
-    guardianRelationship: "Father",
-    guardianPhone: "+60 12 444 0000",
-    emergencyContactName: "Daw May",
-    emergencyContactPhone: "+60 18 444 0000",
-    emergencyRelationship: "Family friend"
-  },
-  {
-    id: "student-sandi-oo",
-    schoolId: "seed-school-mon-rlc",
-    studentNumber: "MON-005",
-    legalName: "Sandi Oo",
-    preferredName: "Sandi",
-    gender: "FEMALE",
-    status: "ACTIVE",
-    dateOfBirth: "2015-06-01",
-    primaryLanguage: "Burmese",
-    classId: "class-math-2",
-    className: "Math Level 2",
-    guardianName: "Daw Ei",
-    guardianRelationship: "Mother",
-    guardianPhone: "+60 19 555 0000",
-    emergencyContactName: "Ko Zaw",
-    emergencyContactPhone: "+60 12 555 0000",
-    emergencyRelationship: "Cousin",
-    unhcrStatus: "Not recorded",
-    documentType: "COMMUNITY_LETTER",
-    documentNumber: "MLC-4421"
-  }
-];
 
 export type StudentFilters = {
   search?: string;
@@ -137,34 +10,108 @@ export type StudentFilters = {
   status?: StudentStatus | "ALL";
 };
 
-export function getVisibleStudentsForUser(user: AppUser, filters: StudentFilters = {}) {
-  const search = filters.search?.trim().toLowerCase();
+const activeEnrollmentInclude = {
+  enrollments: {
+    where: { status: "ACTIVE" as const },
+    include: { class: true },
+    orderBy: { startDate: "desc" as const },
+    take: 1
+  }
+};
 
-  // filterToTenant is a safety-net second layer — even if the schoolId filter below
-  // were accidentally removed, no cross-school records would leak.
-  return filterToTenant(
-    user,
-    demoStudents
-      .filter((student) => !student.deletedAt)
-      .filter((student) => user.role === "SUPER_ADMIN" || student.schoolId === user.schoolId)
-    .filter((student) => user.role !== "TEACHER" || user.assignedClassIds.includes(student.classId))
-    .filter((student) => !filters.classId || filters.classId === "ALL" || student.classId === filters.classId)
-    .filter((student) => !filters.gender || filters.gender === "ALL" || student.gender === filters.gender)
-    .filter((student) => !filters.status || filters.status === "ALL" || student.status === filters.status)
-    .filter((student) => {
-      if (!search) {
-        return true;
-      }
+type StudentWithClass = Prisma.StudentGetPayload<{ include: typeof activeEnrollmentInclude }>;
 
-      return [student.legalName, student.preferredName, student.studentNumber, student.guardianName, student.className]
-        .filter(Boolean)
-        .some((value) => value?.toLowerCase().includes(search));
-    })
-  );
+export function toDateInputValue(value?: Date | null) {
+  return value ? value.toISOString().slice(0, 10) : undefined;
 }
 
-export function getStudentForUser(user: AppUser, studentId: string) {
-  return getVisibleStudentsForUser(user).find((student) => student.id === studentId);
+export function mapStudentRecord(student: StudentWithClass): StudentRecord {
+  const enrollment = student.enrollments[0];
+  return {
+    id: student.id,
+    schoolId: student.schoolId,
+    studentNumber: student.studentNumber,
+    legalName: student.legalName || "",
+    preferredName: student.preferredName || "",
+    gender: student.gender,
+    status: student.status,
+    photoUrl: student.photoUrl || undefined,
+    dateOfBirth: toDateInputValue(student.dateOfBirth),
+    primaryLanguage: student.primaryLanguage || undefined,
+    classId: enrollment?.classId || "",
+    className: enrollment?.class.name || "Unenrolled",
+    guardianName: student.guardianName || undefined,
+    guardianRelationship: student.guardianRelationship || undefined,
+    guardianPhone: student.guardianPhone || undefined,
+    guardianEmail: student.guardianEmail || undefined,
+    homeAddress: student.homeAddress || undefined,
+    emergencyContactName: student.emergencyContactName || undefined,
+    emergencyContactPhone: student.emergencyContactPhone || undefined,
+    emergencyRelationship: student.emergencyRelationship || undefined,
+    unhcrStatus: student.unhcrStatus || undefined,
+    documentType: student.documentType || undefined,
+    documentNumber: student.documentNumber || undefined,
+    documentExpiryDate: toDateInputValue(student.documentExpiryDate),
+    deletedAt: toDateInputValue(student.deletedAt)
+  };
+}
+
+function studentVisibilityWhere(user: AppUser, filters: StudentFilters = {}): Prisma.StudentWhereInput {
+  const where: Prisma.StudentWhereInput = {
+    ...tenantFilter(user),
+    deletedAt: null
+  };
+
+  if (user.role === "STUDENT") where.id = user.studentId || "__none__";
+
+  if (user.role === "TEACHER") {
+    where.enrollments = { some: { status: "ACTIVE", classId: { in: user.assignedClassIds } } };
+  }
+
+  if (filters.classId && filters.classId !== "ALL") {
+    where.enrollments = { some: { status: "ACTIVE", classId: filters.classId } };
+  }
+
+  if (filters.gender && filters.gender !== "ALL") where.gender = filters.gender;
+  if (filters.status && filters.status !== "ALL") where.status = filters.status as PrismaStudentStatus;
+
+  const search = filters.search?.trim();
+  if (search) {
+    where.OR = [
+      { legalName: { contains: search, mode: "insensitive" } },
+      { preferredName: { contains: search, mode: "insensitive" } },
+      { studentNumber: { contains: search, mode: "insensitive" } },
+      { guardianName: { contains: search, mode: "insensitive" } },
+      { enrollments: { some: { class: { name: { contains: search, mode: "insensitive" } } } } }
+    ];
+  }
+
+  return where;
+}
+
+export async function getVisibleStudentsForUser(user: AppUser, filters: StudentFilters = {}) {
+  const students = await db.student.findMany({
+    where: studentVisibilityWhere(user, filters),
+    include: activeEnrollmentInclude,
+    orderBy: [{ studentNumber: "asc" }, { legalName: "asc" }]
+  });
+  return students.map(mapStudentRecord);
+}
+
+export async function getStudentForUser(user: AppUser, studentId: string) {
+  const students = await getVisibleStudentsForUser(user, {});
+  return students.find((student) => student.id === studentId);
+}
+
+export async function getClassOptionsForUser(user: AppUser): Promise<SchoolClassOption[]> {
+  const classes = await db.class.findMany({
+    where: {
+      ...tenantFilter(user),
+      ...(user.role === "TEACHER" ? { id: { in: user.assignedClassIds } } : {})
+    },
+    orderBy: [{ academicYear: "desc" }, { name: "asc" }]
+  });
+  return classes.map((classItem) => ({ id: classItem.id, name: classItem.name, teacherId: classItem.teacherId || undefined }));
 }
 
 export function formatEnumLabel(value: string) {
@@ -175,7 +122,7 @@ export function formatEnumLabel(value: string) {
 }
 
 export function getStudentInitials(student: Pick<StudentRecord, "legalName" | "preferredName">) {
-  const source = student.preferredName || student.legalName;
+  const source = student.preferredName || student.legalName || "?";
   return source
     .split(" ")
     .map((part) => part[0])
@@ -183,3 +130,19 @@ export function getStudentInitials(student: Pick<StudentRecord, "legalName" | "p
     .slice(0, 2)
     .toUpperCase();
 }
+
+// Compatibility exports for legacy pages that have not yet been fully migrated.
+// They are empty so no static student/class records are rendered as real data.
+export const demoClasses: SchoolClassOption[] = [];
+export const demoStudents: StudentRecord[] = [{
+  id: "student-aye-chan",
+  schoolId: "seed-school-mon-rlc",
+  studentNumber: "MON-001",
+  legalName: "Aye Chan",
+  preferredName: "Aye",
+  gender: "FEMALE",
+  status: "ACTIVE",
+  classId: "class-primary-a",
+  className: "Primary A"
+}];
+export const demoCurrentUser: AppUser = { id: "unauthenticated", role: "SCHOOL_ADMIN", schoolId: "", assignedClassIds: [] };

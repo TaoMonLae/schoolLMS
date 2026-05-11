@@ -3,10 +3,11 @@
 import { redirect } from "next/navigation";
 import { canUploadLibraryBooks } from "@/lib/rbac";
 import { validateLibraryFile } from "@/lib/library";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 export async function uploadLibraryBook(formData: FormData) {
-  if (!canUploadLibraryBooks(demoCurrentUser.role)) {
+  const currentUser = await getRequiredCurrentUser();
+  if (!canUploadLibraryBooks(currentUser.role)) {
     redirect("/dashboard/library/new?error=permission");
   }
 

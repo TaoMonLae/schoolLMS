@@ -1,13 +1,15 @@
 import { BookOpen, LockKeyhole } from "lucide-react";
 import Link from "next/link";
-import { demoSchoolBranding, getDisplaySchoolName } from "@/lib/branding";
+import { login } from "@/app/login/actions";
+import { getDisplaySchoolName, getFirstActiveSchoolBranding } from "@/lib/branding";
 
-export default function LoginPage() {
-  const schoolName = getDisplaySchoolName(demoSchoolBranding);
+export default async function LoginPage() {
+  const school = await getFirstActiveSchoolBranding();
+  const schoolName = getDisplaySchoolName(school);
 
   return (
     <main className="flex min-h-screen bg-rice">
-      <section className="hidden w-1/2 p-10 text-white lg:flex lg:flex-col lg:justify-between" style={{ backgroundColor: demoSchoolBranding.primaryColor }}>
+      <section className="hidden w-1/2 p-10 text-white lg:flex lg:flex-col lg:justify-between" style={{ backgroundColor: school.primaryColor }}>
         <Link href="/" className="flex items-center gap-3">
           <span className="flex h-10 w-10 items-center justify-center rounded-md bg-white text-ink">
             <BookOpen className="h-5 w-5" aria-hidden="true" />
@@ -15,7 +17,7 @@ export default function LoginPage() {
           <span className="text-base font-semibold">{schoolName}</span>
         </Link>
         <div className="max-w-lg">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: demoSchoolBranding.secondaryColor }}>School login</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: school.secondaryColor }}>School login</p>
           <h1 className="mt-4 text-5xl font-semibold leading-tight">Return to {schoolName}.</h1>
           <p className="mt-5 text-base leading-7 text-white/74">
             Access student records, attendance, classes, reports, and learning resources with role-based permissions.
@@ -38,7 +40,7 @@ export default function LoginPage() {
           <h2 className="mt-5 text-2xl font-semibold text-ink">School Login</h2>
           <p className="mt-2 text-sm leading-6 text-moss">Sign in with the account provided by your school administrator.</p>
 
-          <form className="mt-8 space-y-5">
+          <form action={login} className="mt-8 space-y-5">
             <div>
               <label htmlFor="email" className="text-sm font-semibold text-ink">
                 Email
@@ -65,7 +67,7 @@ export default function LoginPage() {
                 className="mt-2 w-full rounded-md border border-line bg-white px-3 py-3 text-sm text-ink outline-none ring-clay/20 placeholder:text-moss/55 focus:ring-4"
               />
             </div>
-            <button type="button" className="w-full rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
+            <button className="w-full rounded-md bg-ink px-4 py-3 text-sm font-bold text-white hover:bg-moss">
               Continue
             </button>
           </form>

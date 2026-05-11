@@ -1,11 +1,13 @@
 import { NextRequest } from "next/server";
 import { getAttendanceClassesForUser, getAttendanceExportRows } from "@/lib/attendance";
-import { demoCurrentUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
-export function GET(request: NextRequest) {
-  const classId = request.nextUrl.searchParams.get("classId") || getAttendanceClassesForUser(demoCurrentUser)[0]?.id || "";
-  const month = request.nextUrl.searchParams.get("month") || "2026-05";
-  const rows = getAttendanceExportRows(demoCurrentUser, classId, month);
+export async function GET(request: NextRequest) {
+  const currentUser = await getRequiredCurrentUser();
+  const classes = await getAttendanceClassesForUser(currentUser);
+  const classId = request.nextUrl.searchParams.get("classId") || classes[0]?.id || "";
+  const month = request.nextUrl.searchParams.get("month") || new Date().toISOString().slice(0, 7);
+  const rows = await getAttendanceExportRows(currentUser, classId, month);
   const csv = [
     ["Date", "Student Number", "Student Name", "Class", "Status", "Note"],
     ...rows.map((row) => [row.date, row.studentNumber, row.studentName, row.className, row.status, row.note])

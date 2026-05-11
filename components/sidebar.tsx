@@ -4,9 +4,9 @@ import React from "react";
 import { BarChart3, BookMarked, BookOpenCheck, CalendarCheck, ClipboardList, FileCheck2, GraduationCap, HeartHandshake, Home, LibraryBig, Menu, PlayCircle, School, Settings, ShieldCheck, Users, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { demoSchoolBranding, getDisplaySchoolName } from "@/lib/branding";
+import { getDisplaySchoolName } from "@/lib/branding";
 import { getNavItemsForRole } from "@/lib/navigation";
-import { demoCurrentUser } from "@/lib/students";
+import { Role, SchoolSummary } from "@/lib/types";
 
 const icons: Record<string, React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>> = {
   Home,
@@ -26,11 +26,11 @@ const icons: Record<string, React.ComponentType<{ className?: string; "aria-hidd
   ShieldCheck
 };
 
-export function Sidebar() {
+export function Sidebar({ school, role }: { school: SchoolSummary; role: Role }) {
   const [open, setOpen] = useState(false);
-  const schoolName = getDisplaySchoolName(demoSchoolBranding);
+  const schoolName = getDisplaySchoolName(school);
   // Role-filtered navigation — only show items the current user's role can access
-  const visibleNavItems = getNavItemsForRole(demoCurrentUser.role);
+  const visibleNavItems = getNavItemsForRole(role);
 
   return (
     <>
@@ -83,7 +83,7 @@ export function Sidebar() {
           </nav>
 
           <div className="mt-auto rounded-lg border border-line bg-rice p-4">
-            <p className="text-sm font-semibold text-ink">{demoSchoolBranding.name}</p>
+            <p className="text-sm font-semibold text-ink">{school.name}</p>
             <p className="mt-1 text-xs leading-5 text-moss">Tenant scope active through school_id.</p>
           </div>
         </div>

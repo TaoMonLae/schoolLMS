@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { StudentPhoto } from "@/components/student-photo";
 import { StudentStatusBadge } from "@/components/student-status-badge";
 import { canManageStudents, canViewSensitiveStudentDocuments } from "@/lib/rbac";
-import { demoCurrentUser, formatEnumLabel, getStudentForUser } from "@/lib/students";
+import { formatEnumLabel, getStudentForUser } from "@/lib/students";
+import { getRequiredCurrentUser } from "@/lib/session";
 
 type StudentProfilePageProps = {
   params: Promise<{
@@ -14,14 +15,15 @@ type StudentProfilePageProps = {
 
 export default async function StudentProfilePage({ params }: StudentProfilePageProps) {
   const { studentId } = await params;
-  const student = getStudentForUser(demoCurrentUser, studentId);
+  const currentUser = await getRequiredCurrentUser();
+  const student = await getStudentForUser(currentUser, studentId);
 
   if (!student) {
     notFound();
   }
 
-  const canManage = canManageStudents(demoCurrentUser.role);
-  const canViewDocuments = canViewSensitiveStudentDocuments(demoCurrentUser.role);
+  const canManage = canManageStudents(currentUser.role);
+  const canViewDocuments = canViewSensitiveStudentDocuments(currentUser.role);
 
   return (
     <div className="space-y-6 pb-10">
