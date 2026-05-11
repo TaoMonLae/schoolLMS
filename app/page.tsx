@@ -160,7 +160,7 @@ function Header() {
           <Link href="/login" className="rounded-md border border-hairlineStrong px-3 py-2 text-sm font-medium hover:bg-surface">
             School Login
           </Link>
-          <Link href="#pricing" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-on-dark hover:bg-primary-pressed">
+          <Link href="#pricing" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-on-primary hover:bg-primary-pressed">
             Start free
           </Link>
         </div>
@@ -186,7 +186,7 @@ function Hero() {
             Refugee SchoolOS gives NGO schools one calm operating system for student records, attendance, classes, learning materials, videos, and impact reports.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-[18px] py-[10px] text-sm font-medium text-on-dark hover:bg-primary-pressed">
+            <Link href="#pricing" className="inline-flex items-center justify-center gap-2 rounded-md bg-primary px-[18px] py-[10px] text-sm font-medium text-on-primary hover:bg-primary-pressed">
               Get SchoolOS free
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
@@ -239,7 +239,7 @@ function WorkspaceMockup() {
       <div className="grid min-h-[360px] gap-0 overflow-hidden rounded-b-lg lg:grid-cols-[220px_1fr]">
         <aside className="hidden border-r border-hairline bg-surfaceSoft p-4 lg:block">
           {['Dashboard', 'Students', 'Classes', 'Attendance', 'Library', 'Reports'].map((item, index) => (
-            <div key={item} className={`mb-2 rounded-md px-3 py-2 text-sm font-medium ${index === 0 ? 'bg-inkDeep text-on-dark' : 'text-slate hover:bg-surface'}`}>
+            <div key={item} className={`mb-2 rounded-md px-3 py-2 text-sm font-medium ${index === 0 ? 'bg-brand-navy text-on-dark' : 'text-slate hover:bg-surface'}`}>
               {item}
             </div>
           ))}
@@ -261,7 +261,7 @@ function WorkspaceMockup() {
             <div className="rounded-lg border border-hairline bg-canvas p-5">
               <div className="flex items-center justify-between border-b border-hairlineSoft pb-3">
                 <p className="font-semibold text-ink">Today&apos;s register</p>
-                <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-dark">Live</span>
+                <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary">Live</span>
               </div>
               {['Primary A', 'Bridge English', 'Math Level 2'].map((item, index) => (
                 <div key={item} className="flex items-center justify-between border-b border-hairlineSoft py-4 last:border-0">
@@ -395,7 +395,7 @@ function BrandingSection() {
         </div>
         <div className="rounded-lg border border-hairline bg-canvas p-6 shadow-soft">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary text-on-dark">
+            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary text-on-primary">
               <Palette className="h-7 w-7" aria-hidden="true" />
             </div>
             <div>
@@ -426,11 +426,11 @@ function PricingSection() {
         <div id="demo" className="mt-10 grid gap-4 lg:grid-cols-4">
           {pricing.map((plan) => (
             <article key={plan.name} className={`relative rounded-lg p-6 ${plan.featured ? 'border-2 border-primary bg-surface' : 'border border-hairline bg-canvas'}`}>
-              {plan.featured ? <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-dark">Popular</span> : null}
+              {plan.featured ? <span className="absolute right-4 top-4 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-on-primary">Popular</span> : null}
               <h3 className="text-xl font-semibold tracking-[-0.02em] text-ink">{plan.name}</h3>
               <p className="mt-4 text-4xl font-semibold tracking-[-0.04em] text-ink">{plan.price}</p>
               <p className="mt-3 min-h-[72px] text-sm leading-6 text-slate">{plan.description}</p>
-              <Link href="/login" className={`mt-5 inline-flex w-full items-center justify-center rounded-md px-[18px] py-[10px] text-sm font-medium ${plan.featured ? 'bg-primary text-on-dark hover:bg-primary-pressed' : 'border border-hairlineStrong text-ink hover:bg-surface'}`}>
+              <Link href="/login" className={`mt-5 inline-flex w-full items-center justify-center rounded-md px-[18px] py-[10px] text-sm font-medium ${plan.featured ? 'bg-primary text-on-primary hover:bg-primary-pressed' : 'border border-hairlineStrong text-ink hover:bg-surface'}`}>
                 {plan.name === 'Enterprise' ? 'Contact us' : 'Get started'}
               </Link>
               <ul className="mt-5 space-y-3 text-sm text-charcoal">

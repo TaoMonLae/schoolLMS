@@ -22,8 +22,8 @@ export default async function LmsPage({ searchParams }: LmsPageProps) {
         <PageHeader eyebrow="LMS" title="Lessons and Subjects" description="GED subjects, custom subjects, lesson files, and class learning materials." />
         {canManage ? (
           <div className="flex flex-wrap gap-2">
-            <Link href="/dashboard/lms/subjects/new" className="inline-flex items-center gap-2 rounded-md border border-ink px-4 py-3 text-sm font-bold text-ink"><Plus className="h-4 w-4" />Create Subject</Link>
-            <Link href="/dashboard/lms/new" className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark"><Plus className="h-4 w-4" />Create Lesson</Link>
+            <Link href="/dashboard/lms/subjects/new" className="inline-flex items-center gap-2 rounded-md border border-hairline-strong bg-canvas px-4 py-3 text-sm font-bold text-ink hover:bg-surface"><Plus className="h-4 w-4" />Create Subject</Link>
+            <Link href="/dashboard/lms/new" className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary"><Plus className="h-4 w-4" />Create Lesson</Link>
           </div>
         ) : null}
       </div>
@@ -35,7 +35,7 @@ export default async function LmsPage({ searchParams }: LmsPageProps) {
             <option value="ALL">All subjects</option>
             {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
           </select>
-          <button className="rounded-md bg-ink px-4 py-2 text-sm font-bold text-on-dark">Filter</button>
+          <button className="rounded-md bg-primary px-4 py-2 text-sm font-bold text-on-primary">Filter</button>
         </form>
       </section>
       <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">

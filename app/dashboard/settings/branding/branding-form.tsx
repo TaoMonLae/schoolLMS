@@ -3,6 +3,7 @@
 import { Building2, Globe2, ImageUp, Mail, MapPin, Phone, ShieldAlert } from "lucide-react";
 import { useMemo, useState } from "react";
 import { SchoolLogo } from "@/components/school-logo";
+import { getReadableTextColor } from "@/lib/color-contrast";
 import type { SchoolSummary } from "@/lib/types";
 
 type BrandingFormProps = {
@@ -82,7 +83,7 @@ export function BrandingForm({ school, canEdit, action, error }: BrandingFormPro
                     setSelectedLogoUrl(file ? URL.createObjectURL(file) : null);
                     if (file) setRemoveLogo(false);
                   }}
-                  className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-slate file:mr-4 file:rounded-md file:border-0 file:bg-ink file:px-3 file:py-2 file:text-sm file:font-semibold file:text-on-dark disabled:opacity-60"
+                  className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-slate file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-2 file:text-sm file:font-semibold file:text-on-primary disabled:opacity-60"
                 />
                 <p className="mt-2 text-xs leading-5 text-slate">PNG, JPG/JPEG, WebP, or SVG up to 2 MB. The file contents are verified before saving.</p>
               </div>
@@ -116,7 +117,7 @@ export function BrandingForm({ school, canEdit, action, error }: BrandingFormPro
         </section>
 
         <div className="flex justify-end">
-          <button disabled={disabled} className="rounded-md bg-ink px-5 py-3 text-sm font-bold text-on-dark hover:bg-slate disabled:cursor-not-allowed disabled:opacity-60">
+          <button disabled={disabled} className="rounded-md bg-primary px-5 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-60">
             Save Branding
           </button>
         </div>
@@ -124,12 +125,12 @@ export function BrandingForm({ school, canEdit, action, error }: BrandingFormPro
 
       <aside className="space-y-5">
         <section className="overflow-hidden rounded-lg border border-hairline bg-canvas shadow-soft">
-          <div className="p-5 text-on-dark" style={{ backgroundColor: previewSchool.primaryColor }}>
+          <div className="p-5" style={{ backgroundColor: previewSchool.primaryColor, color: getReadableTextColor(previewSchool.primaryColor) }}>
             <div className="flex items-center gap-3">
               <SchoolLogo school={previewSchool} className="h-14 w-14 bg-canvas" iconClassName="h-7 w-7" />
               <div>
                 <p className="text-xl font-semibold">{getDisplaySchoolName(previewSchool)}</p>
-                <p className="text-sm text-on-dark/75">{previewSchool.name}</p>
+                <p className="text-sm opacity-75">{previewSchool.name}</p>
               </div>
             </div>
           </div>

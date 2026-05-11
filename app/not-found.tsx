@@ -22,7 +22,7 @@ export default function NotFoundPage() {
         <div className="mt-8">
           <Link
             href="/dashboard"
-            className="inline-flex h-10 items-center rounded-md bg-ink-deep px-5 text-sm font-medium text-on-dark hover:bg-charcoal"
+            className="inline-flex h-10 items-center rounded-md bg-brand-navy px-5 text-sm font-medium text-on-dark hover:bg-brand-navy-mid"
           >
             Back to dashboard
           </Link>

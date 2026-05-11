@@ -22,7 +22,7 @@ export function LibraryCover({ book, size = "md" }: { book: LibraryBook; size?: 
   }
 
   return (
-    <div className={`${sizeClass} flex shrink-0 flex-col justify-between rounded-md bg-ink p-3 text-on-dark shadow-sm`}>
+    <div className={`${sizeClass} flex shrink-0 flex-col justify-between rounded-md bg-brand-navy p-3 text-on-dark shadow-sm`}>
       <BookOpen className="h-5 w-5 text-brand-yellow" aria-hidden="true" />
       <span className="text-xs font-semibold leading-4">{book.title}</span>
     </div>

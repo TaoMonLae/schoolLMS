@@ -17,7 +17,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
     <div className="space-y-6 pb-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <PageHeader eyebrow="Users & Access" title="User Management" description="Create users, assign roles, link student accounts, reset passwords, and control active status." />
-        <Link href="/dashboard/users/new" className="rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">New User</Link>
+        <Link href="/dashboard/users/new" className="rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">New User</Link>
       </div>
       {params?.saved ? <div className="rounded-lg border border-success/30 bg-tint-mint p-4 text-sm font-semibold text-success">User changes saved.</div> : null}
       <section className="rounded-lg border border-hairline bg-canvas p-4 shadow-soft">
@@ -25,7 +25,7 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
           <input name="q" defaultValue={params?.q} placeholder="Search name or email" className="h-11 rounded-md border border-hairline bg-surface px-3 text-sm text-ink" />
           <select name="role" defaultValue={params?.role || "ALL"} className="h-11 rounded-md border border-hairline bg-surface px-3 text-sm text-ink"><option value="ALL">All roles</option>{roles.map((role) => <option key={role} value={role}>{role}</option>)}</select>
           <select name="active" defaultValue={params?.active || "ALL"} className="h-11 rounded-md border border-hairline bg-surface px-3 text-sm text-ink"><option value="ALL">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option></select>
-          <button className="h-11 rounded-md bg-ink px-4 text-sm font-bold text-on-dark">Filter</button>
+          <button className="h-11 rounded-md bg-primary px-4 text-sm font-bold text-on-primary">Filter</button>
         </form>
       </section>
       <section className="overflow-hidden rounded-lg border border-hairline bg-canvas shadow-soft">

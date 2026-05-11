@@ -1,6 +1,7 @@
 import { Building2, ExternalLink, Plus } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { getReadableTextColor } from "@/lib/color-contrast";
 
 async function getSchools() {
   try {
@@ -47,7 +48,7 @@ export default async function SchoolsPage() {
         </div>
         <Link
           href="/super-admin/schools/new"
-          className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate"
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-pressed active:bg-primary-deep"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           Create School
@@ -61,7 +62,7 @@ export default async function SchoolsPage() {
           <p className="mt-1 text-sm text-slate">Create the first school to get started.</p>
           <Link
             href="/super-admin/schools/new"
-            className="mt-4 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-on-dark"
+            className="mt-4 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary"
           >
             <Plus className="h-4 w-4" />
             Create School
@@ -102,7 +103,7 @@ export default async function SchoolsPage() {
                       <div className="flex items-center gap-3">
                         <div
                           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-xs font-semibold text-on-dark"
-                          style={{ backgroundColor: school.primaryColor }}
+                          style={{ backgroundColor: school.primaryColor, color: getReadableTextColor(school.primaryColor) }}
                         >
                           {school.code.slice(0, 2)}
                         </div>

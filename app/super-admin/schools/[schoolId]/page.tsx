@@ -227,7 +227,7 @@ export default async function SchoolDetailPage({
 
               <div className="flex justify-end pt-2">
                 <button type="submit"
-                  className="rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate">
+                  className="rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
                   Save Settings
                 </button>
               </div>
@@ -261,7 +261,7 @@ export default async function SchoolDetailPage({
                   className="flex-1 rounded-md border border-hairline bg-canvas px-3 py-2.5 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/50 focus:border-primary focus:ring-4"
                 />
                 <button type="submit"
-                  className="shrink-0 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate">
+                  className="shrink-0 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
                   Update Logo
                 </button>
               </div>
@@ -278,7 +278,7 @@ export default async function SchoolDetailPage({
             </div>
             <Link
               href={`/super-admin/schools/${school.id}/admins/new`}
-              className="flex items-center gap-1 rounded-md bg-ink px-3 py-1.5 text-xs font-semibold text-on-dark hover:bg-slate"
+              className="flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-on-primary hover:bg-primary-pressed"
             >
               <Plus className="h-3 w-3" aria-hidden="true" />
               Add Admin

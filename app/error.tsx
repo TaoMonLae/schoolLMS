@@ -45,7 +45,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
           <button
             type="button"
             onClick={reset}
-            className="inline-flex h-10 items-center rounded-md bg-ink-deep px-5 text-sm font-medium text-on-dark hover:bg-charcoal"
+            className="inline-flex h-10 items-center rounded-md bg-brand-navy px-5 text-sm font-medium text-on-dark hover:bg-brand-navy-mid"
           >
             Try again
           </button>

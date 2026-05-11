@@ -2,17 +2,19 @@ import { LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import { login } from "@/app/login/actions";
 import { SchoolLogo } from "@/components/school-logo";
-export const dynamic = "force-dynamic";
-
 import { getDisplaySchoolName, getFirstActiveSchoolBranding } from "@/lib/branding";
+import { getReadableTextColor } from "@/lib/color-contrast";
+
+export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
   const school = await getFirstActiveSchoolBranding();
   const schoolName = getDisplaySchoolName(school);
+  const heroTextColor = getReadableTextColor(school.primaryColor);
 
   return (
     <main className="flex min-h-screen bg-surface">
-      <section className="hidden w-1/2 p-10 text-on-dark lg:flex lg:flex-col lg:justify-between" style={{ backgroundColor: school.primaryColor }}>
+      <section className="hidden w-1/2 p-10 lg:flex lg:flex-col lg:justify-between" style={{ backgroundColor: school.primaryColor, color: heroTextColor }}>
         <Link href="/" className="flex items-center gap-3">
           <SchoolLogo school={school} />
           <span className="text-base font-semibold">{schoolName}</span>
@@ -20,11 +22,11 @@ export default async function LoginPage() {
         <div className="max-w-lg">
           <p className="text-sm font-semibold uppercase tracking-[0.22em]" style={{ color: school.secondaryColor }}>School login</p>
           <h1 className="mt-4 text-5xl font-semibold leading-tight">Return to {schoolName}.</h1>
-          <p className="mt-5 text-base leading-7 text-on-dark/74">
+          <p className="mt-5 text-base leading-7 opacity-80">
             Access student records, attendance, classes, reports, and learning resources with role-based permissions.
           </p>
         </div>
-        <p className="text-sm text-on-dark/60">Built for NGO and refugee learning centre teams.</p>
+        <p className="text-sm opacity-70">Built for NGO and refugee learning centre teams.</p>
       </section>
 
       <section className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -66,7 +68,7 @@ export default async function LoginPage() {
                 className="mt-2 w-full rounded-md border border-hairline bg-canvas px-3 py-3 text-sm text-ink outline-none ring-primary/20 placeholder:text-slate/55 focus:ring-4"
               />
             </div>
-            <button className="w-full rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate">
+            <button className="w-full rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep">
               Continue
             </button>
           </form>

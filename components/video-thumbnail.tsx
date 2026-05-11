@@ -8,7 +8,7 @@ export function VideoThumbnail({ lesson }: { lesson: VideoLesson }) {
   }
 
   return (
-    <div className="flex aspect-video w-full items-center justify-center rounded-md bg-ink text-on-dark">
+    <div className="flex aspect-video w-full items-center justify-center rounded-md bg-brand-navy text-on-dark">
       <div className="text-center">
         <PlayCircle className="mx-auto h-10 w-10 text-brand-yellow" aria-hidden="true" />
         <p className="mt-3 text-sm font-semibold">{lesson.videoProvider}</p>

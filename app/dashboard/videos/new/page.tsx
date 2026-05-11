@@ -44,7 +44,7 @@ export default async function NewVideoPage({ searchParams }: NewVideoPageProps) 
           </section>
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link href="/dashboard/videos" className="inline-flex justify-center rounded-md border border-hairline bg-canvas px-4 py-3 text-sm font-semibold text-ink hover:bg-surface">Cancel</Link>
-            <button disabled={manageableClasses.length === 0 || subjects.length === 0} className="inline-flex justify-center rounded-md bg-ink px-4 py-3 text-sm font-bold text-on-dark hover:bg-slate disabled:cursor-not-allowed disabled:opacity-60">Add Video</button>
+            <button disabled={manageableClasses.length === 0 || subjects.length === 0} className="inline-flex justify-center rounded-md bg-primary px-4 py-3 text-sm font-bold text-on-primary hover:bg-primary-pressed active:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-60">Add Video</button>
           </div>
           {manageableClasses.length === 0 ? (
             <div className="rounded-lg border border-hairline bg-canvas p-4 text-sm text-slate shadow-soft">

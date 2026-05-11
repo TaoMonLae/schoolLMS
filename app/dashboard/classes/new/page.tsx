@@ -17,7 +17,7 @@ function ClassForm({ action, teachers }: { action: (formData: FormData) => Promi
   return <form action={action} className="grid gap-4 rounded-lg border border-hairline bg-canvas p-5 shadow-soft sm:grid-cols-2">
     <Input name="name" label="Class name" required /><Input name="academicYear" label="Academic year" defaultValue={String(new Date().getFullYear())} required /><Input name="gradeLevel" label="Grade level" /><Input name="room" label="Room" />
     <label className="text-sm font-semibold text-ink">Teacher<select name="teacherId" className="mt-2 w-full rounded-md border border-hairline px-3 py-3 text-sm"><option value="">No teacher</option>{teachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></label>
-    <div className="sm:col-span-2"><button className="rounded-md bg-ink px-5 py-3 text-sm font-bold text-on-dark">Create Class</button></div>
+    <div className="sm:col-span-2"><button className="rounded-md bg-primary px-5 py-3 text-sm font-bold text-on-primary">Create Class</button></div>
   </form>;
 }
 function Input(props: { name: string; label: string; defaultValue?: string; required?: boolean }) { return <label className="text-sm font-semibold text-ink">{props.label}<input {...props} className="mt-2 w-full rounded-md border border-hairline px-3 py-3 text-sm" /></label>; }

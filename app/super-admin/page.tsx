@@ -58,7 +58,7 @@ export default async function SuperAdminPage() {
         </div>
         <Link
           href="/super-admin/schools/new"
-          className="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-semibold text-on-dark hover:bg-slate"
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary hover:bg-primary-pressed active:bg-primary-deep"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           Create School
@@ -107,7 +107,7 @@ export default async function SuperAdminPage() {
             <p className="mt-1 text-sm text-slate">Get started by creating the first school tenant.</p>
             <Link
               href="/super-admin/schools/new"
-              className="mt-4 inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-semibold text-on-dark hover:bg-slate"
+              className="mt-4 inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-on-primary hover:bg-primary-pressed"
             >
               <Plus className="h-4 w-4" />
               Create School
@@ -118,7 +118,7 @@ export default async function SuperAdminPage() {
             {recentSchools.map((school) => (
               <div key={school.id} className="flex items-center justify-between px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-ink text-xs font-semibold text-on-dark">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-brand-navy text-xs font-semibold text-on-dark">
                     {school.code.slice(0, 2)}
                   </div>
                   <div>

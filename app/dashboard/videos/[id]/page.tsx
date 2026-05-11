@@ -1,14 +1,16 @@
-import { AlertCircle, CheckCircle2, Clock, PlayCircle, UserRound, Video } from "lucide-react";
+import { CheckCircle2, Clock, PlayCircle, UserRound, Video } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { StudentPhoto } from "@/components/student-photo";
+import { VideoPlayer } from "@/components/video-player";
 import { getRequiredCurrentUser } from "@/lib/session";
 import { formatEnumLabel } from "@/lib/students";
 import {
   canManageVideoLesson,
   getClassVideoProgressForLesson,
   getEmbeddableVideoUrl,
+  getExternalVideoUrl,
   getPlaylistLessonsForUser,
   getVideoLessonForUser,
   getVideoProgressForLesson
@@ -35,6 +37,7 @@ export default async function VideoDetailPage({ params }: VideoDetailPageProps) 
   const canSeeClassProgress = canManageVideoLesson(currentUser, lesson);
   const studentsById = new Map(classProgress.map((item) => [item.student.id, item.student]));
   const embedUrl = getEmbeddableVideoUrl(lesson);
+  const externalUrl = getExternalVideoUrl(lesson);
   const progressRows = canSeeClassProgress ? classProgress : progress.map((item) => ({ progress: item, student: studentsById.get(item.studentId) }));
   const completedCount = progressRows.filter((item) => item.progress?.completed).length;
 
@@ -50,30 +53,14 @@ export default async function VideoDetailPage({ params }: VideoDetailPageProps) 
               Lesson player
             </div>
           </div>
-          {lesson.videoProvider === "PRIVATE" ? (
-            <video controls className="aspect-video w-full bg-ink" poster={lesson.thumbnailUrl}>
-              <source src={lesson.videoUrl} />
-              Your browser cannot play this uploaded video.
-            </video>
-          ) : embedUrl ? (
-            <iframe
-              title={`${lesson.title} video lesson`}
-              src={embedUrl}
-              className="aspect-video w-full bg-ink"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          ) : (
-            <div className="flex aspect-video w-full items-center justify-center bg-surface p-xl text-center">
-              <div className="max-w-md rounded-lg border border-hairline bg-canvas p-xl shadow-card">
-                <AlertCircle className="mx-auto h-10 w-10 text-error" aria-hidden="true" />
-                <h2 className="mt-3 text-lg font-semibold text-ink">Video link needs attention</h2>
-                <p className="mt-2 text-sm leading-6 text-slate">
-                  This lesson uses a {formatEnumLabel(lesson.videoProvider)} link that could not be converted into a playable embed. Check the saved URL and try again.
-                </p>
-              </div>
-            </div>
-          )}
+          <VideoPlayer
+            title={lesson.title}
+            providerLabel={formatEnumLabel(lesson.videoProvider)}
+            embedUrl={embedUrl}
+            externalUrl={externalUrl}
+            posterUrl={lesson.thumbnailUrl}
+            privateVideo={lesson.videoProvider === "PRIVATE"}
+          />
           <div className="grid gap-4 p-5 lg:grid-cols-[1fr_260px]">
             <div>
               <div className="flex flex-wrap gap-2">
