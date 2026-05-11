@@ -4,6 +4,7 @@
 1. Seed the database and sign in as a school admin.
 2. Confirm `/dashboard` shows the school's real name, colors, active student count, active class count, and today's attendance summary.
 3. Confirm the sidebar role navigation matches the signed-in user role.
+4. Log in, click **Log out** in the sidebar, confirm redirect to `/login`, then confirm `/dashboard` is no longer accessible without a new login.
 
 ## Student records
 1. Open `/dashboard/students` and verify students match DB records only for the signed-in school.

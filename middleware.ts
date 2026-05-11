@@ -92,7 +92,7 @@ export function middleware(request: NextRequest) {
       // Redirect non-super-admins silently to their dashboard
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    return forwardWithHeaders(NextResponse.next(), session, subdomain);
+    return forwardWithHeaders(NextResponse.next(), session, subdomain, true);
   }
 
   // ── 4. Dashboard & API routes ─────────────────────────────────────────────
@@ -100,7 +100,7 @@ export function middleware(request: NextRequest) {
     // When a subdomain is present, pass it through so the server component
     // can verify the session's schoolId matches the school that owns the subdomain.
     // (Full lookup happens server-side; middleware can't hit the DB.)
-    return forwardWithHeaders(NextResponse.next(), session, subdomain);
+    return forwardWithHeaders(NextResponse.next(), session, subdomain, true);
   }
 
   return forwardWithHeaders(NextResponse.next(), session, subdomain);
@@ -113,12 +113,14 @@ export function middleware(request: NextRequest) {
 function forwardWithHeaders(
   response: NextResponse,
   session: MinimalSession,
-  subdomain: string | null
+  subdomain: string | null,
+  noStore = false
 ): NextResponse {
   response.headers.set("x-session-user-id", session.userId);
   response.headers.set("x-session-role", session.role);
   if (session.schoolId) response.headers.set("x-session-school-id", session.schoolId);
   if (subdomain) response.headers.set("x-school-subdomain", subdomain);
+  if (noStore) response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   return response;
 }
 

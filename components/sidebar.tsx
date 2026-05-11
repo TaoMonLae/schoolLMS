@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { BarChart3, BookMarked, BookOpenCheck, CalendarCheck, ClipboardList, FileCheck2, GraduationCap, HeartHandshake, Home, LibraryBig, Menu, PlayCircle, School, Settings, ShieldCheck, Users, X } from "lucide-react";
+import { BarChart3, BookMarked, BookOpenCheck, CalendarCheck, ClipboardList, FileCheck2, GraduationCap, HeartHandshake, Home, LibraryBig, LogOut, Menu, PlayCircle, School, Settings, ShieldCheck, Users, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { logout } from "@/app/logout/actions";
 import { getDisplaySchoolName } from "@/lib/branding";
 import { getNavItemsForRole } from "@/lib/navigation";
 import { Role, SchoolSummary } from "@/lib/types";
@@ -49,7 +50,7 @@ export function Sidebar({ school, role }: { school: SchoolSummary; role: Role })
       </div>
 
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-72 border-r border-line bg-white px-4 py-5 transition-transform lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 w-72 overflow-y-auto border-r border-line bg-white px-4 py-5 transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -82,9 +83,21 @@ export function Sidebar({ school, role }: { school: SchoolSummary; role: Role })
             })}
           </nav>
 
-          <div className="mt-auto rounded-lg border border-line bg-rice p-4">
-            <p className="text-sm font-semibold text-ink">{school.name}</p>
-            <p className="mt-1 text-xs leading-5 text-moss">Tenant scope active through school_id.</p>
+          <div className="mt-auto space-y-3">
+            <div className="rounded-lg border border-line bg-rice p-4">
+              <p className="text-sm font-semibold text-ink">{school.name}</p>
+              <p className="mt-1 text-xs leading-5 text-moss">Tenant scope active through school_id.</p>
+            </div>
+
+            <form action={logout}>
+              <button
+                type="submit"
+                className="flex w-full items-center gap-3 rounded-md border border-line px-3 py-2 text-sm font-medium text-moss hover:bg-rice hover:text-ink"
+              >
+                <LogOut className="h-4 w-4" aria-hidden="true" />
+                Log out
+              </button>
+            </form>
           </div>
         </div>
       </aside>
