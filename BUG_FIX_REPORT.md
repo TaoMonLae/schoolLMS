@@ -12,3 +12,14 @@
 | Assignment management incomplete | Assignments were read-only and grade inputs did not save. | `app/dashboard/assignments/*` | Added assignment CRUD/status workflow and submission grade upserts with max-point validation. | Create, publish, edit, and grade an assignment; refresh and confirm grades remain. |
 | Exam management incomplete | Create Exam button had no route and marks inputs were not persisted. | `app/dashboard/exams/*` | Added exam CRUD/status workflow and marks upsert with max-mark validation. | Create/schedule/edit exam, enter marks/feedback, refresh and confirm persistence. |
 | Build failed in constrained/offline environments | `next/font/google` fetched Google Fonts during build; dynamic pages attempted prerender. | `app/layout.tsx`, `app/globals.css`, `app/dashboard/layout.tsx`, `app/super-admin/layout.tsx`, `app/login/page.tsx` | Replaced remote font dependency with system font stack and marked auth/DB layouts/pages dynamic. | Run `npm run build` without external font access and confirm success. |
+
+## School Branding Completion — May 11, 2026
+
+Fixed the incomplete Branding settings module.
+
+- Removed runtime dependence on demo branding/current-user data in Branding settings.
+- Added server-side role and tenant enforcement for branding updates.
+- Added full Zod validation for required name, hex colors, optional email/URL, subdomain, custom domain, and trimmed optional fields.
+- Implemented real logo upload with file content validation, local development storage, DB persistence, replacement, removal, and audit logging.
+- Updated dashboard sidebar and login school identity to render saved logos.
+- Removed placeholder copy that implied storage was not implemented.

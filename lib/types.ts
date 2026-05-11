@@ -18,6 +18,7 @@ export type SchoolSummary = {
   subdomain?: string;
   city: string;
   country: string;
+  timezone?: string;
   activeStudents: number;
   activeClasses: number;
 };
