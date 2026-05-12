@@ -274,3 +274,7 @@ a {
     @apply inline-flex items-center rounded-full px-[10px] py-1 text-caption font-semibold;
   }
 }
+
+@layer components {
+  .field { @apply w-full rounded-md border border-border bg-card px-3 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/20; }
+}

@@ -79,8 +79,40 @@ enum SubmissionStatus {
 
 enum ExamStatus {
   DRAFT
+  PUBLISHED
+  CLOSED
   SCHEDULED
   COMPLETED
+}
+
+enum GedSubjectType {
+  RLA
+  MATH
+  SCIENCE
+  SOCIAL_STUDIES
+  CUSTOM
+}
+
+enum ExamQuestionType {
+  MULTIPLE_CHOICE
+  MULTIPLE_SELECT
+  TRUE_FALSE
+  SHORT_ANSWER
+  ESSAY
+  FILL_IN_BLANK
+  MATCHING
+  MATH_NUMERIC
+  MATH_EQUATION
+  PASSAGE_BASED
+  IMAGE_BASED
+}
+
+enum ExamAttemptStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+  EXPIRED
 }
 
 enum CaseNoteSensitivity {
@@ -140,57 +172,57 @@ model School {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
-  users       User[]
-  students    Student[]
-  classes     Class[]
-  enrollments Enrollment[]
-  attendance  Attendance[]
-  libraryBooks LibraryBook[]
-  videoLessons VideoLesson[]
-  videoProgress VideoProgress[]
-  subjects Subject[]
-  lessons Lesson[]
-  assignments Assignment[]
-  submissions AssignmentSubmission[]
-  exams Exam[]
-  examMarks ExamMark[]
-  caseNotes CaseNote[]
-  sponsorSupports SponsorSupport[]
-  referrals Referral[]
-  documentReminders DocumentExpiryReminder[]
+  users              User[]
+  students           Student[]
+  classes            Class[]
+  enrollments        Enrollment[]
+  attendance         Attendance[]
+  libraryBooks       LibraryBook[]
+  videoLessons       VideoLesson[]
+  videoProgress      VideoProgress[]
+  subjects           Subject[]
+  lessons            Lesson[]
+  assignments        Assignment[]
+  submissions        AssignmentSubmission[]
+  exams              Exam[]
+  examMarks          ExamMark[]
+  caseNotes          CaseNote[]
+  sponsorSupports    SponsorSupport[]
+  referrals          Referral[]
+  documentReminders  DocumentExpiryReminder[]
   sensitiveAuditLogs SensitiveAuditLog[]
 
   @@map("schools")
 }
 
 model User {
-  id           String   @id @default(cuid())
-  schoolId     String?  @map("school_id")
-  email        String   @unique
-  name         String
-  role         Role
-  passwordHash String?  @map("password_hash")
-  isActive     Boolean  @default(true) @map("is_active")
-  caseManagerApproved Boolean @default(false) @map("case_manager_approved")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id                  String   @id @default(cuid())
+  schoolId            String?  @map("school_id")
+  email               String   @unique
+  name                String
+  role                Role
+  passwordHash        String?  @map("password_hash")
+  isActive            Boolean  @default(true) @map("is_active")
+  caseManagerApproved Boolean  @default(false) @map("case_manager_approved")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
 
-  school  School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
-  student Student?
-  classes Class[]  @relation("TeacherClasses")
-  recordedAttendance Attendance[] @relation("RecordedAttendance")
-  uploadedLibraryBooks LibraryBook[] @relation("UploadedLibraryBooks")
-  uploadedVideoLessons VideoLesson[] @relation("UploadedVideoLessons")
-  uploadedLessonFiles LessonFile[] @relation("UploadedLessonFiles")
-  createdLessons Lesson[] @relation("CreatedLessons")
-  createdAssignments Assignment[] @relation("CreatedAssignments")
-  gradedSubmissions AssignmentSubmission[] @relation("GradedSubmissions")
-  createdExams Exam[] @relation("CreatedExams")
-  recordedExamMarks ExamMark[] @relation("RecordedExamMarks")
-  authoredCaseNotes CaseNote[] @relation("AuthoredCaseNotes")
-  sponsorSupports SponsorSupport[] @relation("RecordedSponsorSupports")
-  referrals Referral[] @relation("CreatedReferrals")
-  sensitiveAuditLogs SensitiveAuditLog[] @relation("SensitiveAuditActor")
+  school               School?                @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  student              Student?
+  classes              Class[]                @relation("TeacherClasses")
+  recordedAttendance   Attendance[]           @relation("RecordedAttendance")
+  uploadedLibraryBooks LibraryBook[]          @relation("UploadedLibraryBooks")
+  uploadedVideoLessons VideoLesson[]          @relation("UploadedVideoLessons")
+  uploadedLessonFiles  LessonFile[]           @relation("UploadedLessonFiles")
+  createdLessons       Lesson[]               @relation("CreatedLessons")
+  createdAssignments   Assignment[]           @relation("CreatedAssignments")
+  gradedSubmissions    AssignmentSubmission[] @relation("GradedSubmissions")
+  createdExams         Exam[]                 @relation("CreatedExams")
+  recordedExamMarks    ExamMark[]             @relation("RecordedExamMarks")
+  authoredCaseNotes    CaseNote[]             @relation("AuthoredCaseNotes")
+  sponsorSupports      SponsorSupport[]       @relation("RecordedSponsorSupports")
+  referrals            Referral[]             @relation("CreatedReferrals")
+  sensitiveAuditLogs   SensitiveAuditLog[]    @relation("SensitiveAuditActor")
 
   @@index([schoolId])
   @@index([role])
@@ -226,18 +258,19 @@ model Student {
   createdAt             DateTime             @default(now()) @map("created_at")
   updatedAt             DateTime             @updatedAt @map("updated_at")
 
-  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
-  enrollments Enrollment[]
-  attendance  Attendance[]
-  videoProgress VideoProgress[]
-  submissions AssignmentSubmission[]
-  examMarks ExamMark[]
-  caseNotes CaseNote[]
-  sponsorSupports SponsorSupport[]
-  referrals Referral[]
-  documentReminders DocumentExpiryReminder[]
+  school             School                   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user               User?                    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  enrollments        Enrollment[]
+  attendance         Attendance[]
+  videoProgress      VideoProgress[]
+  submissions        AssignmentSubmission[]
+  examMarks          ExamMark[]
+  caseNotes          CaseNote[]
+  sponsorSupports    SponsorSupport[]
+  referrals          Referral[]
+  documentReminders  DocumentExpiryReminder[]
   sensitiveAuditLogs SensitiveAuditLog[]
+  examAttempts       ExamAttempt[]
 
   @@unique([schoolId, studentNumber])
   @@index([schoolId])
@@ -247,24 +280,24 @@ model Student {
 }
 
 model Class {
-  id          String   @id @default(cuid())
-  schoolId    String   @map("school_id")
-  teacherId   String?  @map("teacher_id")
-  name        String
-  gradeLevel  String?  @map("grade_level")
-  academicYear String  @map("academic_year")
-  room        String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  schoolId     String   @map("school_id")
+  teacherId    String?  @map("teacher_id")
+  name         String
+  gradeLevel   String?  @map("grade_level")
+  academicYear String   @map("academic_year")
+  room         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  teacher     User?        @relation("TeacherClasses", fields: [teacherId], references: [id], onDelete: SetNull)
-  enrollments Enrollment[]
-  attendance  Attendance[]
+  school       School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  teacher      User?         @relation("TeacherClasses", fields: [teacherId], references: [id], onDelete: SetNull)
+  enrollments  Enrollment[]
+  attendance   Attendance[]
   videoLessons VideoLesson[]
-  lessons Lesson[]
-  assignments Assignment[]
-  exams Exam[]
+  lessons      Lesson[]
+  assignments  Assignment[]
+  exams        Exam[]
 
   @@unique([schoolId, name, academicYear])
   @@index([schoolId])
@@ -306,10 +339,10 @@ model Attendance {
   createdAt    DateTime         @default(now()) @map("created_at")
   updatedAt    DateTime         @updatedAt @map("updated_at")
 
-  school     School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  school     School  @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   student    Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  class      Class @relation(fields: [classId], references: [id], onDelete: Cascade)
-  recordedBy User? @relation("RecordedAttendance", fields: [recordedById], references: [id], onDelete: SetNull)
+  class      Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  recordedBy User?   @relation("RecordedAttendance", fields: [recordedById], references: [id], onDelete: SetNull)
 
   @@unique([schoolId, studentId, classId, date])
   @@index([schoolId])
@@ -377,13 +410,13 @@ model VideoLesson {
 }
 
 model VideoProgress {
-  id              String    @id @default(cuid())
-  schoolId        String    @map("school_id")
-  videoLessonId   String    @map("video_lesson_id")
-  studentId       String    @map("student_id")
-  watchedSeconds  Int       @default(0) @map("watched_seconds")
-  completed       Boolean   @default(false)
-  lastWatchedAt   DateTime? @map("last_watched_at")
+  id             String    @id @default(cuid())
+  schoolId       String    @map("school_id")
+  videoLessonId  String    @map("video_lesson_id")
+  studentId      String    @map("student_id")
+  watchedSeconds Int       @default(0) @map("watched_seconds")
+  completed      Boolean   @default(false)
+  lastWatchedAt  DateTime? @map("last_watched_at")
 
   school      School      @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   videoLesson VideoLesson @relation(fields: [videoLessonId], references: [id], onDelete: Cascade)
@@ -441,15 +474,15 @@ model Lesson {
 }
 
 model LessonFile {
-  id           String   @id @default(cuid())
-  schoolId     String   @map("school_id")
-  lessonId     String   @map("lesson_id")
-  fileName     String   @map("file_name")
-  fileUrl      String   @map("file_url")
-  fileType     String   @map("file_type")
-  fileSizeBytes Int?    @map("file_size_bytes")
-  uploadedById String?  @map("uploaded_by")
-  createdAt    DateTime @default(now()) @map("created_at")
+  id            String   @id @default(cuid())
+  schoolId      String   @map("school_id")
+  lessonId      String   @map("lesson_id")
+  fileName      String   @map("file_name")
+  fileUrl       String   @map("file_url")
+  fileType      String   @map("file_type")
+  fileSizeBytes Int?     @map("file_size_bytes")
+  uploadedById  String?  @map("uploaded_by")
+  createdAt     DateTime @default(now()) @map("created_at")
 
   lesson     Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   uploadedBy User?  @relation("UploadedLessonFiles", fields: [uploadedById], references: [id], onDelete: SetNull)
@@ -514,29 +547,135 @@ model AssignmentSubmission {
 }
 
 model Exam {
-  id          String     @id @default(cuid())
-  schoolId    String     @map("school_id")
-  classId     String     @map("class_id")
-  subjectId   String     @map("subject_id")
-  title       String
-  description String?
-  examDate    DateTime?  @map("exam_date")
-  maxMarks    Int        @default(100) @map("max_marks")
-  status      ExamStatus @default(DRAFT)
-  createdById String?    @map("created_by")
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
+  id                   String         @id @default(cuid())
+  schoolId             String         @map("school_id")
+  classId              String         @map("class_id")
+  subjectId            String         @map("subject_id")
+  title                String
+  description          String?
+  instructions         String?
+  examDate             DateTime?      @map("exam_date")
+  totalDurationMinutes Int?           @map("total_duration_minutes")
+  maxMarks             Int            @default(100) @map("max_marks")
+  passingScore         Int?           @map("passing_score")
+  status               ExamStatus     @default(DRAFT)
+  gedSubjectType       GedSubjectType @default(CUSTOM) @map("ged_subject_type")
+  createdById          String?        @map("created_by")
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime       @updatedAt @map("updated_at")
 
-  school    School     @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  class     Class      @relation(fields: [classId], references: [id], onDelete: Cascade)
-  subject   Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  createdBy User?      @relation("CreatedExams", fields: [createdById], references: [id], onDelete: SetNull)
+  school    School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  class     Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject   Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  createdBy User?          @relation("CreatedExams", fields: [createdById], references: [id], onDelete: SetNull)
   marks     ExamMark[]
+  sections  ExamSection[]
+  questions ExamQuestion[]
+  attempts  ExamAttempt[]
 
   @@index([schoolId])
   @@index([schoolId, classId])
   @@index([schoolId, subjectId])
+  @@index([schoolId, status])
   @@map("exams")
+}
+
+model ExamSection {
+  id              String  @id @default(cuid())
+  examId          String  @map("exam_id")
+  title           String
+  description     String?
+  instructions    String?
+  orderIndex      Int     @default(0) @map("order_index")
+  durationMinutes Int?    @map("duration_minutes")
+  marks           Int     @default(0)
+
+  exam      Exam           @relation(fields: [examId], references: [id], onDelete: Cascade)
+  questions ExamQuestion[]
+
+  @@index([examId])
+  @@map("exam_sections")
+}
+
+model ExamQuestion {
+  id                String           @id @default(cuid())
+  examId            String           @map("exam_id")
+  sectionId         String?          @map("section_id")
+  type              ExamQuestionType
+  prompt            String
+  passage           String?
+  imageUrl          String?          @map("image_url")
+  explanation       String?
+  points            Int              @default(1)
+  orderIndex        Int              @default(0) @map("order_index")
+  correctAnswerText String?          @map("correct_answer_text")
+  correctAnswerJson Json?            @map("correct_answer_json")
+  allowCalculator   Boolean          @default(false) @map("allow_calculator")
+  difficulty        String?
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  exam    Exam                 @relation(fields: [examId], references: [id], onDelete: Cascade)
+  section ExamSection?         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  options ExamQuestionOption[]
+  answers ExamAnswer[]
+
+  @@index([examId])
+  @@index([sectionId])
+  @@map("exam_questions")
+}
+
+model ExamQuestionOption {
+  id         String  @id @default(cuid())
+  questionId String  @map("question_id")
+  optionText String  @map("option_text")
+  isCorrect  Boolean @default(false) @map("is_correct")
+  orderIndex Int     @default(0) @map("order_index")
+
+  question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("exam_question_options")
+}
+
+model ExamAttempt {
+  id               String            @id @default(cuid())
+  examId           String            @map("exam_id")
+  studentId        String            @map("student_id")
+  startedAt        DateTime          @default(now()) @map("started_at")
+  submittedAt      DateTime?         @map("submitted_at")
+  status           ExamAttemptStatus @default(IN_PROGRESS)
+  score            Int?
+  percentage       Float?
+  timeSpentSeconds Int?              @map("time_spent_seconds")
+
+  exam    Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  answers ExamAnswer[]
+
+  @@unique([examId, studentId])
+  @@index([examId])
+  @@index([studentId])
+  @@map("exam_attempts")
+}
+
+model ExamAnswer {
+  id              String   @id @default(cuid())
+  attemptId       String   @map("attempt_id")
+  questionId      String   @map("question_id")
+  answerText      String?  @map("answer_text")
+  answerJson      Json?    @map("answer_json")
+  isCorrect       Boolean? @map("is_correct")
+  pointsAwarded   Int?     @map("points_awarded")
+  teacherFeedback String?  @map("teacher_feedback")
+
+  attempt  ExamAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question ExamQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+  @@index([questionId])
+  @@map("exam_answers")
 }
 
 model ExamMark {
