@@ -15,7 +15,8 @@ const config: Config = {
         primary: {
           DEFAULT: withOpacity("--color-primary-rgb"),
           pressed: withOpacity("--color-primary-pressed-rgb"),
-          deep: withOpacity("--color-primary-deep-rgb")
+          deep: withOpacity("--color-primary-deep-rgb"),
+          foreground: withOpacity("--color-on-primary-rgb")
         },
         "on-primary": withOpacity("--color-on-primary-rgb"),
         "brand-navy": {
@@ -57,6 +58,13 @@ const config: Config = {
           cream: withOpacity("--color-card-tint-cream-rgb"),
           gray: withOpacity("--color-card-tint-gray-rgb")
         },
+        background: withOpacity("--color-surface-rgb"),
+        card: withOpacity("--color-canvas-rgb"),
+        foreground: withOpacity("--color-ink-rgb"),
+        "muted-foreground": withOpacity("--color-slate-rgb"),
+        border: { DEFAULT: withOpacity("--color-hairline-rgb") },
+        secondary: { DEFAULT: withOpacity("--color-surface-rgb"), foreground: withOpacity("--color-ink-rgb") },
+        destructive: { DEFAULT: withOpacity("--color-semantic-error-rgb"), foreground: withOpacity("--color-on-primary-rgb") },
         canvas: withOpacity("--color-canvas-rgb"),
         surface: withOpacity("--color-surface-rgb"),
         "surface-soft": withOpacity("--color-surface-soft-rgb"),

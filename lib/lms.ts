@@ -45,7 +45,7 @@ export async function getSubmissionsForAssignment(user: AppUser, assignmentId: s
 
 export async function getVisibleExams(user: AppUser, subjectId = "ALL") {
   const ids = await visibleClassIds(user);
-  return db.exam.findMany({ where: { ...tenantFilter(user), classId: { in: ids }, ...(subjectId !== "ALL" ? { subjectId } : {}) }, include: { class: true, subject: true, marks: true }, orderBy: { examDate: "asc" } });
+  return db.exam.findMany({ where: { ...tenantFilter(user), classId: { in: ids }, ...(subjectId !== "ALL" ? { subjectId } : {}) }, include: { class: true, subject: true, marks: true, sections: { orderBy: { orderIndex: "asc" }, include: { questions: { orderBy: { orderIndex: "asc" }, include: { options: { orderBy: { orderIndex: "asc" } } } } } }, _count: { select: { sections: true, questions: true } } }, orderBy: { examDate: "asc" } });
 }
 
 export async function getStudentReportCard(user: AppUser, studentId: string) {
@@ -66,3 +66,13 @@ export async function getStudentReportCard(user: AppUser, studentId: string) {
 }
 export async function getDefaultReportStudentId(user: AppUser) { const row = await db.student.findFirst({ where: { ...tenantFilter(user), status: "ACTIVE", deletedAt: null }, orderBy: { studentNumber: "asc" } }); return row?.id; }
 export async function getSubjectName(subjectId: string) { return (await db.subject.findUnique({ where: { id: subjectId } }))?.name || "Unknown subject"; }
+
+export async function getPublishedExamsForStudent(user: AppUser) {
+  const ids = await visibleClassIds(user);
+  return db.exam.findMany({ where: { ...tenantFilter(user), classId: { in: ids }, status: "PUBLISHED" }, include: { class: true, subject: true, sections: { orderBy: { orderIndex: "asc" }, include: { questions: { orderBy: { orderIndex: "asc" } } } }, _count: { select: { sections: true, questions: true } } }, orderBy: { examDate: "asc" } });
+}
+
+export async function getExamForUser(user: AppUser, examId: string) {
+  const exams = await getVisibleExams(user);
+  return exams.find((exam) => exam.id === examId);
+}
